@@ -2,9 +2,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// const MONGO_USERNAME = process.env.MONGO_USERNAME || '';
-// const MONGO_PASSWORD = process.env.MONGO_PASSWORD || '';
-export const MONGO_URL = process.env.MONGO_URI_DEV;
+const MONGO_URL = process.env.MONGO_URI_DEV;
 
 const SERVER_PORT = process.env.SERVER_PORT
   ? Number(process.env.SERVER_PORT)

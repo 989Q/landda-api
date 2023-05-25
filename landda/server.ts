@@ -1,10 +1,12 @@
 import express from "express";
 import http from "http";
-
 import mongoose from "mongoose";
 import { config } from "./config/config";
 import cors from "cors";
-import Logging from "./library/Logging";
+import Logging from "./utils/Logging";
+
+import authorRoutes from "./routes/Author";
+import realEstates from "./routes/RealEstate.route";
 
 const router = express();
 
@@ -40,6 +42,10 @@ const StartServer = () => {
 
   router.use(cors());
   router.use(express.json());
+
+  // Routes
+  router.use('/authors', authorRoutes);
+  router.use('/realEstates', realEstates);
 
   // Healthcheck
   router.get("/ping", (req, res, next) =>

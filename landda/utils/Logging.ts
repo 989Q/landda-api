@@ -4,8 +4,8 @@ export default class Logging {
   public static log = (args: any) => this.info(args);
   public static info = (args: any) =>
     console.log(
-      chalk.blue(`[${new Date().toLocaleString()}] [INFO]`),
-      typeof args === "string" ? chalk.blueBright(args) : args
+      chalk.green(`[${new Date().toLocaleString()}] [INFO]`),
+      typeof args === "string" ? chalk.greenBright(args) : args
     );
   public static warning = (args: any) =>
     console.log(
