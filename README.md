@@ -1,5 +1,5 @@
 ### express-api
-- process: doing gmail login
+- process: searching & gmail login
 - next process: generateToken 
 
 pnpm
@@ -21,6 +21,7 @@ pnpm i dotenv mongoose
 pnpm i chalk@^4.1.2
 
 pnpm i jsonwebtoken
+pnpm i --save-dev @types/jsonwebtoken
 ```
 
 ### Guidelines
