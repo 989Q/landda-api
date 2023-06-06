@@ -5,8 +5,9 @@ import controller from "../controllers/RealEstate";
 const router = express.Router();
 
 router.post('/create', controller.createRealEstate);
-// router.get('/get/:realEstateId', controller.readRealEstate);
+router.get('/get/:estateId', controller.readRealEstate);
 router.get('/get', controller.realAllRealEstate);
+router.get('/search', controller.searchRealEstate);
 // router.patch('/update/:realEstateId', controller.updateRealEstate);
 // router.delete('/delete/:realEstateId', controller.deleteRealEstate);
 

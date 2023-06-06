@@ -6,7 +6,8 @@ import cors from "cors";
 import Logging from "./utils/Logging";
 
 import authorRoutes from "./routes/Author";
-import realEstates from "./routes/RealEstate.route";
+import realEstates from "./routes/RealEstate";
+import user from "./routes/user"
 
 const router = express();
 
@@ -21,7 +22,7 @@ mongoose
     Logging.error(error);
   });
 
-// Only start the server if Mongo Ceonnects
+// Only start the server if Mongo Connects
 const StartServer = () => {
   // Log the request
   router.use((req, res, next) => {
@@ -45,7 +46,8 @@ const StartServer = () => {
 
   // Routes
   router.use('/authors', authorRoutes);
-  router.use('/realEstates', realEstates);
+  router.use('/realEstate', realEstates);
+  router.use('/auth', user);
 
   // Healthcheck
   router.get("/ping", (req, res, next) =>
