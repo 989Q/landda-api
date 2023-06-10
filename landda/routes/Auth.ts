@@ -1,9 +1,9 @@
 import express from "express";
-import controller from "../controllers/User";
+import controller from "../controllers/Auth";
 // import { Schemas, ValidateJoi } from '../middleware/Joi';
 
 const router = express.Router();
 
-router.get('/:ownerId', controller.getOwnerId)
+router.post('/google', controller.signIn)
 
 export default router;

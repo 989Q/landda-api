@@ -5,17 +5,20 @@ import RealEstate from "../models/RealEstate";
 import { generateUniqueId } from "../utils/id-generator";
 
 const createRealEstate = (req: Request, res: Response, next: NextFunction) => {
-  const { ...restProperties } = req.body;
+  const { desc, location } = req.body;
+  const { ownerId } = req.body.head
 
   const realEstate = new RealEstate({
     _id: new mongoose.Types.ObjectId(),
     head: {
+      ownerId: ownerId,
       estateId: generateUniqueId(),
       postStatus: "Active",
       createdAt: new Date(),
       updatedAt: new Date(),
     },
-    ...restProperties,
+    desc,
+    location,
   });
 
   return realEstate
@@ -63,11 +66,13 @@ const searchRealEstate = (req: Request, res: Response, next: NextFunction) => {
   }
 
   if (propertyType) {
-    searchQuery.property_type = propertyType;
+    // searchQuery.estateType = propertyType;
+    searchQuery['desc.estateType'] = propertyType;
   }
 
   if (propertyStatus) {
-    searchQuery.property_status = propertyStatus;
+    // searchQuery.estateStatus = propertyStatus;
+    searchQuery['desc.estateStatus'] = propertyStatus;
   }
 
   RealEstate.find(searchQuery)

@@ -7,6 +7,7 @@ import Logging from "./utils/Logging";
 
 import authorRoutes from "./routes/Author";
 import realEstates from "./routes/RealEstate";
+import auth from "./routes/Auth"
 import user from "./routes/user"
 
 const router = express();
@@ -45,9 +46,10 @@ const StartServer = () => {
   router.use(express.json());
 
   // Routes
-  router.use('/authors', authorRoutes);
+  router.use('/auth', auth);
+  router.use('/user', user);
+  // router.use('/authors', authorRoutes);
   router.use('/realEstate', realEstates);
-  router.use('/auth', user);
 
   // Healthcheck
   router.get("/ping", (req, res, next) =>
