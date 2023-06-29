@@ -1,5 +1,3 @@
-// controllers/Auth.ts
-
 import { Request, Response } from "express";
 import User from "../models/User";
 import { generateUniqueUserId } from "../utils/id-generator";
@@ -29,7 +27,7 @@ const signIn = (req: Request, res: Response) => {
         )
         const userId = existingUser.account.userId;
         // const exp = Math.floor(Date.now() / 1000) + 3600 // Set expiration to 1 hour (in seconds)
-        const exp = Math.floor((Date.now() / 1000) + 10); // 10 s
+        const exp = Math.floor((Date.now() / 1000) + (6 * 3600)); // 6 hour
 
         const response = res.status(200).json({ token, refreshToken, userId, exp });
         console.log("existingUser response: ", { token, refreshToken, userId, exp });
@@ -70,7 +68,7 @@ const signIn = (req: Request, res: Response) => {
               savedUser.account.userId,
             )
             const userId = savedUser.account.userId;
-            const exp = Math.floor((Date.now() / 1000) + 10); // 10 s
+            const exp = Math.floor((Date.now() / 1000) + (6 * 3600)); 
 
             const response = res.status(201).json({ token, refreshToken, userId, exp });
             console.log("newUser response: ", { token, refreshToken, userId, exp });
@@ -106,10 +104,10 @@ const refreshToken = (req: Request, res: Response) => {
       name: decoded.name, 
       image: decoded.image, 
       memberType: decoded.memberType
-    }, accessTokenSecret, "10s");
+    }, accessTokenSecret, "6h");
 
     // Set the expiration time
-    const exp = Math.floor((Date.now() / 1000) + 10); // 10 s
+    const exp = Math.floor(Date.now() / 1000) + 6 * 3600;
 
     // Generate a new refresh token
     const newRefreshToken = signToken({ userId: decoded.userId }, refreshTokenSecret, "7d");
@@ -118,22 +116,6 @@ const refreshToken = (req: Request, res: Response) => {
     res.json({ accessToken, exp, refreshToken: newRefreshToken });
   } catch (error) {
     return res.status(401).json({ message: "Invalid or expired refresh token." });
-  }
-};
-
-const testaxios = (req: Request, res: Response) => {
-  try {
-    // Perform any necessary operations or fetch data from the server
-    // Example response data
-    const data = {
-      message: "This is a test response from the server",
-    };
-
-    // Send the response
-    res.status(200).json(data);
-  } catch (error) {
-    // Handle any errors that occur during processing
-    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -148,7 +130,7 @@ const generateToken = (
 ): string => {
   const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || "Z2VuZXJh-ZGV0YWls-Z3VhcmRo-cXVpY2ty";
   const accessTokenPayload = { userId, email, name, image, memberType };
-  const accessToken = signToken(accessTokenPayload, accessTokenSecret, "10s");
+  const accessToken = signToken(accessTokenPayload, accessTokenSecret, "6h");
 
   return accessToken;
 }
@@ -166,5 +148,4 @@ const generateRefreshToken = (
 export default {
   signIn,
   refreshToken,
-  testaxios,
 };

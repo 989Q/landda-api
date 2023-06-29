@@ -3,7 +3,7 @@ import http from "http";
 import mongoose from "mongoose";
 import { config } from "./config/config";
 import cors from "cors";
-import Logging from "./utils/Logging";
+import Logging from "./utils/showLog";
 
 import authorRoutes from "./routes/Author";
 import realEstates from "./routes/RealEstate";

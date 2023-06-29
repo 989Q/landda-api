@@ -56,6 +56,7 @@ const searchRealEstate = (req: Request, res: Response, next: NextFunction) => {
   if (propertySearch) {
     searchQuery['$or'] = [
       { 'desc.title': { $regex: propertySearch, $options: 'i' } },
+      { 'desc.description': { $regex: propertySearch, $options: 'i' } },
       { 'location.address': { $regex: propertySearch, $options: 'i' } },
       { 'location.subdistrict': { $regex: propertySearch, $options: 'i' } },
       { 'location.district': { $regex: propertySearch, $options: 'i' } },
