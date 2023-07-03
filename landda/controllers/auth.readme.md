@@ -1,13 +1,11 @@
-// controllers/Auth.ts
 
+It feels like I'm not very good at coding, refreshToken is back in refreshToken again.
+
+```ts
 import { Request, Response } from "express";
 import User from "../models/User";
 import { generateUniqueUserId } from "../utils/id-generator";
 import { signToken, verifyToken } from "../utils/signToken";
-
-// const exp = Math.floor(Date.now() / 1000) + 3600 // Set expiration to 1 hour (in seconds)
-// const exp = Math.floor(Date.now() + 10000 ); // 10 s
-const exp = Math.floor(Date.now() + 30000); 
 
 const signIn = (req: Request, res: Response) => {
   const status = "Active";
@@ -31,9 +29,12 @@ const signIn = (req: Request, res: Response) => {
         const refreshToken = generateRefreshToken(
           existingUser.account.userId,
         )
-        const userId = existingUser.account.userId;
 
-        const response = res.status(200).json({ token, refreshToken, userId, exp });
+        const userId = existingUser.account.userId;
+        // const exp = Math.floor(Date.now() / 1000) + 3600 // Set expiration to 1 hour (in seconds)
+        const exp = Math.floor((Date.now() / 1000) + (6 * 3600));
+
+        const response = res.status(200).json({ token, refreshToken, userId, exp});
         console.log("existingUser response: ", { token, refreshToken, userId, exp });
         return response;
       } else {
@@ -72,9 +73,11 @@ const signIn = (req: Request, res: Response) => {
               savedUser.account.userId,
             )
             const userId = savedUser.account.userId;
+            // const exp = Math.floor(Date.now() / 1000) + 3600 // Set expiration to 1 hour (in seconds)
+            const exp = Math.floor((Date.now() / 1000) + (6 * 3600));
 
             const response = res.status(201).json({ token, refreshToken, userId, exp });
-            console.log("newUser response: ", { token, refreshToken, userId, exp });
+            console.log("user token response: ", { token, refreshToken, userId, exp });
             return response;
           })
           .catch((error) => {
@@ -87,82 +90,56 @@ const signIn = (req: Request, res: Response) => {
     });
 };
 
-const refreshToken = (req: Request, res: Response) => {
-  const refreshToken = req.body.refreshToken;
-
-  if (!refreshToken) {
-    return res.status(400).json({ message: "Refresh token is required." });
-  }
-
-  try {
-    // Verify the refresh token
-    const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET || "c3Rvb2Rw-d2hlcmVw-Z2l2ZW5y-c2hha2Vz";
-    const decoded = verifyToken(refreshToken, refreshTokenSecret) as any;
-
-    // Generate a new access token
-    const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || "Z2VuZXJh-ZGV0YWls-Z3VhcmRo-cXVpY2ty";
-    const accessToken = signToken({ 
-      userId: decoded.userId, 
-      email: decoded.email, 
-      name: decoded.name, 
-      image: decoded.image, 
-      memberType: decoded.memberType
-    }, accessTokenSecret, "10s");
-
-    // Generate a new refresh token
-    const newRefreshToken = signToken({ userId: decoded.userId }, refreshTokenSecret, "7d");
-
-    // Send the new access token, expiration time, and refresh token in the response
-    res.json({ accessToken, exp, refreshToken: newRefreshToken });
-  } catch (error) {
-    return res.status(401).json({ message: "Invalid or expired refresh token." });
-  }
-};
-
-const testaxios = (req: Request, res: Response) => {
-  try {
-    // Perform any necessary operations or fetch data from the server
-    // Example response data
-    const data = {
-      message: "This is a test response from the server",
-    };
-
-    // Send the response
-    res.status(200).json(data);
-  } catch (error) {
-    // Handle any errors that occur during processing
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
-
-// ________________________________________ JWT 
-
 const generateToken = (
   userId: string,
   email: string,
   name: string,
   image: string,
   memberType: string
-): string => {
+): { accessToken: string } => {
   const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || "Z2VuZXJh-ZGV0YWls-Z3VhcmRo-cXVpY2ty";
   const accessTokenPayload = { userId, email, name, image, memberType };
-  const accessToken = signToken(accessTokenPayload, accessTokenSecret, "10s");
+  const accessToken = signToken(accessTokenPayload, accessTokenSecret, "6h");
 
-  return accessToken;
+  return { accessToken };
 }
 
 const generateRefreshToken = (
   userId: string,
-): string => {
+): { refreshToken: string } => {
   const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET || "c3Rvb2Rw-d2hlcmVw-Z2l2ZW5y-c2hha2Vz";
   const refreshTokenPayload = { userId };
   const refreshToken = signToken(refreshTokenPayload, refreshTokenSecret, "7d");
 
-  return refreshToken;
+  return { refreshToken };
 }
 
 export default {
   signIn,
-  refreshToken,
-  testaxios,
 };
+
+```
+
+get response
+```json
+  existingUser response:  {
+    token: {
+      accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJzNW45LTQyOXkteDM0biIsImVtYWlsIjoic2luc2FtdXRxQGdtYWlsLmNvbSIsIm5hbWUiOiJ3YXNpbiBrYWV3cGx1bmciLCJpbWFnZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FBY0hUdGVxX0c5VXBWWkJqRjRjdXgwMnJRbk4xRkkxcS0zV1haQzZoc3NqPXM5Ni1jIiwibWVtYmVyVHlwZSI6Ik1lbWJlciIsImlhdCI6MTY4ODAzMDY3MSwiZXhwIjoxNjg4MDUyMjcxfQ.oPcsiRo-W8RTIq6K32hBy9avE4lVkr-hw9XE_u6cewE'
+    },
+    refreshToken: {
+      refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJzNW45LTQyOXkteDM0biIsImlhdCI6MTY4ODAzMDY3MSwiZXhwIjoxNjg4NjM1NDcxfQ.yKUbqFJLNQ0HwHxptkia2OG7eHcx26HS03A6cUXPfws'
+    },
+    userId: 's5n9-429y-x34n',
+    exp: 1688052271
+  }
+```
+
+want this
+```json
+  existingUser response:  {
+    token: accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJzNW45LTQyOXkteDM0biIsImVtYWlsIjoic2luc2FtdXRxQGdtYWlsLmNvbSIsIm5hbWUiOiJ3YXNpbiBrYWV3cGx1bmciLCJpbWFnZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FBY0hUdGVxX0c5VXBWWkJqRjRjdXgwMnJRbk4xRkkxcS0zV1haQzZoc3NqPXM5Ni1jIiwibWVtYmVyVHlwZSI6Ik1lbWJlciIsImlhdCI6MTY4ODAzMDY3MSwiZXhwIjoxNjg4MDUyMjcxfQ.oPcsiRo-W8RTIq6K32hBy9avE4lVkr-hw9XE_u6cewE'
+    refreshToken: refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJzNW45LTQyOXkteDM0biIsImlhdCI6MTY4ODAzMDY3MSwiZXhwIjoxNjg4NjM1NDcxfQ.yKUbqFJLNQ0HwHxptkia2OG7eHcx26HS03A6cUXPfws'
+    userId: 's5n9-429y-x34n',
+    exp: 1688052271
+  }
+```
