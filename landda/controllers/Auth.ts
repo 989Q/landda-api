@@ -5,9 +5,10 @@ import User from "../models/User";
 import { generateUniqueUserId } from "../utils/id-generator";
 import { signToken, verifyToken } from "../utils/signToken";
 
-// const exp = Math.floor(Date.now() / 1000) + 3600 // Set expiration to 1 hour (in seconds)
-// const exp = Math.floor(Date.now() + 10000 ); // 10 s
-const exp = Math.floor(Date.now() + 30000); 
+const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
+const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
+// 30 sec -> 30000 | 1 min -> 60000 | 1 hour -> 3600000 | 1 day -> 86400000
+const setTime = 86400000 
 
 const signIn = (req: Request, res: Response) => {
   const status = "Active";
@@ -21,20 +22,20 @@ const signIn = (req: Request, res: Response) => {
   User.findOne({ "profile.email": email })
     .then((existingUser) => {
       if (existingUser) {
-        const token = generateToken(
+        const accessToken = generateToken(
           existingUser.account.userId,
           existingUser.profile.email,
           existingUser.profile.name,
           existingUser.profile.image,
           existingUser.membership.memberType
         );
-        const refreshToken = generateRefreshToken(
-          existingUser.account.userId,
-        )
+        const refreshToken = generateRefreshToken(existingUser.account.userId)
         const userId = existingUser.account.userId;
 
-        const response = res.status(200).json({ token, refreshToken, userId, exp });
-        console.log("existingUser response: ", { token, refreshToken, userId, exp });
+        const expires = Math.floor(Date.now() + setTime);
+
+        const response = res.status(200).json({ accessToken, refreshToken, userId, expires });
+        console.log("existingUser response: ", { accessToken, refreshToken, userId, expires });
         return response;
       } else {
         const userId = generateUniqueUserId(); 
@@ -61,7 +62,7 @@ const signIn = (req: Request, res: Response) => {
           .save()
           .then((savedUser) => {
             console.log("savedUser: ", savedUser);
-            const token = generateToken(
+            const accessToken = generateToken(
               savedUser.account.userId,
               savedUser.profile.email,
               savedUser.profile.name,
@@ -73,8 +74,10 @@ const signIn = (req: Request, res: Response) => {
             )
             const userId = savedUser.account.userId;
 
-            const response = res.status(201).json({ token, refreshToken, userId, exp });
-            console.log("newUser response: ", { token, refreshToken, userId, exp });
+            const expires = Math.floor(Date.now() + setTime);
+
+            const response = res.status(201).json({ accessToken, refreshToken, userId, expires });
+            console.log("newUser response: ", { accessToken, refreshToken, userId, expires });
             return response;
           })
           .catch((error) => {
@@ -95,47 +98,57 @@ const refreshToken = (req: Request, res: Response) => {
   }
 
   try {
-    // Verify the refresh token
-    const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET || "c3Rvb2Rw-d2hlcmVw-Z2l2ZW5y-c2hha2Vz";
+    // Verify refreshToken
     const decoded = verifyToken(refreshToken, refreshTokenSecret) as any;
 
-    // Generate a new access token
-    const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || "Z2VuZXJh-ZGV0YWls-Z3VhcmRo-cXVpY2ty";
-    const accessToken = signToken({ 
-      userId: decoded.userId, 
-      email: decoded.email, 
-      name: decoded.name, 
-      image: decoded.image, 
-      memberType: decoded.memberType
-    }, accessTokenSecret, "10s");
+    User.findOne({ "account.userId": decoded.userId })
+      .then((userData) => {
+        if (userData) {
+          // Generate new accessToken
+          const newAccessToken = signToken({ 
+            userId: userData.account.userId, 
+            email: userData.profile.email, 
+            name: userData.profile.name, 
+            image: userData.profile.image, 
+            memberType: userData.membership.memberType
+          }, accessTokenSecret, "1d");
 
-    // Generate a new refresh token
-    const newRefreshToken = signToken({ userId: decoded.userId }, refreshTokenSecret, "7d");
-
-    // Send the new access token, expiration time, and refresh token in the response
-    res.json({ accessToken, exp, refreshToken: newRefreshToken });
+          // Generate new refreshToken
+          const newRefreshToken = signToken({ userId: decoded.userId }, refreshTokenSecret, "7d");
+      
+          const newExpires = Math.floor(Date.now() + setTime); 
+      
+          // Send new response
+          const response = res.status(201).json({ accessToken: newAccessToken, refreshToken: newRefreshToken, expires: newExpires });
+          console.log("new refreshToken response: ", { accessToken: newAccessToken, refreshToken: newRefreshToken, expires: newExpires });
+      
+          return response;
+        }
+      })
+      .catch((error) => {
+        return res.status(500).json({ error });
+      });
   } catch (error) {
     return res.status(401).json({ message: "Invalid or expired refresh token." });
   }
 };
 
+// ________________________________________ Test Response
+
 const testaxios = (req: Request, res: Response) => {
   try {
     // Perform any necessary operations or fetch data from the server
-    // Example response data
     const data = {
       message: "This is a test response from the server",
     };
 
-    // Send the response
     res.status(200).json(data);
   } catch (error) {
-    // Handle any errors that occur during processing
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
-// ________________________________________ JWT 
+// ________________________________________ JWT Function
 
 const generateToken = (
   userId: string,
@@ -144,9 +157,7 @@ const generateToken = (
   image: string,
   memberType: string
 ): string => {
-  const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || "Z2VuZXJh-ZGV0YWls-Z3VhcmRo-cXVpY2ty";
-  const accessTokenPayload = { userId, email, name, image, memberType };
-  const accessToken = signToken(accessTokenPayload, accessTokenSecret, "10s");
+  const accessToken = signToken({ userId, email, name, image, memberType }, accessTokenSecret, "1d");
 
   return accessToken;
 }
@@ -154,9 +165,7 @@ const generateToken = (
 const generateRefreshToken = (
   userId: string,
 ): string => {
-  const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET || "c3Rvb2Rw-d2hlcmVw-Z2l2ZW5y-c2hha2Vz";
-  const refreshTokenPayload = { userId };
-  const refreshToken = signToken(refreshTokenPayload, refreshTokenSecret, "7d");
+  const refreshToken = signToken({ userId }, refreshTokenSecret, "7d");
 
   return refreshToken;
 }
