@@ -20,6 +20,15 @@ pnpm i chalk@^4.1.2
 
 pnpm i jsonwebtoken
 pnpm i --save-dev @types/jsonwebtoken
+
+# aws-sdk & multer
+dependencies:
++ @aws-sdk/client-s3 3.370.0
++ multer 1.4.5-lts.1
+
+devDependencies:
++ @types/multer 1.4.7
+
 ```
 
 ### Guidelines

@@ -1,8 +1,11 @@
 import express from "express";
 import controller from "../controllers/RealEstate";
 // import { Schemas, ValidateJoi } from '../middleware/Joi';
+import { upload } from "../middlewares/wasabi";
 
 const router = express.Router();
+
+router.post('/upload-multiple', upload.array("images", 3), controller.uploadImages);
 
 router.post('/create', controller.createRealEstate);
 router.get('/get/:estateId', controller.readRealEstate);

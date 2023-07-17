@@ -2,7 +2,7 @@
 
 import { Request, Response } from "express";
 import User from "../models/User";
-import { generateUniqueUserId } from "../utils/id-generator";
+import { generateUserId } from "../utils/id-generator";
 import { signToken, verifyToken } from "../utils/signToken";
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
@@ -38,7 +38,7 @@ const signIn = (req: Request, res: Response) => {
         console.log("existingUser response: ", { accessToken, refreshToken, userId, expires });
         return response;
       } else {
-        const userId = generateUniqueUserId(); 
+        const userId = generateUserId(); 
         const newUser = new User({
           account: {
             userId,

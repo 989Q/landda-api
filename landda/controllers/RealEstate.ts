@@ -2,17 +2,41 @@ import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import RealEstate from "../models/RealEstate";
 
-import { generateUniqueId } from "../utils/id-generator";
+import { generateImageId, generatePostId } from "../utils/id-generator";
 
-const createRealEstate = (req: Request, res: Response, next: NextFunction) => {
+import { uploadToWasabi } from '../middlewares/wasabi';
+
+const uploadImages = async (req: any, res: any) => {
+  console.log("request files: ", req.files)
+
+  if(req.files && req.files.length > 0){
+    for (let i = 0; i < req.files.length; i++){
+      uploadToWasabi(`${generateImageId()}.jpg`, req.files[i].buffer).then((result) => {
+        console.log("uploaded image url", result)
+      })
+    }
+  }
+
+  res.json({
+    msg: `${req.files.length} Images uploaded successfully`
+  })
+};
+
+const createRealEstate = async (req: Request, res: Response) => {
+  console.log('req.body: ', req.body)
+
   const { desc, location } = req.body;
   const { ownerId } = req.body.head
+  const images = desc.images; // Extract the images array from the request body
+
+  // upload images to wasabi
+  await uploadToWasabi(images.originalname, images.buffer);
 
   const realEstate = new RealEstate({
     _id: new mongoose.Types.ObjectId(),
     head: {
       ownerId: ownerId,
-      estateId: generateUniqueId(),
+      estateId: generatePostId(),
       postStatus: "Active",
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -86,6 +110,7 @@ const searchRealEstate = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export default {
+  uploadImages,
   createRealEstate,
   readRealEstate,
   realAllRealEstate,
