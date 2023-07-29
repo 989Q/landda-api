@@ -4,6 +4,6 @@ import controller from "../controllers/User";
 
 const router = express.Router();
 
-router.get('/:ownerId', controller.getOwnerId)
+router.get('/:userID', controller.getuserID)
 
 export default router;

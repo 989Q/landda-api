@@ -1,6 +1,6 @@
 // ________________________________________ User ID
 
-export function generateUserId() {
+export function generateuserID() {
   const letters = 'abcdefghijklmnopqrstuvwxyz';
   const numbers = '0123456789';
 
@@ -28,7 +28,7 @@ export function generateUserId() {
 
 // ________________________________________ Post ID
 
-export function generatePostId() {
+export function generatePostID() {
   const letters = 'abcdefghijklmnopqrstuvwxyz';
   const numbers = '0123456789';
 
@@ -58,7 +58,7 @@ export function generatePostId() {
 
 // ________________________________________ Image ID
 
-export function generateImageId() {
+export function generateImageID() {
   const letters = 'abcdefghijklmnopqrstuvwxyz';
   const numbers = '0123456789';
 

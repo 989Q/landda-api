@@ -3,11 +3,11 @@ import User from "../models/User";
 
 // ________________________________________ get user
 
-const getOwnerId = async (req: Request, res: Response) => {
+const getuserID = async (req: Request, res: Response) => {
 
-    const ownerId = req.params.ownerId;
-    // Fetch the user based on the ownerId
-    return User.findOne({ _id: ownerId })
+    const userID = req.params.userID;
+    // Fetch the user based on the userID
+    return User.findOne({ "account.userID": userID })
       .then((user) => {
         user
           ? res.status(200).json({ user })
@@ -17,5 +17,5 @@ const getOwnerId = async (req: Request, res: Response) => {
 };
 
 export default {
-  getOwnerId,
+  getuserID,
 };

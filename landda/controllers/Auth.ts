@@ -2,7 +2,7 @@
 
 import { Request, Response } from "express";
 import User from "../models/User";
-import { generateUserId } from "../utils/id-generator";
+import { generateuserID } from "../utils/id-generator";
 import { signToken, verifyToken } from "../utils/signToken";
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
@@ -11,6 +11,7 @@ const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
 const setTime = 86400000 
 
 const signIn = (req: Request, res: Response) => {
+  // console.log('req.body: ', req.body)
   const status = "Active";
   const memberType = "Member";
   const license_verified = "False";
@@ -23,25 +24,25 @@ const signIn = (req: Request, res: Response) => {
     .then((existingUser) => {
       if (existingUser) {
         const accessToken = generateToken(
-          existingUser.account.userId,
+          existingUser.account.userID,
           existingUser.profile.email,
           existingUser.profile.name,
           existingUser.profile.image,
           existingUser.membership.memberType
         );
-        const refreshToken = generateRefreshToken(existingUser.account.userId)
-        const userId = existingUser.account.userId;
+        const refreshToken = generateRefreshToken(existingUser.account.userID)
+        const userID = existingUser.account.userID;
 
         const expires = Math.floor(Date.now() + setTime);
 
-        const response = res.status(200).json({ accessToken, refreshToken, userId, expires });
-        console.log("existingUser response: ", { accessToken, refreshToken, userId, expires });
+        const response = res.status(200).json({ accessToken, refreshToken, userID, expires });
+        console.log("existingUser response: ", { accessToken, refreshToken, userID, expires });
         return response;
       } else {
-        const userId = generateUserId(); 
+        const userID = generateuserID(); 
         const newUser = new User({
           account: {
-            userId,
+            userID,
             provider,
             status,
             license_verified,
@@ -63,30 +64,32 @@ const signIn = (req: Request, res: Response) => {
           .then((savedUser) => {
             console.log("savedUser: ", savedUser);
             const accessToken = generateToken(
-              savedUser.account.userId,
+              savedUser.account.userID,
               savedUser.profile.email,
               savedUser.profile.name,
               savedUser.profile.image,
               savedUser.membership.memberType
             );
             const refreshToken = generateRefreshToken(
-              savedUser.account.userId,
+              savedUser.account.userID,
             )
-            const userId = savedUser.account.userId;
+            const userID = savedUser.account.userID;
 
             const expires = Math.floor(Date.now() + setTime);
 
-            const response = res.status(201).json({ accessToken, refreshToken, userId, expires });
-            console.log("newUser response: ", { accessToken, refreshToken, userId, expires });
+            const response = res.status(201).json({ accessToken, refreshToken, userID, expires });
+            console.log("newUser response: ", { accessToken, refreshToken, userID, expires });
             return response;
           })
           .catch((error) => {
-            return res.status(500).json({ error });
+            console.log(error)
+            return res.status(500);
           });
       }
     })
     .catch((error) => {
-      return res.status(500).json({ error });
+      console.log(error)
+      return res.status(500);
     });
 };
 
@@ -101,12 +104,12 @@ const refreshToken = (req: Request, res: Response) => {
     // Verify refreshToken
     const decoded = verifyToken(refreshToken, refreshTokenSecret) as any;
 
-    User.findOne({ "account.userId": decoded.userId })
+    User.findOne({ "account.userID": decoded.userID })
       .then((userData) => {
         if (userData) {
           // Generate new accessToken
           const newAccessToken = signToken({ 
-            userId: userData.account.userId, 
+            userID: userData.account.userID, 
             email: userData.profile.email, 
             name: userData.profile.name, 
             image: userData.profile.image, 
@@ -114,7 +117,7 @@ const refreshToken = (req: Request, res: Response) => {
           }, accessTokenSecret, "1d");
 
           // Generate new refreshToken
-          const newRefreshToken = signToken({ userId: decoded.userId }, refreshTokenSecret, "7d");
+          const newRefreshToken = signToken({ userID: decoded.userID }, refreshTokenSecret, "7d");
       
           const newExpires = Math.floor(Date.now() + setTime); 
       
@@ -126,9 +129,11 @@ const refreshToken = (req: Request, res: Response) => {
         }
       })
       .catch((error) => {
-        return res.status(500).json({ error });
+        console.log(error)
+        return res.status(500);
       });
   } catch (error) {
+    console.log(error)
     return res.status(401).json({ message: "Invalid or expired refresh token." });
   }
 };
@@ -151,21 +156,21 @@ const testaxios = (req: Request, res: Response) => {
 // ________________________________________ JWT Function
 
 const generateToken = (
-  userId: string,
+  userID: string,
   email: string,
   name: string,
   image: string,
   memberType: string
 ): string => {
-  const accessToken = signToken({ userId, email, name, image, memberType }, accessTokenSecret, "1d");
+  const accessToken = signToken({ userID, email, name, image, memberType }, accessTokenSecret, "1d");
 
   return accessToken;
 }
 
 const generateRefreshToken = (
-  userId: string,
+  userID: string,
 ): string => {
-  const refreshToken = signToken({ userId }, refreshTokenSecret, "7d");
+  const refreshToken = signToken({ userID }, refreshTokenSecret, "7d");
 
   return refreshToken;
 }

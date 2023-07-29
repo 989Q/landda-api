@@ -2,8 +2,8 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface IRealEstate {
   head: {
-    ownerId: string;
-    estateId: string;
+    userID: string;
+    estateID: string;
     postStatus: string;
     createdAt: Date;
     updatedAt: Date;
@@ -14,6 +14,7 @@ export interface IRealEstate {
   };
   desc: {
     images: string[];
+    currency: string;
     price: number;
     estateType: string;
     estateStatus: string;
@@ -27,11 +28,6 @@ export interface IRealEstate {
     comforts: string[];
     securityAndPrivacy: string[];
   };
-  support: {
-    support1: string; // unimportant
-    support2: string; // unimportant
-    support3: string; // unimportant
-  };
   location: {
     address: string; // unimportant
     subdistrict: string;
@@ -41,11 +37,11 @@ export interface IRealEstate {
     country: string; // unimportant
     googleMaps: string[]; // unimportant
   };
-  // ownerId: string;
+  // userID: string;
 
   // user: {
   //   account: {
-  //     userId: string;
+  //     userID: string;
   //   };
   // };
 }
@@ -54,8 +50,8 @@ export interface EstateDocument extends IRealEstate, Document {}
 
 const EstateSchema = new Schema<EstateDocument>({
   head: {
-    ownerId: { type: Schema.Types.ObjectId, required: true, ref: "User" },
-    estateId: { type: String, required: true, unique: true },
+    userID: { type: Schema.Types.ObjectId, required: true, ref: "User" },
+    estateID: { type: String, required: true, unique: true },
     postStatus: { type: String, required: true },
     createdAt: { type: Date, required: true },
     updatedAt: { type: Date, required: true },
@@ -66,6 +62,7 @@ const EstateSchema = new Schema<EstateDocument>({
   },
   desc: {
     images: { type: [String], required: true },
+    currency: { type: String, required: true },
     price: { type: Number, required: true },
     bedroom: { type: Number, required: true },
     bathroom: { type: Number, required: true },
@@ -79,15 +76,6 @@ const EstateSchema = new Schema<EstateDocument>({
     comforts: { type: [String], required: false },
     securityAndPrivacy: { type: [String], required: false },
   },
-  support: {
-    // postType: { type: String, required: false },
-    // postTypeExp: { type: Date, required: false },
-    support1: { type: String, required: false },
-    support2: { type: String, required: false },
-    support3: { type: String, required: false },
-    support4: { type: String, required: false },
-    support5: { type: String, required: false },
-  },
   location: {
     address: { type: String, required: false },
     subdistrict: { type: String, required: true },
@@ -97,7 +85,7 @@ const EstateSchema = new Schema<EstateDocument>({
     country: { type: String, required: true },
     googleMaps: { type: [String], required: false },
   },
-  // ownerId: { type: Schema.Types.ObjectId, required: true, ref: "User" },
+  // userID: { type: Schema.Types.ObjectId, required: true, ref: "User" },
 });
 
 export default mongoose.model<IRealEstate>("RealEstate", EstateSchema);

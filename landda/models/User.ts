@@ -1,11 +1,9 @@
-// models.user
-
 import mongoose, { Document, Schema } from "mongoose";
 // import { RealEstate } from "./RealEstate";
 
 interface IUser {
   account: {
-    userId: string;
+    userID: string;
     provider: string;
     status: string;
     licenseVerified: string;
@@ -15,10 +13,13 @@ interface IUser {
   profile: {
     image: string;
     name: string;
-    company: string;
-    description: string;
     email: string;
     phone: string;
+    company: string;
+    description: string;
+    contact1: string;
+    contact2: string;
+    contact3: string;
   };
   membership: {
     memberType: string;
@@ -26,13 +27,6 @@ interface IUser {
     startDate: Date;
     endDate: Date;
     billingInfo: String;
-  };
-  contact: {
-    contact1: string;
-    contact2: string;
-    contact3: string;
-    contact4: string;
-    contact5: string;
   };
   active_listings: mongoose.Types.ObjectId[];
   past_sales: mongoose.Types.ObjectId[];
@@ -42,7 +36,7 @@ export interface IUserModel extends IUser, Document {}
 
 const UserSchema: Schema = new Schema({
   account: {
-    userId: { type: String, required: true, unique: true },
+    userID: { type: String, required: true, unique: true },
     provider: { type: String, required: true }, // G
     status: { type: String, required: true }, // active, hidden
     licenseVerified: { type: String, required: false }, // false, true
@@ -56,6 +50,9 @@ const UserSchema: Schema = new Schema({
     phone: { type: String, required: false },
     company: { type: String, required: false },
     description: { type: String, required: false },
+    contact1: { type: String, required: false },
+    contact2: { type: String, required: false },
+    contact3: { type: String, required: false },
   },
   membership: {
     memberType: { type: String, required: true }, // Member, Supporter, Partner
@@ -63,13 +60,6 @@ const UserSchema: Schema = new Schema({
     startDate: { type: Date, required: false },
     endDate: { type: Date, required: false },
     billingInfo: { type: String, required: false },
-  },
-  contact: {
-    contact1: { type: String, required: false },
-    contact2: { type: String, required: false },
-    contact3: { type: String, required: false },
-    contact4: { type: String, required: false },
-    contact5: { type: String, required: false },
   },
   active_listings: [{ type: mongoose.Schema.Types.ObjectId, ref: "RealEstate" },],
   past_sales: [{ type: mongoose.Schema.Types.ObjectId, ref: "RealEstate" }],
