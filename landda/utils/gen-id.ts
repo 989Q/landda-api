@@ -84,6 +84,34 @@ export function generateImageID() {
   return `image-${set1}`;
 }
 
+// ________________________________________ Subscription ID
+
+export function generateSubscriptionID() {
+  const letters = 'abcdefghijklmnopqrstuvwxyz';
+  const numbers = '0123456789';
+
+  function getRandomCharacter(characters: any) {
+    return characters[Math.floor(Math.random() * characters.length)];
+  }
+
+  function generateRandomString(length: any, probability: any) {
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      const randomNumber = Math.random();
+      if (randomNumber <= probability) {
+        result += getRandomCharacter(numbers);
+      } else {
+        result += getRandomCharacter(letters);
+      }
+    }
+    return result;
+  }
+
+  const set1 = generateRandomString(6, 0.7);
+
+  return `subscription-${set1}`;
+}
+
 // console.log(generateUniqueId());
 
 // export function generateUniqueId() {

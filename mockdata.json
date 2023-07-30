@@ -1,0 +1,609 @@
+[
+    {
+      "_id": "647df4a7aafbff1d1bad5270",
+      "head": {
+        "estateID": "88dy63-t2cw-5h07",
+        "postStatus": "Active",
+        "createdAt": "2023-06-05T14:43:51.643Z",
+        "updatedAt": "2023-06-05T14:43:51.643Z",
+        "shareCount": [],
+        "favoriteCount": []
+      },
+      "desc": {
+        "images": [
+          "https://www.moresidencesbangkok.com/assets/build/images/residences-three-bedroom/room-carousel/1.jpg",
+          "https://www.moresidencesbangkok.com/assets/build/images/residences-three-bedroom/room-carousel/3.jpg",
+          "https://www.moresidencesbangkok.com/assets/build/images/residences-three-bedroom/room-carousel/4.jpg",
+          "https://www.moresidencesbangkok.com/assets/build/images/residences-three-bedroom/room-carousel/5.jpg",
+          "https://www.moresidencesbangkok.com/assets/build/images/residences-three-bedroom/room-carousel/2.jpg"
+        ],
+        "price": 333000000,
+        "bedroom": 3,
+        "bathroom": 3,
+        "parking": 2,
+        "size": 300,
+        "estateType": "Condo",
+        "estateStatus": "Sale",
+        "title": "The Residences At Mandarin Oriental Bangkok 3Bed3Bath 300 Sqm",
+        "description": "The Residences At Mandarin Oriental",
+        "facilities": [
+          "Internet",
+          "Air conditioning",
+          "Refrigerator",
+          "Microwave",
+          "Washer",
+          "TV"
+        ],
+        "comforts": [
+          "Elevator",
+          "Car parking",
+          "Swimming pool",
+          "Fitness center",
+          "Common area",
+          "Balcony"
+        ],
+        "securityAndPrivacy": [
+          "Private entrance",
+          "Security guards",
+          "Security cameras"
+        ]
+      },
+      "location": {
+        "address": "289 Charoen Nakorn Road Khlong",
+        "subdistrict": "Khlong San",
+        "district": "Charoen Nakorn",
+        "province": "Bangkok",
+        "postcode": "10600",
+        "country": "Thailand",
+        "googleMaps": [
+          "https://www.google.com/maps/place/The+Residences+at+Mandarin+Oriental,+Bangkok/@13.7284021,100.5087928,18z/data=!4m6!3m5!1s0x30e2997ebe9add0b:0x2f769f3b35f9aced!8m2!3d13.7277746!4d100.5109658!16s%2Fg%2F11j4pw9j0q"
+        ]
+      },
+      "__v": 0
+    },
+    {
+      "_id": "647dffc1aafbff1d1bad5285",
+      "head": {
+        "estateID": "7842i2-wy26-y375",
+        "postStatus": "Active",
+        "createdAt": "2023-06-05T15:31:13.954Z",
+        "updatedAt": "2023-06-05T15:31:13.954Z",
+        "shareCount": [],
+        "favoriteCount": []
+      },
+      "desc": {
+        "images": [
+          "https://images.trvl-media.com/lodging/17000000/16310000/16302200/16302116/251fb166.jpg?impolicy=resizecrop&rw=1200&ra=fit",
+          "https://images.trvl-media.com/lodging/17000000/16310000/16302200/16302116/f4f75891.jpg?impolicy=resizecrop&rw=1200&ra=fit",
+          "https://images.trvl-media.com/lodging/17000000/16310000/16302200/16302116/3fd43bf8.jpg?impolicy=resizecrop&rw=1200&ra=fit",
+          "https://images.trvl-media.com/lodging/17000000/16310000/16302200/16302116/14175f53.jpg?impolicy=resizecrop&rw=1200&ra=fit",
+          "https://images.trvl-media.com/lodging/17000000/16310000/16302200/16302116/26d4dda9.jpg?impolicy=resizecrop&rw=1200&ra=fit",
+          "https://images.trvl-media.com/lodging/17000000/16310000/16302200/16302116/00b5e169.jpg?impolicy=resizecrop&rw=1200&ra=fit",
+          "https://images.trvl-media.com/lodging/17000000/16310000/16302200/16302116/b186e79b.jpg?impolicy=resizecrop&rw=1200&ra=fit",
+          "https://images.trvl-media.com/lodging/17000000/16310000/16302200/16302116/06f2b7ac.jpg?impolicy=resizecrop&rw=1200&ra=fit",
+          "https://images.trvl-media.com/lodging/17000000/16310000/16302200/16302116/0106b4ee.jpg?impolicy=resizecrop&rw=1200&ra=fit",
+          "https://images.trvl-media.com/lodging/17000000/16310000/16302200/16302116/2ac2007f.jpg?impolicy=resizecrop&rw=1200&ra=fit"
+        ],
+        "price": 260000000,
+        "bedroom": 6,
+        "bathroom": 6,
+        "parking": 6,
+        "size": 450,
+        "estateType": "Resort",
+        "estateStatus": "Sale",
+        "title": "Villa Amarapura, Pa Klok beachfront villa with outdoor pool, restaurant",
+        "description": "Villa Amarapura, Pa Klok beachfront villa with outdoor pool, restaurant",
+        "facilities": [
+          "Internet",
+          "Air conditioning",
+          "Refrigerator",
+          "Microwave",
+          "Washer",
+          "TV"
+        ],
+        "comforts": [
+          "Elevator",
+          "Car parking",
+          "Swimming pool",
+          "Fitness center",
+          "Common area",
+          "Balcony"
+        ],
+        "securityAndPrivacy": [
+          "Private entrance",
+          "Security guards",
+          "Security cameras"
+        ]
+      },
+      "location": {
+        "address": "222/16 Moo 7",
+        "subdistrict": "Thalang",
+        "district": "Pa Klok",
+        "province": "Phuket",
+        "country": "Thailand",
+        "googleMaps": [
+          "https://www.google.com/maps/place/The+Residences+at+Mandarin+Oriental,+Bangkok/@13.7284021,100.5087928,18z/data=!4m6!3m5!1s0x30e2997ebe9add0b:0x2f769f3b35f9aced!8m2!3d13.7277746!4d100.5109658!16s%2Fg%2F11j4pw9j0q"
+        ]
+      },
+      "__v": 0
+    },
+    {
+      "_id": "647e01b4aafbff1d1bad5289",
+      "head": {
+        "estateID": "ywyd43-dl09-8491",
+        "postStatus": "Active",
+        "createdAt": "2023-06-05T15:39:32.528Z",
+        "updatedAt": "2023-06-05T15:39:32.528Z",
+        "shareCount": [],
+        "favoriteCount": []
+      },
+      "desc": {
+        "images": [
+          "https://www.livinginsider.com/upload/topic1452/63f1ea48d188b_13246.jpeg",
+          "https://www.livinginsider.com/upload/topic1452/63f1ea304142b_80261.jpeg",
+          "https://www.livinginsider.com/upload/topic1452/63f1ea30607bb_46753.jpeg"
+        ],
+        "price": 220000000,
+        "bedroom": 5,
+        "bathroom": 5,
+        "parking": 5,
+        "size": 400,
+        "estateType": "House",
+        "estateStatus": "Sale",
+        "title": "House for sale Narasiri Krungthep Kreetha ready to transfer",
+        "description": "House for sale Narasiri Krungthep Kreetha ready to transfer",
+        "facilities": [
+          "Internet",
+          "Air conditioning",
+          "Refrigerator",
+          "Microwave",
+          "Washer",
+          "TV"
+        ],
+        "comforts": [
+          "Elevator",
+          "Car parking",
+          "Swimming pool",
+          "Fitness center",
+          "Common area",
+          "Balcony"
+        ],
+        "securityAndPrivacy": [
+          "Private entrance",
+          "Security guards",
+          "Security cameras"
+        ]
+      },
+      "location": {
+        "address": "31 Soi Pracha Ruam Chai",
+        "subdistrict": "Hua Mak",
+        "district": "Bang Kapi District",
+        "province": "Bangkok",
+        "country": "Thailand",
+        "googleMaps": [
+          "https://goo.gl/maps/TJvhimWpE2XQJ5R16"
+        ]
+      },
+      "__v": 0
+    },
+    {
+      "_id": "647e04a8aafbff1d1bad5291",
+      "head": {
+        "estateID": "n0a51f-0i83-79w5",
+        "postStatus": "Active",
+        "createdAt": "2023-06-05T15:52:08.237Z",
+        "updatedAt": "2023-06-05T15:52:08.237Z",
+        "shareCount": [],
+        "favoriteCount": []
+      },
+      "desc": {
+        "images": [
+          "https://pix8.agoda.net/hotelImages/18761182/-1/4b2bcbda62b47277362c5e4f081d8e59.jpg?ca=16&ce=1&s=1024x768",
+          "https://pix8.agoda.net/hotelImages/18761182/-1/49f1d359405d27dcf2c39650e741894e.jpg?ca=16&ce=1&s=1024x768",
+          "https://pix8.agoda.net/hotelImages/18761182/-1/de031f79f14fdcc5b508ebeb121d266c.jpg?ca=16&ce=1&s=1024x768",
+          "https://pix8.agoda.net/hotelImages/18761182/-1/39d1239ee408eb5bdddaad33f502aa8b.jpg?ca=16&ce=1&s=1024x768",
+          "https://pix8.agoda.net/hotelImages/18761182/-1/d3614b338f46aa98da81848a22d04862.jpg?ca=16&ce=1&s=1024x768"
+        ],
+        "price": 3000,
+        "bedroom": 1,
+        "bathroom": 1,
+        "parking": 1,
+        "size": 35,
+        "estateType": "Apartment",
+        "estateStatus": "RentPerDay",
+        "title": "The Quarter Ploenchit by UHG (SHA Plus+), Deluxe Studio Suite",
+        "description": "Make your best journey to Bangkok with the promised standard of SHA Plus, and enjoy free Wi-Fi in all rooms. Strategically situated in Sukhumvit, allowing you access and proximity to local attractions and sights. Don't leave before paying a visit to the famous Wat Phra Chetuphon. Rated with 4 stars, this high-quality property provides guests with access to restaurant, indoor pool and outdoor pool on-site.",
+        "facilities": [
+          "Internet",
+          "Air conditioning",
+          "Refrigerator",
+          "Microwave",
+          "Washer",
+          "TV"
+        ],
+        "comforts": [
+          "Elevator",
+          "Car parking",
+          "Swimming pool",
+          "Fitness center",
+          "Common area",
+          "Balcony"
+        ],
+        "securityAndPrivacy": [
+          "Private entrance",
+          "Security guards",
+          "Security cameras"
+        ]
+      },
+      "location": {
+        "address": "33/2 Soi Ruam Rudi 2",
+        "subdistrict": "Lumphini",
+        "district": "Pathum Wan",
+        "province": "Bangkok",
+        "country": "Thailand",
+        "googleMaps": [
+          "https://goo.gl/maps/UVgPt6J4GWZPakAW6"
+        ]
+      },
+      "__v": 0
+    },
+    {
+      "_id": "647e0b98aafbff1d1bad529e",
+      "head": {
+        "estateID": "g557o5-q2d6-y7ny",
+        "postStatus": "Active",
+        "createdAt": "2023-06-05T16:21:44.756Z",
+        "updatedAt": "2023-06-05T16:21:44.756Z",
+        "shareCount": [],
+        "favoriteCount": []
+      },
+      "desc": {
+        "images": [
+          "https://pix8.agoda.net/hotelImages/18761182/-1/5a32331e9f168cd00b286a5aacfeb595.jpg?ca=15&ce=1&s=1024x768",
+          "https://pix8.agoda.net/hotelImages/18761182/-1/2d06667ea8dd64de6383cb9ea75fbcee.jpg?ca=15&ce=1&s=1024x768",
+          "https://pix8.agoda.net/hotelImages/18761182/-1/720c23ac1fb56bc76c1dcd96c9e13334.jpg?ca=16&ce=1&s=1024x768",
+          "https://pix8.agoda.net/hotelImages/18761182/-1/0be4a87bf0c43e1cc2007a1c9816c1e8.jpg?ca=16&ce=1&s=1024x768"
+        ],
+        "price": 30000,
+        "bedroom": 1,
+        "bathroom": 1,
+        "parking": 1,
+        "size": 45,
+        "estateType": "Apartment",
+        "estateStatus": "RentPerMonth",
+        "title": "The Quarter Ploenchit by UHG (SHA Plus+), One Bedroom Suite",
+        "description": "Make your best journey to Bangkok with the promised standard of SHA Plus, and enjoy free Wi-Fi in all rooms. Strategically situated in Sukhumvit, allowing you access and proximity to local attractions and sights. Don't leave before paying a visit to the famous Wat Phra Chetuphon. Rated with 4 stars, this high-quality property provides guests with access to restaurant, indoor pool and outdoor pool on-site.",
+        "facilities": [
+          "Internet",
+          "Air conditioning",
+          "Refrigerator",
+          "Microwave",
+          "Washer",
+          "TV"
+        ],
+        "comforts": [
+          "Elevator",
+          "Car parking",
+          "Swimming pool",
+          "Fitness center",
+          "Common area",
+          "Balcony"
+        ],
+        "securityAndPrivacy": [
+          "Private entrance",
+          "Security guards",
+          "Security cameras"
+        ]
+      },
+      "location": {
+        "address": "33/2 Soi Ruam Rudi 2",
+        "subdistrict": "Lumphini",
+        "district": "Pathum Wan",
+        "province": "Bangkok",
+        "country": "Thailand",
+        "googleMaps": [
+          "https://goo.gl/maps/UVgPt6J4GWZPakAW6"
+        ]
+      },
+      "__v": 0
+    },
+    {
+      "_id": "647e0de9aafbff1d1bad52a5",
+      "head": {
+        "estateID": "4xntt7-22ex-514f",
+        "postStatus": "Active",
+        "createdAt": "2023-06-05T16:31:37.079Z",
+        "updatedAt": "2023-06-05T16:31:37.079Z",
+        "shareCount": [],
+        "favoriteCount": []
+      },
+      "desc": {
+        "images": [
+          "https://pix8.agoda.net/hotelImages/127/1270650/1270650_17033011270052027291.jpg?ca=6&ce=1&s=1024x768",
+          "https://pix8.agoda.net/hotelImages/1270650/-1/c180084b790f5e2ef6da82f0c43f026e.jpg?ca=13&ce=1&s=1024x768",
+          "https://pix8.agoda.net/hotelImages/127/1270650/1270650_17033011240052027092.jpg?ca=6&ce=1&s=1024x768",
+          "https://pix8.agoda.net/hotelImages/1270650/-1/b9dbc30410f127b2e112c5b9bb8a026d.jpg?ca=13&ce=1&s=1024x768"
+        ],
+        "price": 35000,
+        "bedroom": 1,
+        "bathroom": 1,
+        "parking": 1,
+        "size": 45,
+        "estateType": "Hotel",
+        "estateStatus": "RentPerMonth",
+        "title": "Somerset Ekamai Bangkok (SHA Plus+), Studio Executive Twin (SR)",
+        "description": "In addition to the standard of SHA Plus, all guests get free Wi-Fi in all rooms and free parking if arriving by car. Conveniently situated in the Sukhumvit part of Bangkok, this property puts you close to attractions and interesting dining options. Don't leave before paying a visit to the famous Wat Phra Chetuphon. Rated with 4 stars, this high-quality property provides guests with access to massage, restaurant and fitness center on-site.",
+        "facilities": [
+          "Internet",
+          "Air conditioning",
+          "Refrigerator",
+          "Microwave",
+          "Washer",
+          "TV"
+        ],
+        "comforts": [
+          "Elevator",
+          "Car parking",
+          "Swimming pool",
+          "Fitness center",
+          "Common area",
+          "Balcony"
+        ],
+        "securityAndPrivacy": [
+          "Private entrance",
+          "Security guards",
+          "Security cameras"
+        ]
+      },
+      "location": {
+        "address": "22/1 Ekkamai 2 Alley",
+        "subdistrict": "Phra Khanong",
+        "district": "Watthana",
+        "province": "Bangkok",
+        "country": "Thailand",
+        "googleMaps": [
+          "https://goo.gl/maps/1bZiCDiE3DFL7QyN8"
+        ]
+      },
+      "__v": 0
+    },
+    {
+      "_id": "647f1421683b8efaadd7dccd",
+      "head": {
+        "estateID": "hd0529-0314-5jt5",
+        "postStatus": "Active",
+        "createdAt": "2023-06-06T11:10:25.113Z",
+        "updatedAt": "2023-06-06T11:10:25.113Z",
+        "shareCount": [],
+        "favoriteCount": []
+      },
+      "desc": {
+        "images": [
+          "https://www.tooktee.com/images/project/13693/136931660103113463.jpg",
+          "https://www.tooktee.com/images/project/13693/136931660103144213.jpg",
+          "https://www.tooktee.com/images/project/13693/136931660103163338.jpg",
+          "https://www.tooktee.com/images/project/13693/136931660103163619.jpg"
+        ],
+        "price": 30500000,
+        "bedroom": 4,
+        "bathroom": 5,
+        "parking": 4,
+        "size": 200,
+        "estateType": "House",
+        "estateStatus": "Sale",
+        "title": "MONSANE (มนต์เสน่ห์) Exclusive Villa by Siamese Asset",
+        "description": "MONSANE’ Exclusive Villa ราชพฤกษ์-ปิ่นเกล้า เป็นโครงการวิลล่าหรู สไตล์ Modern Classic พื้นที่โครงการขนาด 33-1-53 ไร่ เอกสิทธิ์เพียง 59 ครอบครัว มีให้เลือกทั้งหมด 4 แบบ ที่ดิน เริ่มต้น 100-230 ตร.ว. พื้นที่ใช้สอย เริ่มต้น 434-628 ตร.ม. ฟังก์ชันบ้านตอบโจทย์ครอบครัวขนาดใหญ่ 4-5 ห้องนอน, 4-5 ที่จอดรถ มาพร้อม Innovation Siamese Technology เทคโนโลยีเพื่อการอยู่อาศัยที่มีคุณภาพ",
+        "facilities": [
+          "Internet",
+          "Air conditioning",
+          "Refrigerator",
+          "Microwave",
+          "Washer",
+          "TV"
+        ],
+        "comforts": [
+          "Elevator",
+          "Car parking",
+          "Swimming pool",
+          "Fitness center",
+          "Common area",
+          "Balcony"
+        ],
+        "securityAndPrivacy": [
+          "Private entrance",
+          "Security guards",
+          "Security cameras"
+        ]
+      },
+      "location": {
+        "address": "35 Thanon PhutthaMonthon Sai 2",
+        "subdistrict": "Thawi Watthana",
+        "district": "Thawi Watthana",
+        "province": "Bangkok",
+        "country": "Thailand",
+        "googleMaps": [
+          "https://goo.gl/maps/jjKZGNjCBmfW3oS36"
+        ]
+      },
+      "__v": 0
+    },
+    {
+      "_id": "647f1583683b8efaadd7dcd2",
+      "head": {
+        "estateID": "mtia95-emzi-82z2",
+        "postStatus": "Active",
+        "createdAt": "2023-06-06T11:16:19.146Z",
+        "updatedAt": "2023-06-06T11:16:19.146Z",
+        "shareCount": [],
+        "favoriteCount": []
+      },
+      "desc": {
+        "images": [
+          "https://www.tooktee.com/images/project/8032/80321607582112489.jpg",
+          "https://www.tooktee.com/images/project/8032/80321607582112693.jpg",
+          "https://www.tooktee.com/images/project/8032/80321607582113005.jpg",
+          "https://www.tooktee.com/images/project/8032/80321607582113568.jpg"
+        ],
+        "price": 36000000,
+        "bedroom": 4,
+        "bathroom": 6,
+        "parking": 5,
+        "size": 200,
+        "estateType": "House",
+        "estateStatus": "Sale",
+        "title": "Altitude Mastery Sukhumvit",
+        "description": "Altitude Mastery Sukhumvit",
+        "facilities": [
+          "Internet",
+          "Air conditioning",
+          "Refrigerator",
+          "Microwave",
+          "Washer",
+          "TV"
+        ],
+        "comforts": [
+          "Elevator",
+          "Car parking",
+          "Swimming pool",
+          "Fitness center",
+          "Common area",
+          "Balcony"
+        ],
+        "securityAndPrivacy": [
+          "Private entrance",
+          "Security guards",
+          "Security cameras"
+        ]
+      },
+      "location": {
+        "address": "Udom Suk 34 Alley",
+        "subdistrict": "Bang Naa",
+        "district": "Bang Naa",
+        "province": "Bangkok",
+        "country": "Thailand",
+        "googleMaps": [
+          "https://goo.gl/maps/JHwZq1dqEXNkQgf77"
+        ]
+      },
+      "__v": 0
+    },
+    {
+      "_id": "647f16a1683b8efaadd7dcd6",
+      "head": {
+        "estateID": "c72568-6f16-1t58",
+        "postStatus": "Active",
+        "createdAt": "2023-06-06T11:21:05.364Z",
+        "updatedAt": "2023-06-06T11:21:05.364Z",
+        "shareCount": [],
+        "favoriteCount": []
+      },
+      "desc": {
+        "images": [
+          "https://www.ananda.co.th/stocks/project/o0x0/lo/t3/gfjwlot3nq/_DSC6602.jpg",
+          "https://www.ananda.co.th/stocks/project/o0x0/lx/73/gfjwlx73ry/_DSC6608.jpg",
+          "https://www.ananda.co.th/stocks/project/o0x0/m9/dg/gfjwm9dgrr/_DSC6626.jpg"
+        ],
+        "price": 7000000,
+        "bedroom": 2,
+        "bathroom": 2,
+        "parking": 2,
+        "size": 65,
+        "estateType": "Condo",
+        "estateStatus": "Sale",
+        "title": "ไอดีโอ พระราม 9 - อโศก | IDEO RAMA 9 – ASOKE",
+        "description": "ไอดีโอ พระราม 9 - อโศก | IDEO RAMA 9 – ASOKE",
+        "facilities": [
+          "Internet",
+          "Air conditioning",
+          "Refrigerator",
+          "Microwave",
+          "Washer",
+          "TV"
+        ],
+        "comforts": [
+          "Elevator",
+          "Car parking",
+          "Swimming pool",
+          "Fitness center",
+          "Common area",
+          "Balcony"
+        ],
+        "securityAndPrivacy": [
+          "Private entrance",
+          "Security guards",
+          "Security cameras"
+        ]
+      },
+      "location": {
+        "address": "Rama IX Rd",
+        "subdistrict": "Huai Khwang",
+        "district": "Huai Khwang",
+        "province": "Bangkok",
+        "country": "Thailand",
+        "googleMaps": [
+          "https://goo.gl/maps/LH3DQhjYnRiQ36Wr7"
+        ]
+      },
+      "__v": 0
+    },
+    {
+      "_id": "647f1961683b8efaadd7dcf1",
+      "head": {
+        "estateID": "077yg3-5688-6663",
+        "postStatus": "Active",
+        "createdAt": "2023-06-06T11:32:49.228Z",
+        "updatedAt": "2023-06-06T11:32:49.228Z",
+        "shareCount": [],
+        "favoriteCount": []
+      },
+      "desc": {
+        "images": [
+          "https://cdn.baania.com/b20/listings/60b9ae1e34223edf410c3fbe/main/original/main.jpg",
+          "https://cdn.baania.com/b20/listings/60b9ae1e34223edf410c3fbe/main/original/overall1.jpg",
+          "https://cdn.baania.com/b20/listings/60b9ae1e34223edf410c3fbe/main/original/overall2.jpg",
+          "https://cdn.baania.com/b20/listings/60b9ae1e34223edf410c3fbe/main/original/overall3.jpg"
+        ],
+        "price": 7900000,
+        "bedroom": 6,
+        "bathroom": 6,
+        "parking": 6,
+        "size": 300,
+        "estateType": "Resort",
+        "estateStatus": "Sale",
+        "title": "ขายโรงแรม รีสอร์ท 15 ห้องนอน ปลายแหลม เกาะสมุย ใกล้หาดเชิงมนต์ ขนาด 1 ไร่ 3 งาน 919 ตารางวา 10 ห้อง ดีลักซ์ 1 หลัง",
+        "description": "ขายโรงแรม รีสอร์ท 15 ห้องนอน ปลายแหลม เกาะสมุย ใกล้หาดเชิงมนต์ ขนาด 1 ไร่ 3 งาน 919 ตารางวา 10 ห้อง ดีลักซ์ 1 หลัง",
+        "facilities": [
+          "Internet",
+          "Air conditioning",
+          "Refrigerator",
+          "Microwave",
+          "Washer",
+          "TV"
+        ],
+        "comforts": [
+          "Elevator",
+          "Car parking",
+          "Swimming pool",
+          "Fitness center",
+          "Common area",
+          "Balcony"
+        ],
+        "securityAndPrivacy": [
+          "Private entrance",
+          "Security guards",
+          "Security cameras"
+        ]
+      },
+      "location": {
+        "address": "",
+        "subdistrict": "บ่อผุด",
+        "district": "เกาะสมุย",
+        "province": "สุราษฎร์ธานี",
+        "country": "ประเทศไทย",
+        "googleMaps": [
+          ""
+        ]
+      },
+      "__v": 0
+    }
+  ]

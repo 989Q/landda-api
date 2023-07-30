@@ -22,6 +22,7 @@ interface IUser {
     contact3: string;
   };
   membership: {
+    stripeCustomerID: string;
     memberType: string;
     status: String;
     startDate: Date;
@@ -55,6 +56,7 @@ const UserSchema: Schema = new Schema({
     contact3: { type: String, required: false },
   },
   membership: {
+    stripeCustomerID: { type: String, required: true },
     memberType: { type: String, required: true }, // Member, Supporter, Partner
     status: { type: String, required: false },
     startDate: { type: Date, required: false },

@@ -29,6 +29,9 @@ dependencies:
 devDependencies:
 + @types/multer 1.4.7
 
+# pnpm i @aws-sdk/s3-request-presigner
+
+pnpm i stripe
 ```
 
 ### Guidelines

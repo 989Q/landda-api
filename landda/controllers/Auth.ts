@@ -2,23 +2,32 @@
 
 import { Request, Response } from "express";
 import User from "../models/User";
-import { generateuserID } from "../utils/id-generator";
-import { signToken, verifyToken } from "../utils/signToken";
+import { generateuserID } from "../utils/gen-id";
+import { signToken, verifyToken } from "../utils/gen-token";
+import { stripe } from "../middlewares/stripe";
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
 // 30 sec -> 30000 | 1 min -> 60000 | 1 hour -> 3600000 | 1 day -> 86400000
 const setTime = 86400000 
 
-const signIn = (req: Request, res: Response) => {
+const signIn = async (req: Request, res: Response) => {
   // console.log('req.body: ', req.body)
+  const { email, name, image, provider } = req.body;
   const status = "Active";
   const memberType = "Member";
   const license_verified = "False";
-  const { email, name, image, provider } = req.body;
   const createdAt = new Date();
   const updatedAt = new Date();
 
+  const stripeCustomer = await stripe.customers.create({
+    email 
+  }, {
+    apiKey: process.env.STRIPE_SECRET_KEY
+  })
+
+  const stripeCustomerID = stripeCustomer.id
+  
   // User.findOne({ email })
   User.findOne({ "profile.email": email })
     .then((existingUser) => {
@@ -55,6 +64,7 @@ const signIn = (req: Request, res: Response) => {
             image,
           },
           membership: {
+            stripeCustomerID,
             memberType,
           },
         });

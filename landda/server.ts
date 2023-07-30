@@ -3,12 +3,13 @@ import http from "http";
 import mongoose from "mongoose";
 import { config } from "./config/config";
 import cors from "cors";
-import Logging from "./utils/showLog";
+import Logging from "./utils/bashlog";
 
-import authorRoutes from "./routes/Author";
 import realEstates from "./routes/RealEstate";
-import auth from "./routes/Auth"
-import user from "./routes/user"
+import subsRoutes from "./routes/Subs";
+import subscriptionRoutes from "./routes/Subscription"
+import auth from "./routes/Auth";
+import user from "./routes/User";
 
 const router = express();
 
@@ -48,6 +49,9 @@ const StartServer = () => {
   // Routes
   router.use('/auth', auth);
   router.use('/user', user);
+
+  router.use('/subs', subsRoutes);
+  router.use('/subscription', subscriptionRoutes);
   // router.use('/authors', authorRoutes);
   router.use('/realEstate', realEstates);
 

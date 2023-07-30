@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import RealEstate from "../models/RealEstate";
-import { generateImageID, generatePostID } from "../utils/id-generator";
+import { generateImageID, generatePostID } from "../utils/gen-id";
 
 import { uploadToWasabi } from "../middlewares/wasabi";
 
