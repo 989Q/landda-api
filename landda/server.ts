@@ -5,11 +5,10 @@ import { config } from "./config/config";
 import cors from "cors";
 import Logging from "./utils/bashlog";
 
-import realEstates from "./routes/RealEstate";
-import subsRoutes from "./routes/Subs";
-import subscriptionRoutes from "./routes/Subscription"
 import auth from "./routes/Auth";
 import user from "./routes/User";
+import RealEstate from "./routes/RealEstate";
+import stripe from "./routes/Stripe";
 
 const router = express();
 
@@ -49,11 +48,8 @@ const StartServer = () => {
   // Routes
   router.use('/auth', auth);
   router.use('/user', user);
-
-  router.use('/subs', subsRoutes);
-  router.use('/subscription', subscriptionRoutes);
-  // router.use('/authors', authorRoutes);
-  router.use('/realEstate', realEstates);
+  router.use('/stripe', stripe);
+  router.use('/RealEstate', RealEstate);
 
   // Healthcheck
   router.get("/ping", (req, res, next) =>

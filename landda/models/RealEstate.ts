@@ -37,20 +37,13 @@ export interface IRealEstate {
     country: string; // unimportant
     googleMaps: string[]; // unimportant
   };
-  // userID: string;
-
-  // user: {
-  //   account: {
-  //     userID: string;
-  //   };
-  // };
 }
 
 export interface EstateDocument extends IRealEstate, Document {}
 
 const EstateSchema = new Schema<EstateDocument>({
   head: {
-    userID: { type: Schema.Types.ObjectId, required: true, ref: "User" },
+    userID: { type: String, required: true, unique: true },
     estateID: { type: String, required: true, unique: true },
     postStatus: { type: String, required: true },
     createdAt: { type: Date, required: true },
@@ -85,7 +78,6 @@ const EstateSchema = new Schema<EstateDocument>({
     country: { type: String, required: true },
     googleMaps: { type: [String], required: false },
   },
-  // userID: { type: Schema.Types.ObjectId, required: true, ref: "User" },
 });
 
 export default mongoose.model<IRealEstate>("RealEstate", EstateSchema);

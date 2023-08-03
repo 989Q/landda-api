@@ -148,21 +148,6 @@ const refreshToken = (req: Request, res: Response) => {
   }
 };
 
-// ________________________________________ Test Response
-
-const testaxios = (req: Request, res: Response) => {
-  try {
-    // Perform any necessary operations or fetch data from the server
-    const data = {
-      message: "This is a test response from the server",
-    };
-
-    res.status(200).json(data);
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
-
 // ________________________________________ JWT Function
 
 const generateToken = (
@@ -188,5 +173,4 @@ const generateRefreshToken = (
 export default {
   signIn,
   refreshToken,
-  testaxios,
 };

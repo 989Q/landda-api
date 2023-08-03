@@ -1,7 +1,8 @@
 import express from "express";
-import { stripe } from "../middlewares/stripe";
 import User from "../models/User";
 import Subscription from "../models/Subscription";
+
+import { stripe } from "../middlewares/stripe";
 import { checkAuth } from "../middlewares/checkcheck";
 import { generateSubscriptionID } from "../utils/gen-id";
 
@@ -49,8 +50,36 @@ router.post("/session", checkAuth, async (req: any, res: any) => {
     }
   );
   console.log("user?.membership.stripeCustomerID: ", user?.membership.stripeCustomerID)
+  console.log('subscription success')
 
   return res.json(session);
+});
+
+// ____________________________________________________________ Subscription
+
+router.get("/subscription", checkAuth, async (req: any, res: any) => {
+  const user = await User.findOne({ "profile.email": req.user });
+  
+  console.log('user: ', user)
+
+  const subscriptions = await stripe.subscriptions.list(
+    {
+      customer: user?.membership.stripeCustomerID,
+      status: "all",
+      expand: ["data.default_payment_method"],
+    },
+    {
+      apiKey: process.env.STRIPE_SECRET_KEY,
+    }
+  );
+
+  // res.json(subscriptions);
+  if (!subscriptions.data.length) return res.json([]);
+
+  //@ts-ignore
+  const plan = subscriptions.data[0].plan.nickname;
+
+  res.json(plan)  
 });
 
 export default router;
