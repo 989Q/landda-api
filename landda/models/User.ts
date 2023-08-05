@@ -37,7 +37,8 @@ export interface IUserModel extends IUser, Document {}
 
 const UserSchema: Schema = new Schema({
   account: {
-    userID: { type: String, required: true, unique: true },
+    // userID: { type: String, required: true, unique: false },
+    userID: { type: String, required: true },
     provider: { type: String, required: true }, // G
     status: { type: String, required: true }, // active, hidden
     licenseVerified: { type: String, required: false }, // false, true

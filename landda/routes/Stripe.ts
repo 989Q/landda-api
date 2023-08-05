@@ -1,10 +1,10 @@
 import express from "express";
-import User from "../models/User";
-import Subscription from "../models/Subscription";
+import User from "../models/user";
+import Subscription from "../models/subscription";
 
 import { stripe } from "../middlewares/stripe";
-import { checkAuth } from "../middlewares/checkcheck";
-import { generateSubscriptionID } from "../utils/gen-id";
+import { checkAuth } from "../middlewares/validate";
+import { generateSubscriptionID } from "../utils/generateID";
 
 const router = express.Router();
 

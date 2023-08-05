@@ -1,9 +1,9 @@
 // controllers/Auth.ts
 
 import { Request, Response } from "express";
-import User from "../models/User";
-import { generateuserID } from "../utils/gen-id";
-import { signToken, verifyToken } from "../utils/gen-token";
+import User from "../models/user";
+import { generateUserID, generateUserID2 } from "../utils/generateID";
+import { signToken, verifyToken } from "../utils/generateToken";
 import { stripe } from "../middlewares/stripe";
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
@@ -27,6 +27,28 @@ const signIn = async (req: Request, res: Response) => {
   })
 
   const stripeCustomerID = stripeCustomer.id
+
+  let checkUserID: any;
+  let isUniqueUserID: boolean = false;
+  
+  // checking userID 
+  while (!isUniqueUserID) {
+    checkUserID = generateUserID();
+  
+    const existingUserID = await User.findOne({ 'account.userID': checkUserID });
+    
+    if (!existingUserID) {
+      isUniqueUserID = true;
+    } else {
+      checkUserID = generateUserID2(); // If duplicate, try using generateUserID2
+
+      const existingUserID2 = await User.findOne({ 'account.userID': checkUserID });
+
+      if(!existingUserID2) {
+        isUniqueUserID = true
+      }
+    }
+  }
   
   // User.findOne({ email })
   User.findOne({ "profile.email": email })
@@ -48,7 +70,7 @@ const signIn = async (req: Request, res: Response) => {
         console.log("existingUser response: ", { accessToken, refreshToken, userID, expires });
         return response;
       } else {
-        const userID = generateuserID(); 
+        const userID = checkUserID; 
         const newUser = new User({
           account: {
             userID,

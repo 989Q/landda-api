@@ -1,14 +1,14 @@
 import express from "express";
 import http from "http";
 import mongoose from "mongoose";
-import { config } from "./config/config";
 import cors from "cors";
+import { config } from "./config/config";
 import Logging from "./utils/bashlog";
 
 import auth from "./routes/Auth";
 import user from "./routes/User";
-import RealEstate from "./routes/RealEstate";
 import stripe from "./routes/Stripe";
+import estate from "./routes/estate";
 
 const router = express();
 
@@ -46,13 +46,13 @@ const StartServer = () => {
   router.use(express.json());
 
   // Routes
-  router.use('/auth', auth);
-  router.use('/user', user);
-  router.use('/stripe', stripe);
-  router.use('/RealEstate', RealEstate);
+  router.use('/auth/user', auth);
+  router.use('/api/user', user);
+  router.use('/api/stripe', stripe);
+  router.use('/api/estate', estate);
 
   // Healthcheck
-  router.get("/ping", (req, res, next) =>
+  router.get("/test/ping", (req, res, next) =>
     res.status(200).json({ hello: "world" })
   );
 

@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-export interface IRealEstate {
+export interface IEstate {
   head: {
     userID: string;
     estateID: string;
@@ -35,16 +35,18 @@ export interface IRealEstate {
     province: string;
     postcode: string; // unimportant
     country: string; // unimportant
-    googleMaps: string[]; // unimportant
+    googleMaps: string; // unimportant
   };
 }
 
-export interface EstateDocument extends IRealEstate, Document {}
+export interface EstateDocument extends IEstate, Document {}
 
 const EstateSchema = new Schema<EstateDocument>({
   head: {
-    userID: { type: String, required: true, unique: true },
-    estateID: { type: String, required: true, unique: true },
+    // userID: { type: Schema.Types.ObjectId, required: true, ref: "User" },
+    // userID: { type: String, required: true, ref: "User" },
+    userID: { type: String, required: true },
+    estateID: { type: String, required: true },
     postStatus: { type: String, required: true },
     createdAt: { type: Date, required: true },
     updatedAt: { type: Date, required: true },
@@ -76,8 +78,8 @@ const EstateSchema = new Schema<EstateDocument>({
     province: { type: String, required: true },
     postcode: { type: String, required: false },
     country: { type: String, required: true },
-    googleMaps: { type: [String], required: false },
+    googleMap: { type: String, required: false },
   },
 });
 
-export default mongoose.model<IRealEstate>("RealEstate", EstateSchema);
+export default mongoose.model<IEstate>("Estate", EstateSchema);
