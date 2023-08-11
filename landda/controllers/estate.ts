@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
-import Estate from "../models/Estate";
+import Estate from "../models/estate";
 
 import { generateImageID, generatePostID, generatePostID2 } from "../utils/generateID";
 import { uploadToWasabi } from "../middlewares/wasabi";
@@ -107,7 +107,7 @@ const createEstate = async (req: Request, res: Response) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
-const readEstate = (req: Request, res: Response, next: NextFunction) => {
+const getEstateByID = (req: Request, res: Response, next: NextFunction) => {
   const estateID = req.params.estateID;
 
   return Estate.findOne({ "head.estateID": estateID })
@@ -119,7 +119,7 @@ const readEstate = (req: Request, res: Response, next: NextFunction) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
-const realAllEstate = (req: Request, res: Response, next: NextFunction) => {
+const getAllEstate = (req: Request, res: Response, next: NextFunction) => {
   return Estate.find()
     .then((estates) => res.status(200).json({ estates }))
     .catch((error) => res.status(500).json({ error }));
@@ -167,7 +167,7 @@ const searchEstate = (req: Request, res: Response, next: NextFunction) => {
 export default {
   uploadImages,
   createEstate,
-  readEstate,
-  realAllEstate,
+  getEstateByID,
+  getAllEstate,
   searchEstate,
 };

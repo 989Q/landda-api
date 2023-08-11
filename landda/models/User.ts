@@ -20,6 +20,7 @@ interface IUser {
     contact1: string;
     contact2: string;
     contact3: string;
+    contact4: string;
   };
   membership: {
     stripeCustomerID: string;
@@ -40,8 +41,8 @@ const UserSchema: Schema = new Schema({
     // userID: { type: String, required: true, unique: false },
     userID: { type: String, required: true },
     provider: { type: String, required: true }, // G
-    status: { type: String, required: true }, // active, hidden
-    licenseVerified: { type: String, required: false }, // false, true
+    status: { type: String, required: true }, // Active, Hidden
+    licenseVerified: { type: String, required: false }, // False, True
     createdAt: { type: Date, required: true },
     updatedAt: { type: Date, required: true },
   },
@@ -55,6 +56,7 @@ const UserSchema: Schema = new Schema({
     contact1: { type: String, required: false },
     contact2: { type: String, required: false },
     contact3: { type: String, required: false },
+    contact4: { type: String, required: false },
   },
   membership: {
     stripeCustomerID: { type: String, required: true },

@@ -8,8 +8,8 @@ const router = express.Router();
 router.post('/upload-multiple', upload.array("images", 3), controller.uploadImages);
 
 router.post('/create', controller.createEstate);
-router.get('/get/:estateID', controller.readEstate);
-router.get('/get', controller.realAllEstate);
+router.get('/get', controller.getAllEstate);
+router.get('/get/:estateID', controller.getEstateByID);
 router.get('/search', controller.searchEstate);
 // router.patch('/update/:realestateID', controller.updateRealEstate);
 // router.delete('/delete/:realestateID', controller.deleteRealEstate);

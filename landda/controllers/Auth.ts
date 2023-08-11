@@ -16,7 +16,7 @@ const signIn = async (req: Request, res: Response) => {
   const { email, name, image, provider } = req.body;
   const status = "Active";
   const memberType = "Member";
-  const license_verified = "False";
+  const licenseVerified = "False";
   const createdAt = new Date();
   const updatedAt = new Date();
 
@@ -76,7 +76,7 @@ const signIn = async (req: Request, res: Response) => {
             userID,
             provider,
             status,
-            license_verified,
+            licenseVerified,
             createdAt,
             updatedAt,
           },

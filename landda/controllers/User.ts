@@ -3,10 +3,16 @@ import User from "../models/user";
 
 // ________________________________________ get user
 
-const getuserID = async (req: Request, res: Response) => {
 
+const getAllUser = async (req: Request, res: Response) => {
+ return User.find()
+  .then((users) => res.status(200).json({ users }))
+  .catch((error) => res.status(500).json({ error }));
+}
+
+const getUserByID = async (req: Request, res: Response) => {
     const userID = req.params.userID;
-    // Fetch the user based on the userID
+
     return User.findOne({ "account.userID": userID })
       .then((user) => {
         user
@@ -16,6 +22,17 @@ const getuserID = async (req: Request, res: Response) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
+const recommend = async (req: Request, res: Response) => {
+  try {
+    const users = await User.find().limit(6); // Apply the limit here
+    res.status(200).json({ users });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
 export default {
-  getuserID,
+  recommend,
+  getAllUser,
+  getUserByID,
 };
