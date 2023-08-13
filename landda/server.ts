@@ -9,6 +9,7 @@ import auth from "./routes/Auth";
 import user from "./routes/User";
 import stripe from "./routes/Stripe";
 import estate from "./routes/estate";
+import banner from "./routes/banner";
 
 const router = express();
 
@@ -50,6 +51,7 @@ const StartServer = () => {
   router.use('/api/user', user);
   router.use('/api/stripe', stripe);
   router.use('/api/estate', estate);
+  router.use('/api/banner', banner);
 
   // Healthcheck
   router.get("/test/ping", (req, res, next) =>

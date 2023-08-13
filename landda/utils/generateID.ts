@@ -66,6 +66,14 @@ export function generateSubscriptionID() {
   return `subs-${set1}`;
 }
 
+// ________________________________________ Banner ID
+
+export function generateBannerID() {
+  const set1 = generateRandomString(8, 0.8);
+
+  return `banner-${set1}`;
+}
+
 // export function generateUniqueId() {
 //   let result = "";
 //   const characters = "abcdefghijklmnopqrstuvwxyz01234567890123456789012345678901234567890123456789";
