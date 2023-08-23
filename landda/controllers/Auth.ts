@@ -14,9 +14,9 @@ const setTime = 86400000
 const signIn = async (req: Request, res: Response) => {
   // console.log('req.body: ', req.body)
   const { email, name, image, provider } = req.body;
-  const status = "Active";
-  const memberType = "Member";
-  const licenseVerified = "False";
+  const status = "active";
+  const memberType = "member";
+  const licenseVerified = "false";
   const createdAt = new Date();
   const updatedAt = new Date();
 

@@ -4,6 +4,7 @@ import mongoose, { Document, Schema } from "mongoose";
 interface IUser {
   account: {
     userID: string;
+    userRole: string;
     provider: string;
     status: string;
     licenseVerified: string;
@@ -40,9 +41,10 @@ const UserSchema: Schema = new Schema({
   account: {
     // userID: { type: String, required: true, unique: false },
     userID: { type: String, required: true },
-    provider: { type: String, required: true }, // G
-    status: { type: String, required: true }, // Active, Hidden
-    licenseVerified: { type: String, required: false }, // False, True
+    userRole: { type: String, required: true }, // user, agent, admin
+    provider: { type: String, required: true }, // google
+    status: { type: String, required: true }, // active, hidden
+    licenseVerified: { type: String, required: false }, // false, true
     createdAt: { type: Date, required: true },
     updatedAt: { type: Date, required: true },
   },
@@ -60,14 +62,14 @@ const UserSchema: Schema = new Schema({
   },
   membership: {
     stripeCustomerID: { type: String, required: true },
-    memberType: { type: String, required: true }, // Member, Supporter, Partner
+    memberType: { type: String, required: true }, // member, supporter, partner
     status: { type: String, required: false },
     startDate: { type: Date, required: false },
     endDate: { type: Date, required: false },
     billingInfo: { type: String, required: false },
   },
-  active_listings: [{ type: mongoose.Schema.Types.ObjectId, ref: "RealEstate" },],
-  past_sales: [{ type: mongoose.Schema.Types.ObjectId, ref: "RealEstate" }],
+  activeListings: [{ type: mongoose.Schema.Types.ObjectId, ref: "RealEstate" },],
+  pastSales: [{ type: mongoose.Schema.Types.ObjectId, ref: "RealEstate" }],
 });
 
 export default mongoose.model<IUserModel>("User", UserSchema);

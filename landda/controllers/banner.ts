@@ -29,7 +29,7 @@ const createBanner = async (req: Request, res: Response) => {
       userID: userID,
       bannerID: checkBannerID,
       supporterName: supporterName,
-      postStatus: "Active",
+      postStatus: "active",
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -41,6 +41,8 @@ const createBanner = async (req: Request, res: Response) => {
     .then((banner) => res.status(201).json({ banner }))
     .catch((error) => res.status(500).json({ error }));
 };
+
+// ________________________________________ Get banner
 
 const getBannerByID = (req: Request, res: Response, next: NextFunction) => {
   const bannerID = req.params.bannerID;
@@ -60,29 +62,28 @@ const getAllBanner = (req: Request, res: Response, next: NextFunction) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
-// ________________________________________ searching
+const limitBanner = async (req: Request, res: Response) => {
+  try {
+    const banners = await Banner.find().limit(4); // Apply the limit here
+    res.status(200).json({ banners });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+// ________________________________________ Search banner
 
 const searchBanner = (req: Request, res: Response, next: NextFunction) => {
-  const { propertySearch, propertyType, propertyStatus } = req.query;
+  const {searchBanner} = req.query;
 
   const searchQuery: any = {};
 
-  if (propertySearch) {
+  if (searchBanner) {
     searchQuery["$or"] = [
-      { "desc.title": { $regex: propertySearch, $options: "i" } },
-      { "desc.description": { $regex: propertySearch, $options: "i" } },
-      { "location.address": { $regex: propertySearch, $options: "i" } },
+      { "head.supporterName": { $regex: searchBanner, $options: "i" } },
+      { "desc.title": { $regex: searchBanner, $options: "i" } },
+      { "desc.description": { $regex: searchBanner, $options: "i" } },
     ];
-  }
-
-  if (propertyType) {
-    // searchQuery.estateType = propertyType;
-    searchQuery["desc.estateType"] = propertyType;
-  }
-
-  if (propertyStatus) {
-    // searchQuery.estateyStatus = propertyStatus;
-    searchQuery["desc.estateyStatus"] = propertyStatus;
   }
 
   Banner.find(searchQuery)
@@ -98,5 +99,6 @@ export default {
   createBanner,
   getBannerByID,
   getAllBanner,
+  limitBanner,
   searchBanner,
 };

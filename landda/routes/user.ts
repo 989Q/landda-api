@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/get', controller.getAllUser);
 router.get('/get/:userID', controller.getUserByID)
-
-router.get('/recommend', controller.recommend);
+router.get('/limit-agents', controller.limitAgent);
+router.get('/search-agents', controller.searchAgent);
 
 export default router;

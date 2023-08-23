@@ -7,6 +7,7 @@ const router = express.Router();
 router.post('/create', controller.createBanner);
 router.get('/get', controller.getAllBanner);
 router.get('/get/:bannerID', controller.getBannerByID);
-// router.get('/search', controller.searchEstate);
+router.get('/limit-banners', controller.limitBanner);
+router.get('/search', controller.searchBanner);
 
 export default router;

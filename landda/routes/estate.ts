@@ -10,8 +10,9 @@ router.post('/upload-multiple', upload.array("images", 3), controller.uploadImag
 router.post('/create', controller.createEstate);
 router.get('/get', controller.getAllEstate);
 router.get('/get/:estateID', controller.getEstateByID);
+router.get('/limit-estates', controller.limitEstate);
 router.get('/search', controller.searchEstate);
-// router.patch('/update/:realestateID', controller.updateRealEstate);
-// router.delete('/delete/:realestateID', controller.deleteRealEstate);
+// router.patch('/update/:estateID', controller.updateEstate);
+// router.delete('/delete/:estateID', controller.deleteEstate);
 
 export default router;

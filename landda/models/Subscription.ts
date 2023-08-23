@@ -5,7 +5,7 @@ const subscriptionSchema = new Schema({
   subscriptionID: { type: String, required: true, unique: true },
   access: {
     type: String,
-    enum: ["Basic", "Standard", "Premium"],
+    enum: ["basic", "standard", "premium"],
     required: true,
   },
 });

@@ -93,7 +93,7 @@ const createEstate = async (req: Request, res: Response) => {
     head: {
       userID: userID,
       estateID: checkEstateID,
-      postStatus: "Active",
+      postStatus: "active",
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -125,10 +125,16 @@ const getAllEstate = (req: Request, res: Response, next: NextFunction) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
+const limitEstate = (req: Request, res: Response, next: NextFunction) => {
+  return Estate.find().limit(8)
+    .then((estates) => res.status(200).json({ estates }))
+    .catch((error) => res.status(500).json({ error }));
+};
+
 // ________________________________________ searching
 
 const searchEstate = (req: Request, res: Response, next: NextFunction) => {
-  const { propertySearch, propertyType, propertyStatus } = req.query;
+  const { propertySearch, propertyType, propertyStatus, minPrice, maxPrice, sorting } = req.query;
 
   const searchQuery: any = {};
 
@@ -146,16 +152,54 @@ const searchEstate = (req: Request, res: Response, next: NextFunction) => {
   }
 
   if (propertyType) {
-    // searchQuery.estateType = propertyType;
-    searchQuery["desc.estateType"] = propertyType;
+    const typeValues = (propertyType as string).split(',');
+
+    searchQuery['desc.estateType'] = { $in: typeValues };
   }
 
   if (propertyStatus) {
-    // searchQuery.estateyStatus = propertyStatus;
-    searchQuery["desc.estateyStatus"] = propertyStatus;
+    // Explicitly cast propertyStatus to string and then split
+    const statusValues = (propertyStatus as string).split(',');
+
+    // Use $in operator to match any value in the array
+    searchQuery['desc.estateStatus'] = { $in: statusValues };
   }
 
-  Estate.find(searchQuery)
+  if (minPrice && maxPrice) {
+    searchQuery['desc.price'] = { $gte: Number(minPrice), $lte: Number(maxPrice) };
+  } else if (minPrice) {
+    searchQuery['desc.price'] = { $gte: Number(minPrice) };
+  } else if (maxPrice) {
+    searchQuery['desc.price'] = { $lte: Number(maxPrice) };
+  }
+
+  let sortOption: any = {};
+
+  switch (sorting) {
+    case "lowestPrice":
+      sortOption = { "desc.price": 1 };
+      break;
+    case "highestPrice":
+      sortOption = { "desc.price": -1 };
+      break;
+    case "bedroomAscending":
+      sortOption = { "desc.bedroom": 1 };
+      break;
+    case "bedroomDescending":
+      sortOption = { "desc.bedroom": -1 };
+      break;
+    case "oldestDate":
+      sortOption = { createdAt: 1 };
+      break;
+    case "newestDate":
+      sortOption = { createdAt: -1 };
+      break;
+    default:
+      // Default sorting or no sorting
+      break;
+  }
+
+  Estate.find(searchQuery).sort(sortOption)
     .then((estates) => {
       return res.status(200).json({ estates });
     })
@@ -169,5 +213,6 @@ export default {
   createEstate,
   getEstateByID,
   getAllEstate,
+  limitEstate,
   searchEstate,
 };

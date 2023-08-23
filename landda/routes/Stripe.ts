@@ -9,7 +9,6 @@ import { generateSubscriptionID } from "../utils/generateID";
 const router = express.Router();
 
 router.post("/craeteSubscriptionPlan", async(req: any, res: any) => {
-  // "Basic", "Standard", "Premium"
   const response = await Subscription.create(
     { subscriptionID: generateSubscriptionID(), access: "Basic" },
     { subscriptionID: generateSubscriptionID(), access: "Standard" },
@@ -19,6 +18,8 @@ router.post("/craeteSubscriptionPlan", async(req: any, res: any) => {
 
   return res.json(response)
 })
+
+// ____________________________________________________________ Stripe
 
 router.get("/prices", async (req: any, res: any) => {
   const prices = await stripe.prices.list({
@@ -55,9 +56,9 @@ router.post("/session", checkAuth, async (req: any, res: any) => {
   return res.json(session);
 });
 
-// ____________________________________________________________ Subscription
+// ____________________________________________________________ Stripe Subscribed
 
-router.get("/subscription", checkAuth, async (req: any, res: any) => {
+router.get("/subscribed", checkAuth, async (req: any, res: any) => {
   const user = await User.findOne({ "profile.email": req.user });
   
   console.log('user: ', user)
