@@ -182,17 +182,17 @@ const searchEstate = (req: Request, res: Response, next: NextFunction) => {
     case "highestPrice":
       sortOption = { "desc.price": -1 };
       break;
-    case "bedroomAscending":
-      sortOption = { "desc.bedroom": 1 };
-      break;
-    case "bedroomDescending":
-      sortOption = { "desc.bedroom": -1 };
-      break;
     case "oldestDate":
       sortOption = { createdAt: 1 };
       break;
     case "newestDate":
       sortOption = { createdAt: -1 };
+      break;
+    case "bedroomAscending":
+      sortOption = { "desc.bedroom": 1 };
+      break;
+    case "bedroomDescending":
+      sortOption = { "desc.bedroom": -1 };
       break;
     default:
       // Default sorting or no sorting
