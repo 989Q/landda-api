@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
-// import { RealEstate } from "./RealEstate";
+// import { Estate } from "./Estate";
 
 interface IUser {
   account: {
@@ -16,7 +16,9 @@ interface IUser {
     name: string;
     email: string;
     phone: string;
+    speak: string;
     company: string;
+    address: string;
     description: string;
     contact1: string;
     contact2: string;
@@ -53,7 +55,9 @@ const UserSchema: Schema = new Schema({
     name: { type: String, required: true },
     email: { type: String, required: true },
     phone: { type: String, required: false },
+    speak: { type: String, required: false },
     company: { type: String, required: false },
+    address: { type: String, required: false },
     description: { type: String, required: false },
     contact1: { type: String, required: false },
     contact2: { type: String, required: false },

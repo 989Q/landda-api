@@ -44,8 +44,9 @@ const createBanner = async (req: Request, res: Response) => {
 
 // ________________________________________ Get banner
 
-const getBannerByID = (req: Request, res: Response, next: NextFunction) => {
+const getBannerByID = async (req: Request, res: Response) => {
   const bannerID = req.params.bannerID;
+  // console.log("req.params.bannerID: ", bannerID)
 
   return Banner.findOne({ "head.bannerID": bannerID })
     .then((banner) => {
@@ -56,7 +57,7 @@ const getBannerByID = (req: Request, res: Response, next: NextFunction) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
-const getAllBanner = (req: Request, res: Response, next: NextFunction) => {
+const getAllBanner = (req: Request, res: Response) => {
   return Banner.find()
     .then((banners) => res.status(200).json({ banners }))
     .catch((error) => res.status(500).json({ error }));
@@ -73,7 +74,7 @@ const limitBanner = async (req: Request, res: Response) => {
 
 // ________________________________________ Search banner
 
-const searchBanner = (req: Request, res: Response, next: NextFunction) => {
+const searchBanner = (req: Request, res: Response) => {
   const {searchBanner} = req.query;
 
   const searchQuery: any = {};

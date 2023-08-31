@@ -9,6 +9,8 @@ const getAllUser = async (req: Request, res: Response) => {
   .catch((error) => res.status(500).json({ error }));
 }
 
+// ________________________________________ Get user
+
 const getUserByID = async (req: Request, res: Response) => {
     const userID = req.params.userID;
 
@@ -54,9 +56,180 @@ const searchAgent = (req: Request, res: Response) => {
     })
 }
 
+// ________________________________________ Update user
+
+const updateName = async(req: Request, res: Response) => {
+  try {
+    const { userID } = req.params;
+    const { name } = req.body;
+
+    const updatedUser = await User.findOneAndUpdate(
+      { 'account.userID': userID },
+      { 'profile.name': name },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+const updatePhone = async(req: Request, res: Response) => {
+  try {
+    const { userID } = req.params;
+    const { phone } = req.body;
+
+    const updatedUser = await User.findOneAndUpdate(
+      { 'account.userID': userID },
+      { 'profile.phone': phone },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+const updateSpeak = async(req: Request, res: Response) => {
+  try {
+    const { userID } = req.params;
+    const { speak } = req.body;
+
+    const updatedUser = await User.findOneAndUpdate(
+      { 'account.userID': userID },
+      { 'profile.speak': speak },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+const updateCompany = async(req: Request, res: Response) => {
+  try {
+    const { userID } = req.params;
+    const { company } = req.body;
+
+    const updatedUser = await User.findOneAndUpdate(
+      { 'account.userID': userID },
+      { 'profile.company': company },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+const updateAddress = async(req: Request, res: Response) => {
+  try {
+    const { userID } = req.params;
+    const { address } = req.body;
+
+    const updatedUser = await User.findOneAndUpdate(
+      { 'account.userID': userID },
+      { 'profile.address': address },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+const updateDescription = async(req: Request, res: Response) => {
+  try {
+    const { userID } = req.params;
+    const { description } = req.body;
+
+    // Find the user by userID and update the description field
+    const updatedUser = await User.findOneAndUpdate(
+      { 'account.userID': userID },
+      { 'profile.description': description },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+const updateContacts = async (req: Request, res: Response) => {
+  try {
+    const { userID } = req.params;
+    const { contact1, contact2, contact3, contact4 } = req.body;
+
+    // Find the user by userID and update the contact fields
+    const updatedUser = await User.findOneAndUpdate(
+      { 'account.userID': userID },
+      {
+        'profile.contact1': contact1,
+        'profile.contact2': contact2,
+        'profile.contact3': contact3,
+        'profile.contact4': contact4,
+      },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
 export default {
   limitAgent,
   getAllUser,
   getUserByID,
   searchAgent,
+  // Update
+  updateName,
+  updatePhone,
+  updateSpeak,
+  updateCompany,
+  updateAddress,
+  updateDescription,
+  updateContacts,
 };
