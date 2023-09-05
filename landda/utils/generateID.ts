@@ -66,12 +66,12 @@ export function generateSubscriptionID() {
   return `subs-${set1}`;
 }
 
-// ________________________________________ Banner ID
+// ________________________________________ Blog ID
 
-export function generateBannerID() {
+export function generateBlogID() {
   const set1 = generateRandomString(8, 0.8);
 
-  return `banner-${set1}`;
+  return `blog-${set1}`;
 }
 
 // export function generateUniqueId() {

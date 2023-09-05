@@ -4,8 +4,8 @@ import mongoose, { Document, Schema } from "mongoose";
 interface IUser {
   account: {
     userID: string;
-    userRole: string;
-    provider: string;
+    userRole: string[];
+    provider: string[];
     status: string;
     licenseVerified: string;
     createdAt: Date;
@@ -41,10 +41,9 @@ export interface IUserModel extends IUser, Document {}
 
 const UserSchema: Schema = new Schema({
   account: {
-    // userID: { type: String, required: true, unique: false },
     userID: { type: String, required: true },
-    userRole: { type: String, required: true }, // user, agent, admin
-    provider: { type: String, required: true }, // google
+    userRole: { type: [String], required: true }, // user, agent, admin
+    provider: { type: [String], required: true }, // google, facebook
     status: { type: String, required: true }, // active, hidden
     licenseVerified: { type: String, required: false }, // false, true
     createdAt: { type: Date, required: true },
@@ -72,8 +71,8 @@ const UserSchema: Schema = new Schema({
     endDate: { type: Date, required: false },
     billingInfo: { type: String, required: false },
   },
-  activeListings: [{ type: mongoose.Schema.Types.ObjectId, ref: "RealEstate" },],
-  pastSales: [{ type: mongoose.Schema.Types.ObjectId, ref: "RealEstate" }],
+  // activeListings: [{ type: mongoose.Schema.Types.ObjectId, ref: "Estate" },],
+  // pastSales: [{ type: mongoose.Schema.Types.ObjectId, ref: "Estate" }],
 });
 
 export default mongoose.model<IUserModel>("User", UserSchema);

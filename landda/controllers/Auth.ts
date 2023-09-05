@@ -14,6 +14,7 @@ const setTime = 86400000
 const signIn = async (req: Request, res: Response) => {
   // console.log('req.body: ', req.body)
   const { email, name, image, provider } = req.body;
+  const userRole = "user";
   const status = "active";
   const memberType = "member";
   const licenseVerified = "false";
@@ -74,6 +75,7 @@ const signIn = async (req: Request, res: Response) => {
         const newUser = new User({
           account: {
             userID,
+            userRole,
             provider,
             status,
             licenseVerified,
