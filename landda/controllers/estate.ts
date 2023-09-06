@@ -89,7 +89,7 @@ const createEstate = async (req: Request, res: Response) => {
   }
 
   const estate = new Estate({
-    // _id: new mongoose.Types.ObjectId(),
+    _id: new mongoose.Types.ObjectId(),
     head: {
       userID: userID,
       estateID: checkEstateID,
@@ -107,33 +107,45 @@ const createEstate = async (req: Request, res: Response) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
-const getEstateByID = (req: Request, res: Response, next: NextFunction) => {
+const getEstateByID = async (req: Request, res: Response) => {
   const estateID = req.params.estateID;
 
-  return Estate.findOne({ "head.estateID": estateID })
-    .then((estate) => {
-      estate
-        ? res.status(200).json({ estate })
-        : res.status(404).json({ message: "not found realEstate" });
-    })
-    .catch((error) => res.status(500).json({ error }));
+  try {
+    const estate = await Estate.findOne({ "head.estateID": estateID })
+      .populate('user')
+      .select('-__v');
+    estate
+      ? res.status(200).json({ estate })
+      : res.status(404).json({ message: "not found realEstate" });
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
 };
 
-const getAllEstate = (req: Request, res: Response, next: NextFunction) => {
-  return Estate.find()
-    .then((estates) => res.status(200).json({ estates }))
-    .catch((error) => res.status(500).json({ error }));
+const getAllEstate = async (req: Request, res: Response) => {
+  try {
+    const estates = await Estate.find();
+    return res.status(200).json({ estates });
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
 };
 
-const limitEstate = (req: Request, res: Response, next: NextFunction) => {
-  return Estate.find().limit(8)
-    .then((estates) => res.status(200).json({ estates }))
-    .catch((error) => res.status(500).json({ error }));
+const limitEstate = async (req: Request, res: Response) => {
+  try {
+    const estates = await Estate.find()
+      .populate('user')
+      .select('-__v')
+      .limit(8);
+    return res.status(200).json({ estates });
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
 };
 
 // ________________________________________ searching
 
-const searchEstate = (req: Request, res: Response, next: NextFunction) => {
+const searchEstate = (req: Request, res: Response) => {
   const { propertySearch, propertyType, propertyStatus, minPrice, maxPrice, sorting } = req.query;
 
   const searchQuery: any = {};
@@ -199,7 +211,10 @@ const searchEstate = (req: Request, res: Response, next: NextFunction) => {
       break;
   }
 
-  Estate.find(searchQuery).sort(sortOption)
+  Estate.find(searchQuery)
+    .populate('user')
+    .select('-__v')
+    .sort(sortOption)
     .then((estates) => {
       return res.status(200).json({ estates });
     })

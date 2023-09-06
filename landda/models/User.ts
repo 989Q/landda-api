@@ -1,5 +1,4 @@
 import mongoose, { Document, Schema } from "mongoose";
-// import { Estate } from "./Estate";
 
 interface IUser {
   account: {
@@ -33,8 +32,8 @@ interface IUser {
     endDate: Date;
     billingInfo: String;
   };
-  active_listings: mongoose.Types.ObjectId[];
-  past_sales: mongoose.Types.ObjectId[];
+  estates: mongoose.Types.ObjectId[];
+  favorites: mongoose.Types.ObjectId[];
 }
 
 export interface IUserModel extends IUser, Document {}
@@ -71,8 +70,8 @@ const UserSchema: Schema = new Schema({
     endDate: { type: Date, required: false },
     billingInfo: { type: String, required: false },
   },
-  // activeListings: [{ type: mongoose.Schema.Types.ObjectId, ref: "Estate" },],
-  // pastSales: [{ type: mongoose.Schema.Types.ObjectId, ref: "Estate" }],
+  estates: [{ type: mongoose.Schema.Types.ObjectId, ref: "Estate" },],
+  favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Estate" },],
 });
 
 export default mongoose.model<IUserModel>("User", UserSchema);

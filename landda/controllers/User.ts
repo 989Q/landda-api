@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import User from "../models/user";
 
-// ________________________________________ Get user
+// ________________________________________ Get Users
 
 const getAllUser = async (req: Request, res: Response) => {
  return User.find()
@@ -9,7 +9,7 @@ const getAllUser = async (req: Request, res: Response) => {
   .catch((error) => res.status(500).json({ error }));
 }
 
-// ________________________________________ Get user
+// ________________________________________ Get User
 
 const getUserByID = async (req: Request, res: Response) => {
     const userID = req.params.userID;
@@ -32,7 +32,7 @@ const limitAgent = async (req: Request, res: Response) => {
   }
 };
 
-// ________________________________________ Search user
+// ________________________________________ Search Agent
 
 const searchAgent = (req: Request, res: Response) => {
   const {searchAgent} = req.query;
@@ -56,7 +56,31 @@ const searchAgent = (req: Request, res: Response) => {
     })
 }
 
-// ________________________________________ Update user
+// ________________________________________ Manage User Listing
+
+const manageListing = async (req: Request, res: Response) => {
+  try {
+    // console.log(req.params)
+    const userID = req.params.userID; 
+
+    // Retrieve the user's data including their owned items
+    const user = await User.findOne({ 'account.userID': userID }).populate('estates');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Extract owned items from the user object
+    const ownedItems = user.estates;
+
+    return res.status(200).json({ ownedItems });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+// ________________________________________ Update User
 
 const updateName = async(req: Request, res: Response) => {
   try {
@@ -224,6 +248,8 @@ export default {
   getAllUser,
   getUserByID,
   searchAgent,
+  // Manage
+  manageListing,
   // Update
   updateName,
   updatePhone,

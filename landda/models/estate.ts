@@ -37,14 +37,13 @@ export interface IEstate {
     country: string; // unimportant
     googleMaps: string; // unimportant
   };
+  user: mongoose.Types.ObjectId;
 }
 
 export interface EstateDocument extends IEstate, Document {}
 
 const EstateSchema = new Schema<EstateDocument>({
   head: {
-    // userID: { type: Schema.Types.ObjectId, required: true, ref: "User" },
-    // userID: { type: String, required: true, ref: "User" },
     userID: { type: String, required: true },
     estateID: { type: String, required: true },
     postStatus: { type: String, required: true },
@@ -80,6 +79,7 @@ const EstateSchema = new Schema<EstateDocument>({
     country: { type: String, required: true },
     googleMap: { type: String, required: false },
   },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", },
 });
 
 export default mongoose.model<IEstate>("Estate", EstateSchema);

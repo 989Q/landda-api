@@ -3,7 +3,7 @@ import User from "../models/user";
 import Subscription from "../models/subscription";
 
 import { stripe } from "../middlewares/stripe";
-import { checkAuth } from "../middlewares/validate";
+import { validateToken } from "../middlewares/validate";
 import { generateSubscriptionID } from "../utils/generateID";
 
 const router = express.Router();
@@ -29,7 +29,7 @@ router.get("/prices", async (req: any, res: any) => {
   return res.json(prices);
 });
 
-router.post("/session", checkAuth, async (req: any, res: any) => {
+router.post("/session", validateToken, async (req: any, res: any) => {
   const user = await User.findOne({ "profile.email": req.user });
 
   const session = await stripe.checkout.sessions.create(
@@ -58,7 +58,7 @@ router.post("/session", checkAuth, async (req: any, res: any) => {
 
 // ____________________________________________________________ Stripe Subscribed
 
-router.get("/subscribed", checkAuth, async (req: any, res: any) => {
+router.get("/subscribed", validateToken, async (req: any, res: any) => {
   const user = await User.findOne({ "profile.email": req.user });
   
   console.log('user: ', user)
