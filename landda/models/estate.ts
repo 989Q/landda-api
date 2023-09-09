@@ -14,14 +14,13 @@ export interface IEstate {
   };
   desc: {
     images: string[];
-    priceCurrency: string;
+    priceCurr: string;
     price: number;
     estateType: string;
     estateStatus: string;
     bedroom: number;
     bathroom: number;
-    parking: number;
-    size: number;
+    squareMetre: number;
     title: string;
     description: string;
     facilities: string[];
@@ -56,12 +55,11 @@ const EstateSchema = new Schema<EstateDocument>({
   },
   desc: {
     images: { type: [String], required: true },
-    priceCurrency: { type: String, required: true },
+    priceCurr: { type: String, required: true },
     price: { type: Number, required: true },
     bedroom: { type: Number, required: true },
     bathroom: { type: Number, required: true },
-    parking: { type: Number, required: false },
-    size: { type: Number, required: true },
+    squareMetre: { type: Number, required: true },
     estateType: { type: String, required: true },
     estateStatus: { type: String, required: true }, // rentPerDay, rentPerMonth, rentPerYear, sale
     title: { type: String, required: true },

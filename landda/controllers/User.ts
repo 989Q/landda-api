@@ -56,7 +56,7 @@ const searchAgent = (req: Request, res: Response) => {
     })
 }
 
-// ________________________________________ Manage User Listing
+// ________________________________________ Manage Owned Estate Listing
 
 const manageListing = async (req: Request, res: Response) => {
   try {
