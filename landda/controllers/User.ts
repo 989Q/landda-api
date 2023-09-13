@@ -12,16 +12,21 @@ const getAllUser = async (req: Request, res: Response) => {
 // ________________________________________ Get User
 
 const getUserByID = async (req: Request, res: Response) => {
-    const userID = req.params.userID;
+  const userID = req.params.userID;
 
-    return User.findOne({ "account.userID": userID })
-      .then((user) => {
-        user
-          ? res.status(200).json({ user })
-          : res.status(404).json({ message: "not found user" })
-      })
-    .catch((error) => res.status(500).json({ error }));
+  try {
+    const user = await User.findOne({ "account.userID": userID }).populate('estates');
+
+    if (user) {
+      res.status(200).json({ user });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error });
+  }
 };
+
 
 const limitAgent = async (req: Request, res: Response) => {
   try {

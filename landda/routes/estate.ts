@@ -5,6 +5,7 @@ import { upload } from "../middlewares/wasabi";
 
 const router = express.Router();
 
+// test upload
 router.post('/upload-multiple', upload.array("images", 3), controller.uploadImages);
 
 router.post('/create', controller.createEstate);

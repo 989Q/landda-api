@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import Estate from "../models/estate";
+import { NextFunction, Request, Response } from "express";
 
 import { generateImageID, generatePostID, generatePostID2 } from "../utils/generateID";
 import { uploadToWasabi } from "../middlewares/wasabi";
@@ -62,14 +62,15 @@ const createEstate = async (req: Request, res: Response) => {
   const userID = req.body.head;
   const { desc, location } = req.body;
   const images = desc.images; // Extract the images array from the request body
+  const user = req.body.user;
 
   // upload images to wasabi
   await uploadToWasabi(images.originalname, images.buffer);
-
+  
   let checkEstateID: any;
   let isUniqueEstateID: boolean = false;
   
-  // checking estateID 
+  // check estateID 
   while (!isUniqueEstateID) {
     checkEstateID = generatePostID();
 
@@ -99,6 +100,7 @@ const createEstate = async (req: Request, res: Response) => {
     },
     desc,
     location,
+    user
   });
 
   return estate
@@ -195,10 +197,10 @@ const searchEstate = (req: Request, res: Response) => {
       sortOption = { "desc.price": -1 };
       break;
     case "oldestDate":
-      sortOption = { createdAt: 1 };
+      sortOption = { "head.updatedAt": 1 };
       break;
     case "newestDate":
-      sortOption = { createdAt: -1 };
+      sortOption = { "head.updatedAt": -1 };
       break;
     case "bedroomAscending":
       sortOption = { "desc.bedroom": 1 };
