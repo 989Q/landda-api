@@ -1,7 +1,7 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import http from "http";
-import mongoose from "mongoose";
 import cors from "cors";
+import mongoose from "mongoose";
 import { config } from "./config/config";
 import Logging from "./utils/bashlog";
 
@@ -47,25 +47,22 @@ const StartServer = () => {
   router.use(express.json());
 
   // Routes
-  router.use('/auth/user', auth);
-  router.use('/api/user', user);
-  router.use('/api/stripe', stripe);
-  router.use('/api/estate', estate);
-  router.use('/api/blog', blog);
+  router.use("/auth/user", auth);
+  router.use("/api/user", user);
+  router.use("/api/stripe", stripe);
+  router.use("/api/estate", estate);
+  router.use("/api/blog", blog);
 
   // Healthcheck
-  router.get("/test/ping", (req, res, next) =>
+  router.get("/test/ping", (req: Request, res: Response) =>
     res.status(200).json({ hello: "world" })
   );
 
-  // Error handling
-  router.use((req, res, next) => {
-    const error = new Error("Not found");
+  router.use((err: Error, req: Request, res: Response) => {
+    Logging.error(err);
 
-    Logging.error(error);
-
-    res.status(404).json({
-      message: error.message,
+    res.status(500).json({
+      error: err.message || "Server error", 
     });
   });
 

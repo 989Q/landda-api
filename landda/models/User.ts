@@ -40,15 +40,18 @@ export interface IUserModel extends IUser, Document {}
 
 const UserSchema: Schema = new Schema({
   account: {
+  // acc: {
     userID: { type: String, required: true },
     userRole: { type: [String], required: true }, // user, agent, admin
     provider: { type: [String], required: true }, // google, facebook
     status: { type: String, required: true }, // active, hidden
     licenseVerified: { type: String, required: false }, // false, true
+    // verified: { type: String, required: false }, // false, true
     createdAt: { type: Date, required: true },
     updatedAt: { type: Date, required: true },
   },
   profile: {
+  // desc: {
     image: { type: String, required: true },
     name: { type: String, required: true },
     email: { type: String, required: true },
@@ -56,13 +59,16 @@ const UserSchema: Schema = new Schema({
     speak: { type: String, required: false },
     company: { type: String, required: false },
     address: { type: String, required: false },
+    // live: { type: String, required: false },
     description: { type: String, required: false },
+    // about: { type: String, required: false },
     contact1: { type: String, required: false },
     contact2: { type: String, required: false },
     contact3: { type: String, required: false },
     contact4: { type: String, required: false },
   },
   membership: {
+  // member: {
     stripeCustomerID: { type: String, required: true },
     memberType: { type: String, required: true }, // member, supporter, partner
     status: { type: String, required: false },
