@@ -112,8 +112,8 @@ const updateEstate = async (req: Request, res: Response) => {
     if (req.body.desc) {
       estate.desc = { ...estate.desc, ...req.body.desc };
     }
-    if (req.body.location) {
-      estate.location = { ...estate.location, ...req.body.location };
+    if (req.body.maps) {
+      estate.maps = { ...estate.maps, ...req.body.maps };
     }
 
     // Save the updated estate
