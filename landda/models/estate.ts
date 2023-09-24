@@ -2,30 +2,29 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface IEstate {
   head: {
-    userID: string;
     estateID: string;
-    postStatus: string;
+    post: string;
+    seen: number; // unimportant
+    see: number; // unimportant
+    shares: string[]; // unimportant
+    saves: string[]; // unimportant
     createdAt: Date;
     updatedAt: Date;
-    seen: string; // unimportant
-    seePerDay: string; // unimportant
-    shares: string[]; // unimportant
-    favorites: string[]; // unimportant
   };
   desc: {
     images: string[];
-    listStatus: string;
-    listType: string;
-    priceCurr: string;
+    status: string;
+    type: string;
+    curr: string;
     price: number;
     bed: number;
     bath: number;
     sqm: number;
     title: string;
     about: string;
-    facilities: string[];
-    comforts: string[];
-    securities: string[];
+    facs: string[];
+    coms: string[];
+    secs: string[];
   };
   maps: {
     link: string; // unimportant
@@ -43,30 +42,38 @@ export interface EstateDocument extends IEstate, Document {}
 
 const EstateSchema = new Schema<EstateDocument>({
   head: {
-    userID: { type: String, required: true },
     estateID: { type: String, required: true },
-    postStatus: { type: String, required: true },
-    createdAt: { type: Date, required: true },
-    updatedAt: { type: Date, required: true },
-    seen: { type: String, required: false },
-    seePerDay: { type: String, required: false },
+    post: {
+      type: String,
+      enum: ["active", "waiting", "hidden", "sold"],
+      default: "active",
+      required: true,
+    },
+    seen: { type: Number, required: false },
+    see: { type: Number, required: false },
     shares: { type: [String], required: false },
-    favorites: { type: [String], required: false },
+    saves: { type: [String], required: false },
+    createdAt: { type: Date, required: true }, 
+    updatedAt: { type: Date, required: true },
   },
   desc: {
     images: { type: [String], required: true },
-    listStatus: { type: String, required: true }, // rentPerDay, rentPerMonth, rentPerYear, sale
-    listType: { type: String, required: true },
-    priceCurr: { type: String, required: true },
+    status: {
+      type: String,
+      enum: ["rentPerDay", "rentPerMonth", "rentPerYear", "sale"],
+      required: true,
+    },
+    type: { type: String, required: true }, // land, home, condo
+    curr: { type: String, required: true },
     price: { type: Number, required: true },
     bed: { type: Number, required: true },
     bath: { type: Number, required: true },
     sqm: { type: Number, required: true },
     title: { type: String, required: true },
     about: { type: String, required: true },
-    facilities: { type: [String], required: false },
-    comforts: { type: [String], required: false },
-    securities: { type: [String], required: false },
+    facs: { type: [String], required: false },
+    coms: { type: [String], required: false },
+    secs: { type: [String], required: false },
   },
   maps: {
     link: { type: String, required: false },
@@ -77,7 +84,7 @@ const EstateSchema = new Schema<EstateDocument>({
     postcode: { type: String, required: false },
     country: { type: String, required: true },
   },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
 export default mongoose.model<IEstate>("Estate", EstateSchema);

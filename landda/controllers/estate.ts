@@ -30,9 +30,7 @@ const uploadImages = async (req: any, res: any) => {
 // doing
 const createEstate = async (req: Request, res: Response) => {
   // console.log("req.body: ", req.body);
-
-  const userID = req.body.head;
-  const { desc, location } = req.body;
+  const { desc, maps } = req.body;
   const images = desc.images; // Extract the images array from the request body
   const user = req.body.user;
 
@@ -64,14 +62,12 @@ const createEstate = async (req: Request, res: Response) => {
   const estate = new Estate({
     _id: new mongoose.Types.ObjectId(),
     head: {
-      userID: userID,
       estateID: checkEstateID,
-      postStatus: "active",
       createdAt: new Date(),
       updatedAt: new Date(),
     },
     desc,
-    location,
+    maps,
     user
   });
 
@@ -189,20 +185,20 @@ const searchEstate = (req: Request, res: Response) => {
   if (propertySearch) {
     searchQuery["$or"] = [
       { "desc.title": { $regex: propertySearch, $options: "i" } },
-      { "desc.description": { $regex: propertySearch, $options: "i" } },
-      { "location.address": { $regex: propertySearch, $options: "i" } },
-      { "location.subdistrict": { $regex: propertySearch, $options: "i" } },
-      { "location.district": { $regex: propertySearch, $options: "i" } },
-      { "location.province": { $regex: propertySearch, $options: "i" } },
-      { "location.postcode": { $regex: propertySearch, $options: "i" } },
-      { "location.country": { $regex: propertySearch, $options: "i" } },
+      { "desc.about": { $regex: propertySearch, $options: "i" } },
+      { "maps.address": { $regex: propertySearch, $options: "i" } },
+      { "maps.subdistrict": { $regex: propertySearch, $options: "i" } },
+      { "maps.district": { $regex: propertySearch, $options: "i" } },
+      { "maps.province": { $regex: propertySearch, $options: "i" } },
+      { "maps.postcode": { $regex: propertySearch, $options: "i" } },
+      { "maps.country": { $regex: propertySearch, $options: "i" } },
     ];
   }
 
   if (propertyType) {
     const typeValues = (propertyType as string).split(',');
 
-    searchQuery['desc.estateType'] = { $in: typeValues };
+    searchQuery['desc.type'] = { $in: typeValues };
   }
 
   if (propertyStatus) {
@@ -210,7 +206,7 @@ const searchEstate = (req: Request, res: Response) => {
     const statusValues = (propertyStatus as string).split(',');
 
     // Use $in operator to match any value in the array
-    searchQuery['desc.estateStatus'] = { $in: statusValues };
+    searchQuery['desc.status'] = { $in: statusValues };
   }
 
   if (minPrice && maxPrice) {
@@ -237,10 +233,10 @@ const searchEstate = (req: Request, res: Response) => {
       sortOption = { "head.updatedAt": -1 };
       break;
     case "bedroomAscending":
-      sortOption = { "desc.bedroom": 1 };
+      sortOption = { "desc.bed": 1 };
       break;
     case "bedroomDescending":
-      sortOption = { "desc.bedroom": -1 };
+      sortOption = { "desc.bed": -1 };
       break;
     default:
       // Default sorting or no sorting
