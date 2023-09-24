@@ -1,24 +1,21 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface IBlog {
-  head: {
-    userID: string;
+  lead: {
     blogID: string;
-    supporterName: string;
-    postStatus: string;
+    seen: number; // unimportant
+    see: number; // unimportant
+    shares: string[]; // unimportant
+    saves: string[]; // unimportant
     createdAt: Date;
     updatedAt: Date;
-    seen: string; // unimportant
-    seePerDay: string; // unimportant
-    shareCount: string[]; // unimportant
-    favoriteCount: string[]; // unimportant
   };
-  desc: {
+  body: {
+    images: string[];
     link: string; // unimportant
     tag: string[];
-    images: string[];
     title: string;
-    description: string;
+    about: string;
   };
   user: mongoose.Types.ObjectId;
 }
@@ -26,28 +23,31 @@ export interface IBlog {
 export interface BlogDocument extends IBlog, Document {}
 
 const BlogSchema = new Schema<BlogDocument>({
-  head: {
-    userID: { type: String, required: true },
+  lead: {
     blogID: { type: String, required: true },
-    blogType: { type: String, required: true },
-    blogStatus: { type: String, required: true },
+    status: { 
+      type: String, 
+      enum: ["active", "waiting", "hidden"], 
+      default: "active",
+      required: true 
+    },
+    seen: { type: Number, required: false },
+    see: { type: Number, required: false },
+    shares: { type: [String], required: false },
+    saves: { type: [String], required: false },
     createdAt: { type: Date, required: true },
     updatedAt: { type: Date, required: true },
-    seen: { type: String, required: false },
-    seePerDay: { type: String, required: false },
-    shareCount: { type: [String], required: false },
-    favoriteCount: { type: [String], required: false },
   },
-  desc: {
+  body: {
+    images: { type: [String], required: true },
     link: { type: String, required: false },
     tag: { type: [String], require: true },
-    images: { type: [String], required: true },
     title: { type: String, required: true },
-    description: { type: String, required: true },
+    about: { type: String, required: true },
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User", // This should match the name you used when creating the User model
+    ref: "User", 
   },
 });
 

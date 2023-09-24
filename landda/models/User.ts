@@ -3,9 +3,9 @@
 // interface IUser {
 //   acc: {
 //     userID: string;
-//     signIn: string[];
+//     provider: string[];
 //     status: string;
-//     roles: string[];
+//     role: string;
 //     verified: string;
 //     createdAt: Date;
 //     updatedAt: Date;
@@ -14,7 +14,7 @@
 //     email: string;
 //     image: string;
 //     name: string;
-//     company: string;
+//     work: string;
 //     about: string;
 //     phone: string;
 //     speak: string;
@@ -26,9 +26,9 @@
 //   };
 //   subs: {
 //     stripeID: string;
-//     status: String;
+//     active: String;
 //     type: string;
-//     payInfo: String;
+//     payment: String;
 //     startDate: Date;
 //     endDate: Date;
 //   };
@@ -41,11 +41,29 @@
 // const UserSchema: Schema = new Schema({
 //   acc: {
 //     userID: { type: String, required: true },
-//     aStatus: { type: String, required: true }, // active, hidden
-//     signIn: { type: [String], required: true }, // google, facebook
-//     roles: { type: [String], required: true }, // user, agent, admin
-//     // role: { type: String, enum: ['admin', 'agent', 'user'], default: 'user' },
-//     verified: { type: String, required: false }, // false, true
+//     provider: { 
+//       type: [String], 
+//       enum: ["google", "facebook"], 
+//       required: true 
+//     }, 
+//     status: {
+//       type: String,
+//       enum: ["active", "wait", "hidden"],
+//       required: true,
+//       default: "active",
+//     },
+//     role: {
+//       type: String,
+//       enum: ["user", "agent", "partner", "admin"],
+//       default: "user",
+//       required: true,
+//     },
+//     verified: {
+//       type: String,
+//       enum: ["false", "true"],
+//       default: "false",
+//       required: false,
+//     },
 //     createdAt: { type: Date, required: true },
 //     updatedAt: { type: Date, required: true },
 //   },
@@ -53,7 +71,7 @@
 //     email: { type: String, required: true },
 //     image: { type: String, required: true },
 //     name: { type: String, required: true },
-//     company: { type: String, required: false },
+//     work: { type: String, required: false },
 //     about: { type: String, required: false },
 //     phone: { type: String, required: false },
 //     speak: { type: String, required: false },
@@ -65,14 +83,22 @@
 //   },
 //   subs: {
 //     stripeID: { type: String, required: true },
-//     status: { type: String, required: false },
-//     type: { type: String, required: true }, // member, supporter, partner
-//     payInfo: { type: String, required: false },
+//     active: { 
+//       type: String, 
+//       enum: ["false", "true"], 
+//       required: false 
+//     },
+//     type: { 
+//       type: String, 
+//       enum: ["basic", "standard", "premium"], 
+//       required: true 
+//     }, 
+//     payment: { type: String, required: false },
 //     startDate: { type: Date, required: false },
 //     endDate: { type: Date, required: false },
 //   },
-//   estates: [{ type: mongoose.Schema.Types.ObjectId, ref: "Estate" },],
-//   favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Estate" },],
+//   estates: [{ type: mongoose.Schema.Types.ObjectId, ref: "Estate" }],
+//   favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Estate" }],
 // });
 
 // export default mongoose.model<IUserModel>("User", UserSchema);
