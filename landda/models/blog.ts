@@ -45,10 +45,7 @@ const BlogSchema = new Schema<BlogDocument>({
     title: { type: String, required: true },
     about: { type: String, required: true },
   },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User", 
-  },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
 export default mongoose.model<IBlog>("Blog", BlogSchema);

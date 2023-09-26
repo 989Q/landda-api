@@ -18,7 +18,3 @@ const verifyToken = (token: string, secret: any): JwtPayload | any => {
 };
 
 export { signToken, verifyToken };
-
-// ________________________________________ calculate time
-
-// ...

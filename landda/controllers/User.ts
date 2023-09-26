@@ -15,7 +15,7 @@ const getUserByID = async (req: Request, res: Response) => {
   const userID = req.params.userID;
 
   try {
-    const user = await User.findOne({ "account.userID": userID }).populate('estates');
+    const user = await User.findOne({ "acc.userID": userID }).populate('estates');
 
     if (user) {
       res.status(200).json({ user });
@@ -26,7 +26,6 @@ const getUserByID = async (req: Request, res: Response) => {
     res.status(500).json({ error });
   }
 };
-
 
 const limitAgent = async (req: Request, res: Response) => {
   try {
@@ -46,9 +45,9 @@ const searchAgent = (req: Request, res: Response) => {
 
   if (searchAgent) {
     searchQuery["$or"] = [
-      { "profile.name": { $regex: searchAgent, $options: "i" } },
-      { "profile.company": { $regex: searchAgent, $options: "i" } },
-      { "profile.description": { $regex: searchAgent, $options: "i" } },
+      { "info.name": { $regex: searchAgent, $options: "i" } },
+      { "info.work": { $regex: searchAgent, $options: "i" } },
+      { "info.about": { $regex: searchAgent, $options: "i" } },
     ]
   }
 
@@ -69,7 +68,7 @@ const manageListing = async (req: Request, res: Response) => {
     const userID = req.params.userID; 
 
     // Retrieve the user's data including their owned items
-    const user = await User.findOne({ 'account.userID': userID }).populate('estates');
+    const user = await User.findOne({ 'acc.userID': userID }).populate('estates');
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -93,8 +92,8 @@ const updateName = async(req: Request, res: Response) => {
     const { name } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
-      { 'account.userID': userID },
-      { 'profile.name': name },
+      { 'acc.userID': userID },
+      { 'info.name': name },
       { new: true }
     );
 
@@ -115,8 +114,8 @@ const updatePhone = async(req: Request, res: Response) => {
     const { phone } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
-      { 'account.userID': userID },
-      { 'profile.phone': phone },
+      { 'acc.userID': userID },
+      { 'info.phone': phone },
       { new: true }
     );
 
@@ -137,8 +136,8 @@ const updateSpeak = async(req: Request, res: Response) => {
     const { speak } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
-      { 'account.userID': userID },
-      { 'profile.speak': speak },
+      { 'acc.userID': userID },
+      { 'info.speak': speak },
       { new: true }
     );
 
@@ -153,14 +152,14 @@ const updateSpeak = async(req: Request, res: Response) => {
   }
 }
 
-const updateCompany = async(req: Request, res: Response) => {
+const updateWork = async(req: Request, res: Response) => {
   try {
     const { userID } = req.params;
-    const { company } = req.body;
+    const { work } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
-      { 'account.userID': userID },
-      { 'profile.company': company },
+      { 'acc.userID': userID },
+      { 'info.work': work },
       { new: true }
     );
 
@@ -175,14 +174,14 @@ const updateCompany = async(req: Request, res: Response) => {
   }
 }
 
-const updateAddress = async(req: Request, res: Response) => {
+const updateLive = async(req: Request, res: Response) => {
   try {
     const { userID } = req.params;
-    const { address } = req.body;
+    const { live } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
-      { 'account.userID': userID },
-      { 'profile.address': address },
+      { 'acc.userID': userID },
+      { 'info.live': live },
       { new: true }
     );
 
@@ -197,15 +196,14 @@ const updateAddress = async(req: Request, res: Response) => {
   }
 }
 
-const updateDescription = async(req: Request, res: Response) => {
+const updateAbout = async(req: Request, res: Response) => {
   try {
     const { userID } = req.params;
-    const { description } = req.body;
+    const { about } = req.body;
 
-    // Find the user by userID and update the description field
     const updatedUser = await User.findOneAndUpdate(
-      { 'account.userID': userID },
-      { 'profile.description': description },
+      { 'acc.userID': userID },
+      { 'info.about': about },
       { new: true }
     );
 
@@ -220,19 +218,18 @@ const updateDescription = async(req: Request, res: Response) => {
   }
 }
 
-const updateContacts = async (req: Request, res: Response) => {
+const updateLinks = async (req: Request, res: Response) => {
   try {
     const { userID } = req.params;
-    const { contact1, contact2, contact3, contact4 } = req.body;
+    const { link1, link2, link3, link4 } = req.body;
 
-    // Find the user by userID and update the contact fields
     const updatedUser = await User.findOneAndUpdate(
-      { 'account.userID': userID },
+      { 'acc.userID': userID },
       {
-        'profile.contact1': contact1,
-        'profile.contact2': contact2,
-        'profile.contact3': contact3,
-        'profile.contact4': contact4,
+        'info.link1': link1,
+        'info.link2': link2,
+        'info.link3': link3,
+        'info.link4': link4,
       },
       { new: true }
     );
@@ -259,8 +256,8 @@ export default {
   updateName,
   updatePhone,
   updateSpeak,
-  updateCompany,
-  updateAddress,
-  updateDescription,
-  updateContacts,
+  updateWork,
+  updateLive,
+  updateAbout,
+  updateLinks,
 };

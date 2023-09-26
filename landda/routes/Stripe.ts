@@ -44,13 +44,13 @@ router.post("/session", validateToken, async (req: any, res: any) => {
       ],
       success_url: "http://localhost:3000",
       cancel_url: "http://localhost:3000",
-      customer: user?.membership.stripeCustomerID,
+      customer: user?.subs.type,
     },
     {
       apiKey: process.env.STRIPE_SECRET_KEY,
     }
   );
-  console.log("user?.membership.stripeCustomerID: ", user?.membership.stripeCustomerID)
+  // console.log("user?.subs.type: ", user?.subs.type)
   console.log('subscription success')
 
   return res.json(session);
@@ -65,7 +65,7 @@ router.get("/subscribed", validateToken, async (req: any, res: any) => {
 
   const subscriptions = await stripe.subscriptions.list(
     {
-      customer: user?.membership.stripeCustomerID,
+      customer: user?.subs.type,
       status: "all",
       expand: ["data.default_payment_method"],
     },
