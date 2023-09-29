@@ -178,8 +178,16 @@ const limitEstate = async (req: Request, res: Response) => {
 // ________________________________________ searching
 
 const searchEstate = (req: Request, res: Response) => {
-  const { propertySearch, propertyType, propertyStatus, minPrice, maxPrice, sorting } = req.query;
-
+  const {
+    propertySearch,
+    propertyType,
+    propertyStatus,
+    minBed,
+    minBath,
+    minPrice,
+    maxPrice,
+    sorting,
+  } = req.query;
   const searchQuery: any = {};
 
   if (propertySearch) {
@@ -194,21 +202,20 @@ const searchEstate = (req: Request, res: Response) => {
       { "maps.country": { $regex: propertySearch, $options: "i" } },
     ];
   }
-
   if (propertyType) {
     const typeValues = (propertyType as string).split(',');
-
     searchQuery['desc.type'] = { $in: typeValues };
   }
-
   if (propertyStatus) {
-    // Explicitly cast propertyStatus to string and then split
     const statusValues = (propertyStatus as string).split(',');
-
-    // Use $in operator to match any value in the array
     searchQuery['desc.status'] = { $in: statusValues };
   }
-
+  if (minBed) {
+    searchQuery['desc.bed'] = { $gte: Number(minBed) };
+  }
+  if (minBath) {
+    searchQuery['desc.bath'] = { $gte: Number(minBath) };
+  }
   if (minPrice && maxPrice) {
     searchQuery['desc.price'] = { $gte: Number(minPrice), $lte: Number(maxPrice) };
   } else if (minPrice) {
@@ -218,7 +225,6 @@ const searchEstate = (req: Request, res: Response) => {
   }
 
   let sortOption: any = {};
-
   switch (sorting) {
     case "lowestPrice":
       sortOption = { "desc.price": 1 };
