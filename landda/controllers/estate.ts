@@ -1,9 +1,35 @@
 import mongoose from "mongoose";
-import Estate from "../models/estate";
+import Estate, { EstateDocument, IEstate } from "../models/estate";
 import { NextFunction, Request, Response } from "express";
 
 import { generateImageID, generatePostID, generatePostID2 } from "../utils/generateID";
 import { uploadToWasabi } from "../middlewares/wasabi";
+
+// ________________________________________ lib
+
+const updateEstateViews = (estate: EstateDocument) => {
+  // Update seen
+  estate.head.seen = (estate.head.seen || 0) + 1;
+
+  // Update see for the current date
+  const today = new Date().toISOString().split('T')[0];
+  const seeEntry = estate.head.see; 
+
+  if (seeEntry) {
+      // If the date is different, update it
+      if (seeEntry.date !== today) {
+          seeEntry.date = today;
+          seeEntry.count = 1;
+      } else {
+          seeEntry.count++;
+      }
+  } else {
+      // If no entry exists, create a new one
+      estate.head.see = { date: today, count: 1 };
+  }
+};
+
+// ________________________________________ main function
 
 const uploadImages = async (req: any, res: any) => {
   console.log("request files: ", req.files);
@@ -146,9 +172,16 @@ const getEstateByID = async (req: Request, res: Response) => {
     const estate = await Estate.findOne({ "head.estateID": estateID })
       .populate('user')
       .select('-__v');
-    estate
-      ? res.status(200).json({ estate })
-      : res.status(404).json({ message: "not found realEstate" });
+    if (estate) {
+      // Update views
+      updateEstateViews(estate);
+      // Save the changes
+      await estate.save();
+
+      res.status(200).json({ estate });
+    } else {
+      res.status(404).json({ message: "not found realEstate" });
+    }
   } catch (error) {
     return res.status(500).json({ error });
   }
@@ -156,7 +189,7 @@ const getEstateByID = async (req: Request, res: Response) => {
 
 const getAllEstate = async (req: Request, res: Response) => {
   try {
-    const estates = await Estate.find();
+    const estates: IEstate[] = await Estate.find({ 'head.post': 'active' });
     return res.status(200).json({ estates });
   } catch (error) {
     return res.status(500).json({ error });
@@ -165,7 +198,7 @@ const getAllEstate = async (req: Request, res: Response) => {
 
 const limitEstate = async (req: Request, res: Response) => {
   try {
-    const estates = await Estate.find()
+    const estates: IEstate[] = await Estate.find({ 'head.post': 'active' })
       .populate('user')
       .select('-__v')
       .limit(8);
@@ -188,7 +221,9 @@ const searchEstate = (req: Request, res: Response) => {
     maxPrice,
     sorting,
   } = req.query;
-  const searchQuery: any = {};
+  const searchQuery: any = {
+    'head.post': 'active', // filter head.post
+  };
 
   if (propertySearch) {
     searchQuery["$or"] = [

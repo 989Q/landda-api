@@ -1,28 +1,30 @@
 import mongoose, { Document, Schema } from "mongoose";
+import { IUser } from './user';
 
 export interface IBlog {
   lead: {
     blogID: string;
-    seen: number; // unimportant
-    see: number; // unimportant
-    shares: string[]; // unimportant
-    saves: string[]; // unimportant
+    status: 'active' | 'waiting' | 'hidden';
+    seen?: number;
+    see?: number;
+    shares?: string[];
+    saves?: string[];
     createdAt: Date;
     updatedAt: Date;
   };
   body: {
     images: string[];
-    link: string; // unimportant
+    link?: string;
     tag: string[];
     title: string;
     about: string;
   };
-  user: mongoose.Types.ObjectId;
+  user: mongoose.Types.ObjectId | IUser;
 }
 
 export interface BlogDocument extends IBlog, Document {}
 
-const BlogSchema = new Schema<BlogDocument>({
+const Blog = new Schema<BlogDocument>({
   lead: {
     blogID: { type: String, required: true },
     status: { 
@@ -48,4 +50,4 @@ const BlogSchema = new Schema<BlogDocument>({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
-export default mongoose.model<IBlog>("Blog", BlogSchema);
+export default mongoose.model<IBlog>("Blog", Blog);

@@ -1,12 +1,12 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-interface IUser {
+export interface IUser {
   acc: {
     userID: string;
-    logins: string[];
-    status: string;
-    role: string;
-    verified: string;
+    logins: ('google' | 'facebook' | 'email')[];
+    status: 'active' | 'wait' | 'hidden';
+    role: 'user' | 'agent' | 'partner' | 'admin';
+    verified: 'false' | 'true';
     createdAt: Date;
     updatedAt: Date;
   };
@@ -26,8 +26,8 @@ interface IUser {
   };
   subs: {
     stripeID: string;
-    active: String;
-    type: string;
+    active?: 'false' | 'true';
+    type: 'free' | 'basic' | 'standard' | 'premium';
     payment: String;
     startDate: Date;
     endDate: Date;
@@ -62,7 +62,7 @@ const UserSchema: Schema = new Schema({
       type: String,
       enum: ["false", "true"],
       default: "false",
-      required: false,
+      required: true,
     },
     createdAt: { type: Date, required: true },
     updatedAt: { type: Date, required: true },
@@ -92,7 +92,7 @@ const UserSchema: Schema = new Schema({
       type: String, 
       enum: ["free", "basic", "standard", "premium"], 
       default: "free",
-      required: false 
+      required: true 
     }, 
     payment: { type: String, required: false },
     startDate: { type: Date, required: false },
@@ -103,43 +103,3 @@ const UserSchema: Schema = new Schema({
 });
 
 export default mongoose.model<IUserModel>("User", UserSchema);
-
-
-
-// interface IUser {
-//   account: {
-//     userID: string;
-//     userRole: string[];
-//     providers: string[];
-//     status: string;
-//     licenseVerified: string;
-//     createdAt: Date;
-//     updatedAt: Date;
-//   };
-//   profile: {
-//     image: string;
-//     name: string;
-//     email: string;
-//     phone: string;
-//     speak: string;
-//     company: string;
-//     address: string;
-//     description: string;
-//     contact1: string;
-//     contact2: string;
-//     contact3: string;
-//     contact4: string;
-//   };
-//   membership: {
-//     stripeCustomerID: string;
-//     memberType: string;
-//     status: String;
-//     startDate: Date;
-//     endDate: Date;
-//     billingInfo: String;
-//   };
-//   estates: mongoose.Types.ObjectId[];
-//   favorites: mongoose.Types.ObjectId[];
-// }
-
-// export interface IUserModel extends IUser, Document {}

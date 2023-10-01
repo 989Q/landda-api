@@ -1,19 +1,23 @@
 import mongoose, { Document, Schema } from "mongoose";
+import { IUser } from './user';
 
 export interface IEstate {
   head: {
     estateID: string;
-    post: string;
-    seen: number; // unimportant
-    see: number; // unimportant
-    shares: string[]; // unimportant
-    saves: string[]; // unimportant
+    post: 'active' | 'waiting' | 'hidden' | 'sold';
+    seen: number; 
+    see: {
+      date: string,
+      count: number
+    };
+    shares?: string[]; 
+    saves?: string[];
     createdAt: Date;
     updatedAt: Date;
   };
   desc: {
     images: string[];
-    status: string;
+    status: 'rentPerDay' | 'rentPerMonth' | 'rentPerYear' | 'sale'
     type: string;
     curr: string;
     price: number;
@@ -27,15 +31,15 @@ export interface IEstate {
     secs: string[];
   };
   maps: {
-    link: string; // unimportant
-    address: string; // unimportant
+    link?: string; 
+    address?: string; 
     subdistrict: string;
     district: string;
     province: string;
-    postcode: string; // unimportant
-    country: string; // unimportant
+    postcode?: number; 
+    country: string; 
   };
-  user: mongoose.Types.ObjectId;
+  user: mongoose.Types.ObjectId | IUser;
 }
 
 export interface EstateDocument extends IEstate, Document {}
@@ -49,8 +53,11 @@ const EstateSchema = new Schema<EstateDocument>({
       default: "active",
       required: true,
     },
-    seen: { type: Number, required: false },
-    see: { type: Number, required: false },
+    seen: { type: Number, default: 0 },
+    see: {
+      date: { type: String },
+      count: { type: Number, default: 0},
+    },
     shares: { type: [String], required: false },
     saves: { type: [String], required: false },
     createdAt: { type: Date, required: true }, 
@@ -81,7 +88,7 @@ const EstateSchema = new Schema<EstateDocument>({
     subdistrict: { type: String, required: true },
     district: { type: String, required: true },
     province: { type: String, required: true },
-    postcode: { type: String, required: false },
+    postcode: { type: Number, required: false },
     country: { type: String, required: true },
   },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

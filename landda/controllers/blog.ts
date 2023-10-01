@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
-import Blog from "../models/blog";
+import Blog, { BlogDocument } from "../models/blog";
 
 import { generateBlogID, } from "../utils/generateID";
 
@@ -84,7 +84,7 @@ const getBlogByID = async (req: Request, res: Response) => {
 
 const getAllBlog = async (req: Request, res: Response) => {
   try {
-    const blogs = await Blog.find();
+    const blogs: BlogDocument[] = await Blog.find({ 'lead.status': 'active' });
     return res.status(200).json({ blogs });
   } catch (error) {
     return res.status(500).json({ error });
@@ -93,7 +93,7 @@ const getAllBlog = async (req: Request, res: Response) => {
 
 const limitBlog = async (req: Request, res: Response) => {
   try {
-    const blogs = await Blog.find()
+    const blogs: BlogDocument[] = await Blog.find({ 'lead.status': 'active' })
     .populate('user')
     .select('-__v')
     .limit(4); 

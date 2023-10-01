@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import User from "../models/user";
+import User, { IUser } from "../models/user";
 
-// ________________________________________ Get Users
+// ________________________________________ get users
 
 const getAllUser = async (req: Request, res: Response) => {
  return User.find()
@@ -9,7 +9,7 @@ const getAllUser = async (req: Request, res: Response) => {
   .catch((error) => res.status(500).json({ error }));
 }
 
-// ________________________________________ Get User
+// ________________________________________ get user
 
 const getUserByID = async (req: Request, res: Response) => {
   const userID = req.params.userID;
@@ -29,19 +29,21 @@ const getUserByID = async (req: Request, res: Response) => {
 
 const limitAgent = async (req: Request, res: Response) => {
   try {
-    const users = await User.find().limit(6); // Apply the limit here
+    const users: IUser[] = await User.find({ 'acc.status': 'active' }).limit(6);
     res.status(200).json({ users });
   } catch (error) {
     res.status(500).json({ error });
   }
 };
 
-// ________________________________________ Search Agent
+// ________________________________________ search agent
 
 const searchAgent = (req: Request, res: Response) => {
   const {searchAgent} = req.query;
-
-  const searchQuery: any = {};
+  
+  const searchQuery: any = {
+    'acc.status': 'active', // filter acc.status
+  };
 
   if (searchAgent) {
     searchQuery["$or"] = [
@@ -60,7 +62,7 @@ const searchAgent = (req: Request, res: Response) => {
     })
 }
 
-// ________________________________________ Manage Owned Estate Listing
+// ________________________________________ manage owned estate listing
 
 const manageListing = async (req: Request, res: Response) => {
   try {
@@ -84,7 +86,7 @@ const manageListing = async (req: Request, res: Response) => {
   }
 };
 
-// ________________________________________ Update User
+// ________________________________________ update user
 
 const updateName = async(req: Request, res: Response) => {
   try {
