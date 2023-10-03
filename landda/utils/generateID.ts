@@ -1,4 +1,4 @@
-// generateID.ts
+// utils/generateID.ts
 
 function getRandomCharacter(characters: string) {
   return characters[Math.floor(Math.random() * characters.length)];
@@ -19,57 +19,50 @@ function generateRandomString(length: number, probability: number) {
   return result;
 }
 
-// ________________________________________ User ID
+// ________________________________________ add letter
+
+export function addLetterID(count: number) {
+  const set1 = generateRandomString(count, 0.5);
+  return `${set1}`;
+}
+
+// ________________________________________ user ID
 
 export function generateUserID() {
-  const set1 = generateRandomString(10, 0.8);
+  const set1 = generateRandomString(10, 0.5);
   return `user-${set1}`;
 }
 
-export function generateUserID2() {
-  const set1 = generateRandomString(14, 0.6);
-  return `user-${set1}`;
-}
+// ________________________________________ list ID
 
-// ________________________________________ List ID
-
-export function generatePostID() {
-  const set1 = generateRandomString(4, 0.8);
-  const set2 = generateRandomString(4, 0.8);
-  const set3 = generateRandomString(4, 0.8);
+export function generateListID() {
+  const set1 = generateRandomString(4, 0.5);
+  const set2 = generateRandomString(4, 0.5);
+  const set3 = generateRandomString(4, 0.5);
 
   return `list-${set1}${set2}${set3}`;
 }
 
-export function generatePostID2() {
-  const set1 = generateRandomString(4, 0.4);
-  const set2 = generateRandomString(4, 0.4);
-  const set3 = generateRandomString(4, 0.4);
-  const set4 = generateRandomString(4, 0.4);
-
-  return `list-${set1}${set2}${set3}${set4}`;
-}
-
-// ________________________________________ Image ID
+// ________________________________________ image ID
 
 export function generateImageID() {
-  const set1 = generateRandomString(32, 0.8);
+  const set1 = generateRandomString(32, 0.5);
 
   return `image-${set1}`;
 }
 
-// ________________________________________ Subscription ID
+// ________________________________________ subscription ID
 
 export function generateSubscriptionID() {
-  const set1 = generateRandomString(6, 0.8);
+  const set1 = generateRandomString(6, 0.5);
 
   return `subs-${set1}`;
 }
 
-// ________________________________________ Blog ID
+// ________________________________________ blog ID
 
 export function generateBlogID() {
-  const set1 = generateRandomString(8, 0.8);
+  const set1 = generateRandomString(8, 0.5);
 
   return `blog-${set1}`;
 }

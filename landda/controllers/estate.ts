@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
 import Estate, { EstateDocument, IEstate } from "../models/estate";
 import { NextFunction, Request, Response } from "express";
-
-import { generateImageID, generatePostID, generatePostID2 } from "../utils/generateID";
+import { generateImageID, generateListID, addLetterID } from "../utils/generateID";
 import { uploadToWasabi } from "../middlewares/wasabi";
 
 // ________________________________________ lib
@@ -60,35 +59,35 @@ const createEstate = async (req: Request, res: Response) => {
   const images = desc.images; // Extract the images array from the request body
   const user = req.body.user;
 
-  // upload images to wasabi
-  await uploadToWasabi(images.originalname, images.buffer);
-  
-  let checkEstateID: any;
-  let isUniqueEstateID: boolean = false;
-  
-  // check estateID 
-  while (!isUniqueEstateID) {
-    checkEstateID = generatePostID();
+  // generate unique estateID
+  const generateUniqueEstateID = async () => {
+    let estateID = generateListID();
+    let addLetterCount = 0;
+    let isUnique = false;
 
-    const existingEstateID = await Estate.findOne({ 'head.estateID': checkEstateID });
-
-    if (!existingEstateID) {
-      isUniqueEstateID = true; 
-    } else {
-      checkEstateID = generatePostID2(); // If duplicate, try using generatePostID2
-
-      const existingEstateID2 = await Estate.findOne({ 'head.estateID': checkEstateID });
-
-      if (!existingEstateID2) {
-        isUniqueEstateID = true; 
+    while (!isUnique) {
+      const existingEstateID = await Estate.findOne({ "head.estateID": estateID });
+      if (!existingEstateID) {
+        isUnique = true;
+      } else {
+        addLetterCount += 2;
+        estateID = generateListID() + addLetterID(addLetterCount);
       }
     }
-  }
+
+    return estateID;
+  };
+
+  // generate unique estateID
+  const estateID = await generateUniqueEstateID();
+
+  // upload images to wasabi
+  await uploadToWasabi(images.originalname, images.buffer);
 
   const estate = new Estate({
     _id: new mongoose.Types.ObjectId(),
     head: {
-      estateID: checkEstateID,
+      estateID: estateID,
       createdAt: new Date(),
       updatedAt: new Date(),
     },

@@ -4,7 +4,7 @@ import User from "../models/user";
 import { Request, Response } from "express";
 import { stripe } from "../middlewares/stripe";
 import { signToken, verifyToken } from "../utils/generateToken";
-import { generateUserID, generateUserID2 } from "../utils/generateID";
+import { generateUserID, addLetterID } from "../utils/generateID";
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
@@ -23,25 +23,27 @@ const signIn = async (req: Request, res: Response) => {
   })
   const stripeID = stripeCustomer.id
 
-  // check userID 
-  let checkUserID: any;
-  let isUniqueUserID: boolean = false;
+  // generate unique userID
+  const generateUniqueUserID = async () => {
+    let userID = generateUserID();
+    let addLetterCount = 0;
+    let isUniqueUserID = false;
 
-  while (!isUniqueUserID) {
-    checkUserID = generateUserID();
-    const existingUserID = await User.findOne({ 'acc.userID': checkUserID });
-    
-    if (!existingUserID) {
-      isUniqueUserID = true;
-    } else {
-      checkUserID = generateUserID2(); // If duplicate, using generateUserID2
-      const existingUserID2 = await User.findOne({ 'acc.userID': checkUserID });
-
-      if(!existingUserID2) {
-        isUniqueUserID = true
+    while (!isUniqueUserID) {
+      const existingUserID = await User.findOne({ 'acc.userID': userID });
+      if (!existingUserID) {
+        isUniqueUserID = true;
+      } else {
+        addLetterCount += 2; // increment by 2 as per your requirement
+        userID = generateUserID() + addLetterID(addLetterCount);
       }
     }
-  }
+
+    return userID;
+  };
+
+  // generate unique userID
+  const userID = await generateUniqueUserID();
   
   User.findOne({ "info.email": email })
     .then((existingUser) => {
@@ -61,7 +63,6 @@ const signIn = async (req: Request, res: Response) => {
         // console.log("existingUser: ", response);
         return response;
       } else {
-        const userID = checkUserID; 
         const newUser = new User({
           acc: {
             userID,
