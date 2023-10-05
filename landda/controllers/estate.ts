@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Estate, { EstateDocument, IEstate } from "../models/estate";
+import SearchRecord, { SearchRecordDocument } from '../models/searchRecord';
 import { NextFunction, Request, Response } from "express";
 import { generateImageID, generateListID, addLetterID } from "../utils/generateID";
 import { uploadToWasabi } from "../middlewares/wasabi";
@@ -209,7 +210,7 @@ const limitEstate = async (req: Request, res: Response) => {
 
 // ________________________________________ searching
 
-const searchEstate = (req: Request, res: Response) => {
+const searchEstate = async (req: Request, res: Response) => {
   const {
     propertySearch,
     propertyType,
@@ -224,7 +225,7 @@ const searchEstate = (req: Request, res: Response) => {
     'head.post': 'active', // filter head.post
   };
 
-  if (propertySearch) {
+  if (propertySearch && propertySearch.toString().length <= 100) {
     searchQuery["$or"] = [
       { "desc.title": { $regex: propertySearch, $options: "i" } },
       { "desc.about": { $regex: propertySearch, $options: "i" } },
@@ -232,7 +233,7 @@ const searchEstate = (req: Request, res: Response) => {
       { "maps.subdistrict": { $regex: propertySearch, $options: "i" } },
       { "maps.district": { $regex: propertySearch, $options: "i" } },
       { "maps.province": { $regex: propertySearch, $options: "i" } },
-      { "maps.postcode": { $regex: propertySearch, $options: "i" } },
+      // { "maps.postcode": { $regex: propertySearch, $options: "i" } },
       { "maps.country": { $regex: propertySearch, $options: "i" } },
     ];
   }
@@ -283,16 +284,42 @@ const searchEstate = (req: Request, res: Response) => {
       break;
   }
 
-  Estate.find(searchQuery)
-    .populate('user')
-    .select('-__v')
-    .sort(sortOption)
-    .then((estates) => {
-      return res.status(200).json({ estates });
-    })
-    .catch((error) => {
-      return res.status(500).json({ error });
-    });
+  try {
+    // Search and retrieve estates
+    const estates = await Estate.find(searchQuery)
+      .populate('user')
+      .select('-__v')
+      .sort(sortOption);
+
+    // Search records
+    if (
+      propertySearch &&
+      propertySearch.toString().length >= 4 &&
+      propertySearch.toString().length <= 100
+    ) {
+      let query = propertySearch.toString()
+      // console.log('Search Record Query:', query);
+
+      const existingRecord = await SearchRecord.findOne({ query });
+      // console.log('Existing Record:', existingRecord);
+
+      if (existingRecord) {
+        existingRecord.count += 1;
+        // console.log('Updated Record:', existingRecord);
+        await existingRecord.save();
+      } else {
+        const today = new Date().toISOString().split('T')[0];
+        const newRecord = new SearchRecord({ query, count: 1, tag: "estate", date: today });
+        await newRecord.save();
+        // console.log('New Record Created:', newRecord);
+      }
+    }
+
+    res.status(200).json({ estates });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error });
+  }
 };
 
 export default {
