@@ -212,9 +212,9 @@ const limitEstate = async (req: Request, res: Response) => {
 
 const searchEstate = async (req: Request, res: Response) => {
   const {
-    propertySearch,
-    propertyType,
-    propertyStatus,
+    keyword,
+    findStatus,
+    findType,
     minBed,
     minBath,
     minPrice,
@@ -225,25 +225,25 @@ const searchEstate = async (req: Request, res: Response) => {
     'head.post': 'active', // filter head.post
   };
 
-  if (propertySearch && propertySearch.toString().length <= 100) {
+  if (keyword && keyword.toString().length <= 100) {
     searchQuery["$or"] = [
-      { "desc.title": { $regex: propertySearch, $options: "i" } },
-      { "desc.about": { $regex: propertySearch, $options: "i" } },
-      { "maps.address": { $regex: propertySearch, $options: "i" } },
-      { "maps.subdistrict": { $regex: propertySearch, $options: "i" } },
-      { "maps.district": { $regex: propertySearch, $options: "i" } },
-      { "maps.province": { $regex: propertySearch, $options: "i" } },
-      // { "maps.postcode": { $regex: propertySearch, $options: "i" } },
-      { "maps.country": { $regex: propertySearch, $options: "i" } },
+      { "desc.title": { $regex: keyword, $options: "i" } },
+      { "desc.about": { $regex: keyword, $options: "i" } },
+      { "maps.address": { $regex: keyword, $options: "i" } },
+      { "maps.subdistrict": { $regex: keyword, $options: "i" } },
+      { "maps.district": { $regex: keyword, $options: "i" } },
+      { "maps.province": { $regex: keyword, $options: "i" } },
+      // { "maps.postcode": { $regex: keyword, $options: "i" } },
+      { "maps.country": { $regex: keyword, $options: "i" } },
     ];
   }
-  if (propertyType) {
-    const typeValues = (propertyType as string).split(',');
-    searchQuery['desc.type'] = { $in: typeValues };
-  }
-  if (propertyStatus) {
-    const statusValues = (propertyStatus as string).split(',');
+  if (findStatus) {
+    const statusValues = (findStatus as string).split(',');
     searchQuery['desc.status'] = { $in: statusValues };
+  }
+  if (findType) {
+    const typeValues = (findType as string).split(',');
+    searchQuery['desc.type'] = { $in: typeValues };
   }
   if (minBed) {
     searchQuery['desc.bed'] = { $gte: Number(minBed) };
@@ -293,11 +293,11 @@ const searchEstate = async (req: Request, res: Response) => {
 
     // Search records
     if (
-      propertySearch &&
-      propertySearch.toString().length >= 4 &&
-      propertySearch.toString().length <= 100
+      keyword &&
+      keyword.toString().length >= 4 &&
+      keyword.toString().length <= 100
     ) {
-      let query = propertySearch.toString()
+      let query = keyword.toString()
       // console.log('Search Record Query:', query);
 
       const existingRecord = await SearchRecord.findOne({ query });

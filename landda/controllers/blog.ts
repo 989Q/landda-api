@@ -107,14 +107,14 @@ const limitBlog = async (req: Request, res: Response) => {
 
 const searchBlog = async (req: Request, res: Response) => {
   try {
-    const { searchBlog } = req.query;
+    const { keyword } = req.query;
     const searchQuery: any = {};
 
-    if (searchBlog) {
+    if (keyword) {
       searchQuery["$or"] = [
-        { "body.tag": { $regex: searchBlog, $options: "i" } },
-        { "body.title": { $regex: searchBlog, $options: "i" } },
-        { "body.about": { $regex: searchBlog, $options: "i" } },
+        { "body.tag": { $regex: keyword, $options: "i" } },
+        { "body.title": { $regex: keyword, $options: "i" } },
+        { "body.about": { $regex: keyword, $options: "i" } },
       ];
     }
 

@@ -39,17 +39,17 @@ const limitAgent = async (req: Request, res: Response) => {
 // ________________________________________ search agent
 
 const searchAgent = (req: Request, res: Response) => {
-  const {searchAgent} = req.query;
+  const { keyword } = req.query;
   
   const searchQuery: any = {
     'acc.status': 'active', // filter acc.status
   };
 
-  if (searchAgent) {
+  if (keyword) {
     searchQuery["$or"] = [
-      { "info.name": { $regex: searchAgent, $options: "i" } },
-      { "info.work": { $regex: searchAgent, $options: "i" } },
-      { "info.about": { $regex: searchAgent, $options: "i" } },
+      { "info.name": { $regex: keyword, $options: "i" } },
+      { "info.work": { $regex: keyword, $options: "i" } },
+      { "info.about": { $regex: keyword, $options: "i" } },
     ]
   }
 

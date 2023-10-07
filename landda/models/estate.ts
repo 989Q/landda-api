@@ -55,7 +55,7 @@ const EstateSchema = new Schema<EstateDocument>({
     },
     seen: { type: Number, default: 0 },
     see: {
-      date: { type: String },
+      date: { type: String, default: "2020-1-01" },
       count: { type: Number, default: 0},
     },
     shares: { type: [String], required: false },
