@@ -36,16 +36,21 @@ const limitAgent = async (req: Request, res: Response) => {
   }
 };
 
-// ________________________________________ search agent
+// ________________________________________ searching
 
-const searchAgent = (req: Request, res: Response) => {
-  const { keyword } = req.query;
+const searchAgent = async (req: Request, res: Response) => {
+  const { 
+    keyword,
+    page = 1
+  } = req.query;
+
+  const pageSize = 9; 
   
   const searchQuery: any = {
-    'acc.status': 'active', // filter acc.status
+    'acc.status': 'active', 
   };
 
-  if (keyword) {
+  if (keyword && keyword.toString().length <= 60) {
     searchQuery["$or"] = [
       { "info.name": { $regex: keyword, $options: "i" } },
       { "info.work": { $regex: keyword, $options: "i" } },
@@ -53,13 +58,22 @@ const searchAgent = (req: Request, res: Response) => {
     ]
   }
 
-  User.find(searchQuery)
-    .then((users) => {
-      return res.status(200).json({ users });
-    })
-    .catch((error) => {
-      return res.status(500).json({ error });
-    })
+  try {
+    // Calculate skip value for pagination
+    const skip = (Number(page) - 1) * pageSize;
+
+    // Calculate total number of records without pagination
+    const totalRecords = await User.countDocuments(searchQuery);
+
+    const users = await User.find(searchQuery)
+      .select('-__v')
+      .skip(skip)
+      .limit(pageSize)
+      
+    return res.status(200).json({ users, totalRecords });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
 }
 
 // ________________________________________ manage owned estate listing

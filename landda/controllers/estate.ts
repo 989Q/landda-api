@@ -220,12 +220,16 @@ const searchEstate = async (req: Request, res: Response) => {
     minPrice,
     maxPrice,
     sorting,
+    page = 1,
   } = req.query;
+
+  const pageSize = 12; // Set your default pageSize here
+
   const searchQuery: any = {
     'head.post': 'active', // filter head.post
   };
 
-  if (keyword && keyword.toString().length <= 100) {
+  if (keyword && keyword.toString().length <= 60) {
     searchQuery["$or"] = [
       { "desc.title": { $regex: keyword, $options: "i" } },
       { "desc.about": { $regex: keyword, $options: "i" } },
@@ -285,17 +289,25 @@ const searchEstate = async (req: Request, res: Response) => {
   }
 
   try {
+    // Calculate skip value for pagination
+    const skip = (Number(page) - 1) * pageSize;
+
+    // Calculate total number of records without pagination
+    const totalRecords = await Estate.countDocuments(searchQuery);
+
     // Search and retrieve estates
     const estates = await Estate.find(searchQuery)
       .populate('user')
       .select('-__v')
-      .sort(sortOption);
+      .sort(sortOption)
+      .skip(skip)
+      .limit(pageSize)
 
     // Search records
     if (
       keyword &&
       keyword.toString().length >= 4 &&
-      keyword.toString().length <= 100
+      keyword.toString().length <= 60
     ) {
       let query = keyword.toString()
       // console.log('Search Record Query:', query);
@@ -315,9 +327,8 @@ const searchEstate = async (req: Request, res: Response) => {
       }
     }
 
-    res.status(200).json({ estates });
+    res.status(200).json({ estates, totalRecords });
   } catch (error) {
-    console.error('Error:', error);
     res.status(500).json({ error });
   }
 };

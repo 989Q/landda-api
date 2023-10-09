@@ -62,8 +62,6 @@ const createBlog = async (req: Request, res: Response) => {
 //   }
 // };
 
-// ________________________________________ Get blog
-
 const getBlogByID = async (req: Request, res: Response) => {
   const blogID = req.params.blogID;
 
@@ -103,26 +101,43 @@ const limitBlog = async (req: Request, res: Response) => {
   }
 };
 
-// ________________________________________ Search blog
+// ________________________________________ searching
 
 const searchBlog = async (req: Request, res: Response) => {
-  try {
-    const { keyword } = req.query;
-    const searchQuery: any = {};
+  const { 
+    keyword,
+    selecting,
+    page = 1,
+  } = req.query;
 
-    if (keyword) {
-      searchQuery["$or"] = [
-        { "body.tag": { $regex: keyword, $options: "i" } },
-        { "body.title": { $regex: keyword, $options: "i" } },
-        { "body.about": { $regex: keyword, $options: "i" } },
-      ];
-    }
+  const pageSize = 9; 
+
+  const searchQuery: any = {
+    'lead.status': 'active',
+  };
+
+  if (keyword && keyword.toString().length <= 60) {
+    searchQuery["$or"] = [
+      { "body.tag": { $regex: keyword, $options: "i" } },
+      { "body.title": { $regex: keyword, $options: "i" } },
+      { "body.about": { $regex: keyword, $options: "i" } },
+    ];
+  }
+
+  try {
+    // Calculate skip value for pagination
+    const skip = (Number(page) - 1) * pageSize;
+
+    // Calculate total number of records without pagination
+    const totalRecords = await Blog.countDocuments(searchQuery);
 
     const blogs = await Blog.find(searchQuery)
       .populate('user')
-      .select('-__v');
+      .select('-__v')
+      .skip(skip)
+      .limit(pageSize)
     
-    return res.status(200).json({ blogs });
+    return res.status(200).json({ blogs, totalRecords });
   } catch (error) {
     res.status(500).json({ error });
   }
