@@ -5,8 +5,11 @@ export interface IBlog {
   lead: {
     blogID: string;
     status: 'active' | 'waiting' | 'hidden';
-    seen?: number;
-    see?: number;
+    seen: number; 
+    see: {
+      date: string,
+      count: number
+    };
     shares?: string[];
     saves?: string[];
     createdAt: Date;
@@ -33,8 +36,11 @@ const Blog = new Schema<BlogDocument>({
       default: "active",
       required: true 
     },
-    seen: { type: Number, required: false },
-    see: { type: Number, required: false },
+    seen: { type: Number, default: 0 },
+    see: {
+      date: { type: String, default: "2020-1-01" },
+      count: { type: Number, default: 0},
+    },
     shares: { type: [String], required: false },
     saves: { type: [String], required: false },
     createdAt: { type: Date, required: true },
@@ -43,7 +49,11 @@ const Blog = new Schema<BlogDocument>({
   body: {
     images: { type: [String], required: true },
     link: { type: String, required: false },
-    tag: { type: [String], require: true },
+    tag: { 
+      type: [String], 
+      required: true, 
+      enum: ['article', 'supported', 'promotion'], 
+    },
     title: { type: String, required: true },
     about: { type: String, required: true },
   },
