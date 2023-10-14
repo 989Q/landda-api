@@ -9,6 +9,11 @@ router.get('/get', controller.getAllUser);
 router.get('/get/:userID', controller.getUserByID)
 router.get('/limit-agents', controller.limitAgent);
 router.get('/search-agents', controller.searchAgent);
+// Saves
+router.get('/card-favorite/:userID', controller.cardFavorites);
+router.get('/list-favorite/:userID', controller.listFavorites);
+router.post('/save-favorite', controller.saveFavorite);
+router.delete('/remove-favorite', controller.removeFavorite);
 // Manage
 router.get('/manage/:userID', validateToken, controller.manageListing);
 // Update

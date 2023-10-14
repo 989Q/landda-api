@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import User, { IUser } from "../models/user";
+import Estate, { IEstate } from "../models/estate";
 
 // ________________________________________ get users
 
@@ -75,6 +76,122 @@ const searchAgent = async (req: Request, res: Response) => {
     res.status(500).json({ error });
   }
 }
+
+// ________________________________________ manage saves(favorite)
+
+const cardFavorites = async (req: Request, res: Response) => {
+  const userID = req.params.userID;
+
+  try {
+    const user = await User.findOne({ "acc.userID": userID });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Extract saved estates from user document
+    const savedEstates = user.saves
+
+    res.status(200).json({ favorites: savedEstates });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+const listFavorites = async (req: Request, res: Response) => {
+  const userID = req.params.userID;
+
+  try {
+    const user = await User.findOne({ "acc.userID": userID })
+      .populate({
+        path: 'saves',
+        populate: {
+          path: 'user', // Populate the 'user' field in the 'IEstate' model
+        },
+      })
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Extract saved estates from user document
+    const savedEstates = user.saves
+
+    res.status(200).json({ favorites: savedEstates });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+const saveFavorite = async (req: Request, res: Response) => {
+  try {
+    const { estateID, userID } = req.body;
+
+    // Find the user
+    const user = await User.findOne({ 'acc.userID': userID });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Check if the estateID is valid
+    const estate = await Estate.findOne({ 'head.estateID': estateID });
+
+    if (!estate) {
+      return res.status(404).json({ error: 'Estate not found' });
+    }
+
+    // Check if the estate is already saved by the user
+    if (user.saves.includes(estate._id)) {
+      return res.status(400).json({ error: 'Estate already saved' });
+    }
+
+    // Save the estate ID to the user's favorites
+    user.saves.push(estate._id);
+    await user.save();
+
+    res.status(200).json({ message: 'Estate saved successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+const removeFavorite = async (req: Request, res: Response) => {
+  try {
+    const { estateID, userID } = req.body;
+
+    // Find the user
+    const user = await User.findOne({ 'acc.userID': userID });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Check if the estateID is valid
+    const estate = await Estate.findOne({ 'head.estateID': estateID });
+
+    if (!estate) {
+      return res.status(404).json({ error: 'Estate not found' });
+    }
+
+    // Check if the estate is in the user's favorites
+    const index = user.saves.indexOf(estate._id);
+
+    if (index === -1) {
+      return res.status(400).json({ error: 'Estate not found in favorites' });
+    }
+
+    // Remove the estate ID from the user's favorites
+    user.saves.splice(index, 1);
+    await user.save();
+
+    res.status(200).json({ message: 'Estate removed from favorites successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 // ________________________________________ manage owned estate listing
 
@@ -266,6 +383,11 @@ export default {
   getAllUser,
   getUserByID,
   searchAgent,
+  // Saves
+  cardFavorites,
+  listFavorites,
+  saveFavorite,
+  removeFavorite,
   // Manage
   manageListing,
   // Update
