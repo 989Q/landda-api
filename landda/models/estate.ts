@@ -10,8 +10,8 @@ export interface IEstate {
       date: string,
       count: number
     };
-    shares?: string[]; 
-    saves?: string[];
+    shares: number
+    saves: number
     createdAt: Date;
     updatedAt: Date;
   };
@@ -58,8 +58,8 @@ const EstateSchema = new Schema<EstateDocument>({
       date: { type: String, default: "2020-1-01" },
       count: { type: Number, default: 0},
     },
-    shares: { type: [String], required: false },
-    saves: { type: [String], required: false },
+    shares: { type: Number, default: 0},
+    saves: { type: Number, default: 0},
     createdAt: { type: Date, required: true }, 
     updatedAt: { type: Date, required: true },
   },
