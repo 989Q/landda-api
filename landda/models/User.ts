@@ -32,6 +32,7 @@ export interface IUser {
     startDate: Date;
     endDate: Date;
   };
+  messages: mongoose.Types.ObjectId[];
   saves: mongoose.Types.ObjectId[];
   estates: mongoose.Types.ObjectId[];
 }
@@ -98,6 +99,7 @@ const UserSchema: Schema = new Schema({
     startDate: { type: Date, required: false },
     endDate: { type: Date, required: false },
   },
+  messages: [{ type: mongoose.Schema.Types.ObjectId, ref: "Message" }],
   saves: [{ type: mongoose.Schema.Types.ObjectId, ref: "Estate" }],
   estates: [{ type: mongoose.Schema.Types.ObjectId, ref: "Estate" }],
 });

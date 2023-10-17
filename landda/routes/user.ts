@@ -12,8 +12,8 @@ router.get('/search-agents', controller.searchAgent);
 // Saves
 router.get('/card-favorite/:userID', controller.cardFavorites);
 router.get('/list-favorite/:userID', controller.listFavorites);
-router.post('/save-favorite', controller.saveFavorite);
-router.delete('/remove-favorite', controller.removeFavorite);
+router.post('/save-favorite', validateToken, controller.saveFavorite);
+router.delete('/remove-favorite', validateToken, controller.removeFavorite);
 // Manage
 router.get('/manage/:userID', validateToken, controller.manageListing);
 // Update

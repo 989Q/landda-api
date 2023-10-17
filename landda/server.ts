@@ -10,6 +10,7 @@ import user from "./routes/User";
 import stripe from "./routes/Stripe";
 import estate from "./routes/estate";
 import blog from "./routes/blog";
+import message from "./routes/message";
 
 const router = express();
 
@@ -50,6 +51,7 @@ const StartServer = () => {
   router.use("/auth/user", auth);
   router.use("/api/user", user);
   router.use("/api/stripe", stripe);
+  router.use("/api/message", message);
   router.use("/api/estate", estate);
   router.use("/api/blog", blog);
 
