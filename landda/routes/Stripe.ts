@@ -1,23 +1,9 @@
 import express from "express";
 import User from "../models/user";
-import Subscription from "../models/subscription";
-
 import { stripe } from "../middlewares/stripe";
 import { validateToken } from "../middlewares/validate";
-import { generateSubscriptionID } from "../utils/generateID";
 
 const router = express.Router();
-
-router.post("/craeteSubscriptionPlan", async(req: any, res: any) => {
-  const response = await Subscription.create(
-    { subscriptionID: generateSubscriptionID(), access: "Basic" },
-    { subscriptionID: generateSubscriptionID(), access: "Standard" },
-    { subscriptionID: generateSubscriptionID(), access: "Premium" }
-  );
-  console.log('craeteSubscriptionPlan: ', response)
-
-  return res.json(response)
-})
 
 // ____________________________________________________________ Stripe
 

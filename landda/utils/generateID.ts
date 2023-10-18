@@ -51,14 +51,6 @@ export function generateImageID() {
   return `image-${set1}`;
 }
 
-// ________________________________________ subscription ID
-
-export function generateSubscriptionID() {
-  const set1 = generateRandomString(6, 0.5);
-
-  return `subs-${set1}`;
-}
-
 // ________________________________________ blog ID
 
 export function generateBlogID() {
