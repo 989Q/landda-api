@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import Estate, { EstateDocument, IEstate } from "../models/estate";
-import SearchRecord, { SearchRecordDocument } from '../models/searchRecord';
 import { NextFunction, Request, Response } from "express";
 import { generateImageID, generateListID, addLetterID } from "../utils/generateID";
 import { uploadToWasabi } from "../middlewares/wasabi";
@@ -312,30 +311,6 @@ const searchEstate = async (req: Request, res: Response) => {
       .sort(sortOption)
       .skip(skip)
       .limit(pageSize)
-
-    // Search records
-    if (
-      keyword &&
-      keyword.toString().length >= 4 &&
-      keyword.toString().length <= 60
-    ) {
-      let query = keyword.toString()
-      // console.log('Search Record Query:', query);
-
-      const existingRecord = await SearchRecord.findOne({ query });
-      // console.log('Existing Record:', existingRecord);
-
-      if (existingRecord) {
-        existingRecord.count += 1;
-        // console.log('Updated Record:', existingRecord);
-        await existingRecord.save();
-      } else {
-        const today = new Date().toISOString().split('T')[0];
-        const newRecord = new SearchRecord({ query, count: 1, tag: "estate", date: today });
-        await newRecord.save();
-        // console.log('New Record Created:', newRecord);
-      }
-    }
 
     res.status(200).json({ estates, totalRecords });
   } catch (error) {
