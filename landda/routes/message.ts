@@ -5,6 +5,7 @@ import { validateToken } from "../middlewares/validate";
 const router = express.Router();
 
 router.post('/send-message', controller.sendMessage);
-router.get('/find-message/:userID', validateToken, controller.readMessages)
+router.get('/search', validateToken, controller.searchMessages)
+router.delete('/delete-message/:message', validateToken, controller.deleteMessages);
 
 export default router;

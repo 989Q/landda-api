@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
+import User from "../models/user";
 import Message from "../models/message";
-import User, { IUserModel } from "../models/user";
 
 const sendMessage = async (req: Request, res: Response) => {
   try {
-    console.log('req.body: ', req.body)
+    console.log("req.body: ", req.body);
     const { sender, text, user, estate } = req.body;
     const sentAt = new Date();
 
@@ -39,35 +39,66 @@ const sendMessage = async (req: Request, res: Response) => {
   }
 };
 
-const readMessages = async (req: Request, res: Response) => {
+export const searchMessages = async (req: Request, res: Response) => {
   try {
-    const { userID } = req.params;
+    const { user, keyword, sorting } = req.query;
 
-    // Find the user
-    const currentUser = await User.findOne({ 'acc.userID': userID })
-      // .populate('messages')
-      .populate({
-        path: 'messages',
-        populate: {
-          path: 'estate', // Populate the 'user' field in the 'IEstate' model
-        },
-      })
-
-    if (!currentUser) {
-      return res.status(404).json({ error: "User not found" });
+    if (!user) {
+      return res.status(400).json({ error: 'User parameter is required' });
     }
 
-    // Extract messages from the user
-    const userMessages = currentUser.messages;
+    // Construct the query based on whether the keyword is provided
+    const query: any = { user: user as string }; // Assuming 'user' is a string, adjust accordingly
 
-    return res.status(200).json({ messages: userMessages });
+    if (keyword) {
+      // Use $or operator to search for text, sender.email, and sender.phone
+      query.$or = [
+        { text: { $regex: keyword as string, $options: 'i' } },
+        { 'sender.email': { $regex: keyword as string, $options: 'i' } },
+        { 'sender.phone': { $regex: keyword as string, $options: 'i' } },
+      ];
+    }
+
+    let sortOption: any = {};
+    if (sorting === 'oldestDate') {
+      sortOption = { sentAt: 1 }; // Ascending order for oldest date
+    } else if (sorting === 'newestDate') {
+      sortOption = { sentAt: -1 }; // Descending order for newest date
+    }
+
+    const messages = await Message.find(query)
+      .sort(sortOption)
+      .populate('estate')
+
+    return res.status(200).json({ messages });
   } catch (error) {
-    return res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ error: "Internal Server Error" });;
   }
-}
+};
 
-// Export the controller functions
+export const deleteMessages = async (req: Request, res: Response) => {
+  try {
+    const message = req.params.message;
+
+    if (!message) {
+      return res.status(400).json({ error: 'Message ID parameter is required' });
+    }
+
+    // Find and remove the message by its ID
+    const deletedMessage = await Message.findByIdAndDelete(message);
+
+    if (!deletedMessage) {
+      return res.status(404).json({ error: 'Message not found' });
+    }
+
+    return res.status(200).json({ message: 'Message deleted successfully', deletedMessage });
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error" });;
+  }
+};
+
 export default {
   sendMessage,
-  readMessages,
+  searchMessages,
+  deleteMessages,
 };
