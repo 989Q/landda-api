@@ -26,8 +26,8 @@ export interface IUser {
   };
   subs: {
     stripeID: string;
-    active?: 'false' | 'true';
-    type: 'free' | 'basic' | 'standard' | 'premium';
+    active: 'false' | 'true';
+    access: 'free' | 'basic' | 'standard' | 'premium';
     payment: String;
     startDate: Date;
     endDate: Date;
@@ -87,9 +87,10 @@ const UserSchema: Schema = new Schema({
     active: { 
       type: String, 
       enum: ["false", "true"], 
-      required: false 
+      default: "false",
+      required: true 
     },
-    type: { 
+    access: { 
       type: String, 
       enum: ["free", "basic", "standard", "premium"], 
       default: "free",

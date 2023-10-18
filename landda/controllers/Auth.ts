@@ -53,7 +53,7 @@ const signIn = async (req: Request, res: Response) => {
           existingUser.info.email,
           existingUser.info.image,
           existingUser.info.name,
-          existingUser.subs.type
+          existingUser.subs.access
         );
         const refreshToken = createRefreshToken(existingUser.acc.userID)
         const userID = existingUser.acc.userID;
@@ -88,7 +88,7 @@ const signIn = async (req: Request, res: Response) => {
               savedUser.info.email,
               savedUser.info.image,
               savedUser.info.name,
-              savedUser.subs.type
+              savedUser.subs.access
             );
             const refreshToken = createRefreshToken(
               savedUser.acc.userID,
@@ -132,7 +132,7 @@ const refreshToken = (req: Request, res: Response) => {
             email: userData.info.email, 
             image: userData.info.image, 
             name: userData.info.name, 
-            type: userData.subs.type
+            access: userData.subs.access
           }, accessTokenSecret, "1d");
           // create new refreshToken
           const newRefreshToken = signToken({ userID: decoded.userID }, refreshTokenSecret, "7d");
@@ -162,9 +162,9 @@ const careteAccessToken = (
   email: string,
   image: string,
   name: string,
-  type: string
+  access: string
 ): string => {
-  const accessToken = signToken({ userID, email, image, name, type }, accessTokenSecret, "1d");
+  const accessToken = signToken({ userID, email, image, name, access }, accessTokenSecret, "1d");
 
   return accessToken;
 }
