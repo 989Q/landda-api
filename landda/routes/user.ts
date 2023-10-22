@@ -1,5 +1,6 @@
 import express from "express";
 import controller from "../controllers/user";
+import localStorage from "../controllers/localStorage"
 // import { Schemas, ValidateJoi } from '../middleware/Joi';
 import { validateToken } from "../middlewares/validate";
 
@@ -7,7 +8,7 @@ const router = express.Router();
 
 router.get('/get', controller.getAllUser);
 router.get('/get/:userID', controller.getUserByID)
-router.get('/limit-agents', controller.limitAgent);
+router.get('/limit-agents', localStorage.limitAgent);
 router.get('/search-agents', controller.searchAgent);
 // Saves
 router.get('/list-favorite/:userID', controller.listFavorites);

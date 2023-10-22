@@ -28,15 +28,6 @@ const getUserByID = async (req: Request, res: Response) => {
   }
 };
 
-const limitAgent = async (req: Request, res: Response) => {
-  try {
-    const users: IUser[] = await User.find({ 'acc.status': 'active' }).limit(6);
-    res.status(200).json({ users });
-  } catch (error) {
-    res.status(500).json({ error });
-  }
-};
-
 // ________________________________________ searching
 
 const searchAgent = async (req: Request, res: Response) => {
@@ -379,7 +370,6 @@ const updateLinks = async (req: Request, res: Response) => {
 }
 
 export default {
-  limitAgent,
   getAllUser,
   getUserByID,
   searchAgent,

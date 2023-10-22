@@ -117,18 +117,6 @@ const getAllBlog = async (req: Request, res: Response) => {
   }
 };
 
-const limitBlog = async (req: Request, res: Response) => {
-  try {
-    const blogs: BlogDocument[] = await Blog.find({ 'lead.status': 'active' })
-      .populate('user')
-      .select('-__v')
-      .limit(4); 
-    res.status(200).json({ blogs });
-  } catch (error) {
-    res.status(500).json({ error });
-  }
-};
-
 // ________________________________________ searching
 
 const searchBlog = async (req: Request, res: Response) => {
@@ -187,6 +175,5 @@ export default {
   createBlog, 
   getBlogByID, 
   getAllBlog, 
-  limitBlog, 
   searchBlog,
 };

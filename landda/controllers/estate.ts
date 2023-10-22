@@ -195,28 +195,6 @@ const getAllEstate = async (req: Request, res: Response) => {
   }
 };
 
-// In limitEstate, it will pick up the first 4 data in the database and send it to the api.
-// But want to make estates values ​​able to randomize the data sent to the API.
-
-const limitEstate = async (req: Request, res: Response) => {
-  try {
-    // const estates: IEstate[] = await Estate.find({ 'head.post': 'active' })
-    //   .populate('user')
-    //   .select('-__v')
-    //   .limit(8);
-    const estates: IEstate[] = await Estate.aggregate([
-      { $match: { 'head.post': 'active' } }, // Match only documents with 'head.post' set to 'active'
-      { $sample: { size: 8 } }, // Randomly sample 8 documents
-      { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } }, // Populate user
-      { $unwind: '$user' }, // Unwind the user array
-      { $project: { __v: 0 } }, // Exclude the __v field
-    ]);
-    return res.status(200).json({ estates });
-  } catch (error) {
-    return res.status(500).json({ error });
-  }
-};
-
 // ________________________________________ searching
 
 const searchEstate = async (req: Request, res: Response) => {
@@ -325,6 +303,5 @@ export default {
   deleteEstate,
   getEstateByID,
   getAllEstate,
-  limitEstate,
   searchEstate,
 };
