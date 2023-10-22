@@ -85,6 +85,7 @@ const limitEstate = async (req: Request, res: Response) => {
           "head.shares": 0,
           "head.saves": 0,
           // user
+          "user._id": 0,
           "user.__v": 0,
           "user.acc": 0,
           // user.info.name

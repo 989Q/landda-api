@@ -186,15 +186,6 @@ const getEstateByID = async (req: Request, res: Response) => {
   }
 };
 
-const getAllEstate = async (req: Request, res: Response) => {
-  try {
-    const estates: IEstate[] = await Estate.find({ 'head.post': 'active' });
-    return res.status(200).json({ estates });
-  } catch (error) {
-    return res.status(500).json({ error });
-  }
-};
-
 // ________________________________________ searching
 
 const searchEstate = async (req: Request, res: Response) => {
@@ -301,7 +292,6 @@ export default {
   createEstate,
   updateEstate,
   deleteEstate,
-  getEstateByID,
-  getAllEstate,
   searchEstate,
+  getEstateByID,
 };
