@@ -12,7 +12,7 @@ router.get('/limit-agents', localStorage.limitAgent);
 router.get('/search-agents', controller.searchAgent);
 // Saves
 router.get('/list-favorite/:userID', controller.listFavorites);
-router.get('/card-favorite/:userID', controller.cardFavorites);
+router.get('/check-favorite/:userID', controller.checkFavorites);
 router.post('/save-favorite', validateToken, controller.saveFavorite);
 router.delete('/remove-favorite', validateToken, controller.removeFavorite);
 // Manage

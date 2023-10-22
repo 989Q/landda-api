@@ -95,7 +95,7 @@ const listFavorites = async (req: Request, res: Response) => {
   }
 };
 
-const cardFavorites = async (req: Request, res: Response) => {
+const checkFavorites = async (req: Request, res: Response) => {
   const userID = req.params.userID;
 
   try {
@@ -105,10 +105,12 @@ const cardFavorites = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    // Extract saved estates from user document
-    const savedEstates = user.saves
+    // Extract saved estates from user document and map to get estateID values
+    const savedEstates = await Estate.find({ _id: { $in: user.saves } });
 
-    res.status(200).json({ favorites: savedEstates });
+    const estateIDs = savedEstates.map((estate) => estate.head.estateID);
+
+    res.status(200).json({ favorites: estateIDs });
   } catch (error) {
     res.status(500).json({ error });
   }
@@ -116,7 +118,7 @@ const cardFavorites = async (req: Request, res: Response) => {
 
 const saveFavorite = async (req: Request, res: Response) => {
   try {
-    const { estateObjectId, userID } = req.body;
+    const { userID, estateID } = req.body;
 
     // find user
     const user = await User.findOne({ 'acc.userID': userID });
@@ -126,7 +128,7 @@ const saveFavorite = async (req: Request, res: Response) => {
     }
 
     // find estate
-    const estate = await Estate.findById(estateObjectId)
+    const estate = await Estate.findOne({ 'head.estateID': estateID })
 
     if (!estate) {
       return res.status(404).json({ error: 'Estate not found' });
@@ -150,7 +152,7 @@ const saveFavorite = async (req: Request, res: Response) => {
 
 const removeFavorite = async (req: Request, res: Response) => {
   try {
-    const { estateObjectId, userID } = req.body;
+    const { userID, estateID } = req.body;
 
     // find user
     const user = await User.findOne({ 'acc.userID': userID });
@@ -160,7 +162,7 @@ const removeFavorite = async (req: Request, res: Response) => {
     }
 
     // find estate
-    const estate = await Estate.findById(estateObjectId)
+    const estate = await Estate.findOne({ 'head.estateID': estateID })
 
     if (!estate) {
       return res.status(404).json({ error: 'Estate not found' });
@@ -374,8 +376,8 @@ export default {
   getUserByID,
   searchAgent,
   // Saves
-  cardFavorites,
   listFavorites,
+  checkFavorites,
   saveFavorite,
   removeFavorite,
   // Manage

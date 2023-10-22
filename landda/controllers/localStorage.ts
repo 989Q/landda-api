@@ -79,6 +79,7 @@ const limitEstate = async (req: Request, res: Response) => {
       { $unwind: "$user" }, // Unwind the user array
       {
         $project: {
+          _id: 0,
           __v: 0, 
           "head.seen": 0,
           "head.see": 0,
