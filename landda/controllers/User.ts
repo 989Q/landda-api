@@ -79,25 +79,6 @@ const searchAgent = async (req: Request, res: Response) => {
 
 // ________________________________________ manage saves(favorite)
 
-const cardFavorites = async (req: Request, res: Response) => {
-  const userID = req.params.userID;
-
-  try {
-    const user = await User.findOne({ "acc.userID": userID });
-
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    // Extract saved estates from user document
-    const savedEstates = user.saves
-
-    res.status(200).json({ favorites: savedEstates });
-  } catch (error) {
-    res.status(500).json({ error });
-  }
-};
-
 const listFavorites = async (req: Request, res: Response) => {
   const userID = req.params.userID;
 
@@ -123,19 +104,38 @@ const listFavorites = async (req: Request, res: Response) => {
   }
 };
 
+const cardFavorites = async (req: Request, res: Response) => {
+  const userID = req.params.userID;
+
+  try {
+    const user = await User.findOne({ "acc.userID": userID });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Extract saved estates from user document
+    const savedEstates = user.saves
+
+    res.status(200).json({ favorites: savedEstates });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
 const saveFavorite = async (req: Request, res: Response) => {
   try {
-    const { estateID, userID } = req.body;
+    const { estateObjectId, userID } = req.body;
 
-    // Find the user
+    // find user
     const user = await User.findOne({ 'acc.userID': userID });
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    // Check if the estateID is valid
-    const estate = await Estate.findOne({ 'head.estateID': estateID });
+    // find estate
+    const estate = await Estate.findById(estateObjectId)
 
     if (!estate) {
       return res.status(404).json({ error: 'Estate not found' });
@@ -159,17 +159,17 @@ const saveFavorite = async (req: Request, res: Response) => {
 
 const removeFavorite = async (req: Request, res: Response) => {
   try {
-    const { estateID, userID } = req.body;
+    const { estateObjectId, userID } = req.body;
 
-    // Find the user
+    // find user
     const user = await User.findOne({ 'acc.userID': userID });
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    // Check if the estateID is valid
-    const estate = await Estate.findOne({ 'head.estateID': estateID });
+    // find estate
+    const estate = await Estate.findById(estateObjectId)
 
     if (!estate) {
       return res.status(404).json({ error: 'Estate not found' });
