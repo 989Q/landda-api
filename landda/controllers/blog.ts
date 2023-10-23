@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import Blog, { BlogDocument } from "../models/blog";
-import { generateBlogID, } from "../utils/generateID";
+import { generateBlogID } from "../utils/generateID";
 
 // ________________________________________ lib
 
@@ -10,20 +10,20 @@ const updateBlogViews = (blog: BlogDocument) => {
   blog.lead.seen = (blog.lead.seen || 0) + 1;
 
   // Update see for the current date
-  const today = new Date().toISOString().split('T')[0];
-  const seeEntry = blog.lead.see; 
+  const today = new Date().toISOString().split("T")[0];
+  const seeEntry = blog.lead.see;
 
   if (seeEntry) {
-      // If the date is different, update it
-      if (seeEntry.date !== today) {
-          seeEntry.date = today;
-          seeEntry.count = 1;
-      } else {
-          seeEntry.count++;
-      }
+    // If the date is different, update it
+    if (seeEntry.date !== today) {
+      seeEntry.date = today;
+      seeEntry.count = 1;
+    } else {
+      seeEntry.count++;
+    }
   } else {
-      // If no entry exists, create a new one
-      blog.lead.see = { date: today, count: 1 };
+    // If no entry exists, create a new one
+    blog.lead.see = { date: today, count: 1 };
   }
 };
 
@@ -35,15 +35,15 @@ const createBlog = async (req: Request, res: Response) => {
 
   let checkBlogID: any;
   let isUniqueBlogID: boolean = false;
-  
+
   if (!isUniqueBlogID) {
     checkBlogID = generateBlogID();
 
-    const existingBlogID = await Blog.findOne({ 'lead.blogID': checkBlogID });
+    const existingBlogID = await Blog.findOne({ "lead.blogID": checkBlogID });
 
     if (!existingBlogID) {
-      isUniqueBlogID = true; 
-    } 
+      isUniqueBlogID = true;
+    }
   }
 
   const blog = new Blog({
@@ -92,12 +92,12 @@ const getBlogByID = async (req: Request, res: Response) => {
 
   try {
     const blog = await Blog.findOne({ "lead.blogID": blogID })
-      .populate('user');
-      
-    if (blog) {
-      updateBlogViews(blog)
+      .populate("user");
 
-      await blog.save()
+    if (blog) {
+      updateBlogViews(blog);
+
+      await blog.save();
 
       return res.status(200).json({ blog });
     } else {
@@ -110,7 +110,7 @@ const getBlogByID = async (req: Request, res: Response) => {
 
 const getAllBlog = async (req: Request, res: Response) => {
   try {
-    const blogs: BlogDocument[] = await Blog.find({ 'lead.status': 'active' });
+    const blogs: BlogDocument[] = await Blog.find({ "lead.status": "active" });
     return res.status(200).json({ blogs });
   } catch (error) {
     return res.status(500).json({ error });
@@ -126,14 +126,14 @@ const searchBlog = async (req: Request, res: Response) => {
     page = 1,
   } = req.query;
 
-  const pageSize = 9; 
+  const pageSize = 9;
 
   const searchQuery: any = {
-    'lead.status': 'active',
+    "lead.status": "active",
   };
 
   // Set the initial value of body.tag to "supported"
-  searchQuery['body.tag'] = 'supported';
+  searchQuery["body.tag"] = "supported";
 
   if (keyword && keyword.toString().length <= 60) {
     searchQuery["$or"] = [
@@ -146,9 +146,9 @@ const searchBlog = async (req: Request, res: Response) => {
   // If select parameter is present, update the searchQuery
   if (select) {
     // Ensure select is a valid value (article, supported, promotion, etc.)
-    const validValues = ['article', 'supported', 'promotion'];
+    const validValues = ["article", "supported", "promotion"];
     if (validValues.includes(select as string)) {
-      searchQuery['body.tag'] = select as string;
+      searchQuery["body.tag"] = select as string;
     }
   }
 
@@ -160,11 +160,11 @@ const searchBlog = async (req: Request, res: Response) => {
     const totalRecords = await Blog.countDocuments(searchQuery);
 
     const blogs = await Blog.find(searchQuery)
-      .populate('user')
-      .select('-__v')
+      .populate("user")
+      .select("-__v")
       .skip(skip)
-      .limit(pageSize)
-    
+      .limit(pageSize);
+
     return res.status(200).json({ blogs, totalRecords });
   } catch (error) {
     res.status(500).json({ error });
@@ -172,8 +172,8 @@ const searchBlog = async (req: Request, res: Response) => {
 };
 
 export default {
-  createBlog, 
-  getBlogByID, 
-  getAllBlog, 
+  createBlog,
+  getBlogByID,
+  getAllBlog,
   searchBlog,
 };

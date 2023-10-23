@@ -44,7 +44,7 @@ export const searchMessages = async (req: Request, res: Response) => {
     const { user, keyword, sorting } = req.query;
 
     if (!user) {
-      return res.status(400).json({ error: 'User parameter is required' });
+      return res.status(400).json({ error: "User parameter is required" });
     }
 
     // Construct the query based on whether the keyword is provided
@@ -53,26 +53,26 @@ export const searchMessages = async (req: Request, res: Response) => {
     if (keyword) {
       // Use $or operator to search for text, sender.email, and sender.phone
       query.$or = [
-        { text: { $regex: keyword as string, $options: 'i' } },
-        { 'sender.email': { $regex: keyword as string, $options: 'i' } },
-        { 'sender.phone': { $regex: keyword as string, $options: 'i' } },
+        { text: { $regex: keyword as string, $options: "i" } },
+        { "sender.email": { $regex: keyword as string, $options: "i" } },
+        { "sender.phone": { $regex: keyword as string, $options: "i" } },
       ];
     }
 
     let sortOption: any = {};
-    if (sorting === 'oldestDate') {
+    if (sorting === "oldestDate") {
       sortOption = { sentAt: 1 }; // Ascending order for oldest date
-    } else if (sorting === 'newestDate') {
+    } else if (sorting === "newestDate") {
       sortOption = { sentAt: -1 }; // Descending order for newest date
     }
 
     const messages = await Message.find(query)
       .sort(sortOption)
-      .populate('estate')
+      .populate("estate");
 
     return res.status(200).json({ messages });
   } catch (error) {
-    return res.status(500).json({ error: "Internal Server Error" });;
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -81,19 +81,23 @@ export const deleteMessages = async (req: Request, res: Response) => {
     const message = req.params.message;
 
     if (!message) {
-      return res.status(400).json({ error: 'Message ID parameter is required' });
+      return res
+        .status(400)
+        .json({ error: "Message ID parameter is required" });
     }
 
     // Find and remove the message by its ID
     const deletedMessage = await Message.findByIdAndDelete(message);
 
     if (!deletedMessage) {
-      return res.status(404).json({ error: 'Message not found' });
+      return res.status(404).json({ error: "Message not found" });
     }
 
-    return res.status(200).json({ message: 'Message deleted successfully', deletedMessage });
+    return res
+      .status(200)
+      .json({ message: "Message deleted successfully", deletedMessage });
   } catch (error) {
-    return res.status(500).json({ error: "Internal Server Error" });;
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 

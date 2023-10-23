@@ -5,11 +5,14 @@ import Blog, { BlogDocument } from "../models/blog";
 
 const limitAgent = async (req: Request, res: Response) => {
   try {
-    const users: IUser[] = await User.find({ "acc.role": "agent", "acc.status": "active" })
+    const users: IUser[] = await User.find({
+      "acc.role": "agent",
+      "acc.status": "active",
+    })
       .limit(6)
       .select({
         _id: 0,
-        __v: 0, 
+        __v: 0,
         // acc using userID, verified
         "acc.logins": 0,
         "acc.status": 0,
@@ -43,11 +46,11 @@ const limitBlog = async (req: Request, res: Response) => {
     const blogs: BlogDocument[] = await Blog.find({ "lead.status": "active" })
       .populate({
         path: "user",
-        select: "-_id info.name", 
+        select: "-_id info.name",
       })
       .select({
         _id: 0,
-        __v: 0, 
+        __v: 0,
         "lead.status": 0,
         "lead.seen": 0,
         "lead.see": 0,
@@ -78,7 +81,7 @@ const limitEstate = async (req: Request, res: Response) => {
       {
         $project: {
           _id: 0,
-          __v: 0, 
+          __v: 0,
           "head.seen": 0,
           "head.see": 0,
           "head.shares": 0,

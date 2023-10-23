@@ -6,7 +6,7 @@ import controller from "../controllers/Auth";
 
 const router = express.Router();
 
-router.post('/google', controller.signIn)
-router.post('/refreshToken', controller.refreshToken)
+router.post("/google", controller.signIn);
+router.post("/refreshToken", controller.refreshToken);
 
 export default router;

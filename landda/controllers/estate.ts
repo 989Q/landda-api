@@ -11,20 +11,20 @@ const updateEstateViews = (estate: EstateDocument) => {
   estate.head.seen = (estate.head.seen || 0) + 1;
 
   // Update see for the current date
-  const today = new Date().toISOString().split('T')[0];
-  const seeEntry = estate.head.see; 
+  const today = new Date().toISOString().split("T")[0];
+  const seeEntry = estate.head.see;
 
   if (seeEntry) {
-      // If the date is different, update it
-      if (seeEntry.date !== today) {
-          seeEntry.date = today;
-          seeEntry.count = 1;
-      } else {
-          seeEntry.count++;
-      }
+    // If the date is different, update it
+    if (seeEntry.date !== today) {
+      seeEntry.date = today;
+      seeEntry.count = 1;
+    } else {
+      seeEntry.count++;
+    }
   } else {
-      // If no entry exists, create a new one
-      estate.head.see = { date: today, count: 1 };
+    // If no entry exists, create a new one
+    estate.head.see = { date: today, count: 1 };
   }
 };
 
@@ -45,7 +45,7 @@ const uploadImages = async (req: any, res: any) => {
       imageUrls.push(imageUrl);
     }
   }
-  
+
   res.json({
     msg: `${req.files.length} Images uploaded successfully`,
     imageUrls: imageUrls,
@@ -66,7 +66,9 @@ const createEstate = async (req: Request, res: Response) => {
     let isUnique = false;
 
     while (!isUnique) {
-      const existingEstateID = await Estate.findOne({ "head.estateID": estateID });
+      const existingEstateID = await Estate.findOne({
+        "head.estateID": estateID,
+      });
       if (!existingEstateID) {
         isUnique = true;
       } else {
@@ -93,7 +95,7 @@ const createEstate = async (req: Request, res: Response) => {
     },
     desc,
     maps,
-    user
+    user,
   });
 
   return estate
@@ -109,10 +111,10 @@ const updateEstate = async (req: Request, res: Response) => {
 
   try {
     // Find the estate by ID
-    const estate = await Estate.findOne({ 'head.estateID': estateID });
+    const estate = await Estate.findOne({ "head.estateID": estateID });
 
     if (!estate) {
-      return res.status(404).json({ message: 'Estate not found' });
+      return res.status(404).json({ message: "Estate not found" });
     }
 
     if (req.body.desc) {
@@ -142,8 +144,8 @@ const updateEstate = async (req: Request, res: Response) => {
 
     return res.status(200).json({ estate: updatedEstate });
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ error: 'Internal server error' });
+    console.log(error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -152,15 +154,17 @@ const deleteEstate = async (req: Request, res: Response) => {
 
   try {
     // Find the estate by ID and remove it
-    const deletedEstate = await Estate.findOneAndRemove({ 'head.estateID': estateID });
+    const deletedEstate = await Estate.findOneAndRemove({
+      "head.estateID": estateID,
+    });
 
     if (!deletedEstate) {
-      return res.status(404).json({ message: 'Estate not found' });
+      return res.status(404).json({ message: "Estate not found" });
     }
 
-    return res.status(200).json({ message: 'Estate deleted successfully' });
+    return res.status(200).json({ message: "Estate deleted successfully" });
   } catch (error) {
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -170,10 +174,10 @@ const getEstateByID = async (req: Request, res: Response) => {
   try {
     const estate = await Estate.findOne({ "head.estateID": estateID })
       .populate({
-        path: 'user',
-        select: '-_id acc.userID acc.verified info.image info.name info.work subs.access',
+        path: "user",
+        select: "-_id acc.userID acc.verified info.image info.name info.work subs.access",
       })
-      .select('-__v');
+      .select("-__v");
     if (estate) {
       // Update views
       updateEstateViews(estate);
@@ -207,7 +211,7 @@ const searchEstate = async (req: Request, res: Response) => {
   const pageSize = 12; // Set your default pageSize here
 
   const searchQuery: any = {
-    'head.post': 'active', // filter head.post
+    "head.post": "active", // filter head.post
   };
 
   if (keyword && keyword.toString().length <= 60) {
@@ -223,25 +227,28 @@ const searchEstate = async (req: Request, res: Response) => {
     ];
   }
   if (findStatus) {
-    const statusValues = (findStatus as string).split(',');
-    searchQuery['desc.status'] = { $in: statusValues };
+    const statusValues = (findStatus as string).split(",");
+    searchQuery["desc.status"] = { $in: statusValues };
   }
   if (findType) {
-    const typeValues = (findType as string).split(',');
-    searchQuery['desc.type'] = { $in: typeValues };
+    const typeValues = (findType as string).split(",");
+    searchQuery["desc.type"] = { $in: typeValues };
   }
   if (minBed) {
-    searchQuery['desc.bed'] = { $gte: Number(minBed) };
+    searchQuery["desc.bed"] = { $gte: Number(minBed) };
   }
   if (minBath) {
-    searchQuery['desc.bath'] = { $gte: Number(minBath) };
+    searchQuery["desc.bath"] = { $gte: Number(minBath) };
   }
   if (minPrice && maxPrice) {
-    searchQuery['desc.price'] = { $gte: Number(minPrice), $lte: Number(maxPrice) };
+    searchQuery["desc.price"] = {
+      $gte: Number(minPrice),
+      $lte: Number(maxPrice),
+    };
   } else if (minPrice) {
-    searchQuery['desc.price'] = { $gte: Number(minPrice) };
+    searchQuery["desc.price"] = { $gte: Number(minPrice) };
   } else if (maxPrice) {
-    searchQuery['desc.price'] = { $lte: Number(maxPrice) };
+    searchQuery["desc.price"] = { $lte: Number(maxPrice) };
   }
 
   let sortOption: any = {};
@@ -279,13 +286,13 @@ const searchEstate = async (req: Request, res: Response) => {
     // Search and retrieve estates
     const estates = await Estate.find(searchQuery)
       .populate({
-        path: 'user',
-        select: '-_id acc.userID acc.verified info.image info.name info.work subs.access',
+        path: "user",
+        select: "-_id acc.userID acc.verified info.image info.name info.work subs.access",
       })
-      .select('-__v')
+      .select("-__v")
       .sort(sortOption)
       .skip(skip)
-      .limit(pageSize)
+      .limit(pageSize);
 
     res.status(200).json({ estates, totalRecords });
   } catch (error) {

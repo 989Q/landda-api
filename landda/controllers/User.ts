@@ -9,8 +9,8 @@ const getUserByID = async (req: Request, res: Response) => {
 
   try {
     const user = await User.findOne({ "acc.userID": userID })
-      .select('-_id -__v -acc.logins -info.email -subs.stripeID -subs.active -messages -saves')
-      .populate('estates');
+      .select("-_id -__v -acc.logins -info.email -subs.stripeID -subs.active -messages -saves")
+      .populate("estates");
 
     if (user) {
       res.status(200).json({ user });
@@ -30,11 +30,11 @@ const searchAgent = async (req: Request, res: Response) => {
     page = 1
   } = req.query;
 
-  const pageSize = 9; 
-  
+  const pageSize = 9;
+
   const searchQuery: any = {
-    'acc.role': 'agent',
-    'acc.status': 'active', 
+    "acc.role": "agent",
+    "acc.status": "active",
   };
 
   if (keyword && keyword.toString().length <= 60) {
@@ -42,7 +42,7 @@ const searchAgent = async (req: Request, res: Response) => {
       { "info.name": { $regex: keyword, $options: "i" } },
       { "info.work": { $regex: keyword, $options: "i" } },
       { "info.about": { $regex: keyword, $options: "i" } },
-    ]
+    ];
   }
 
   try {
@@ -53,15 +53,15 @@ const searchAgent = async (req: Request, res: Response) => {
     const totalRecords = await User.countDocuments(searchQuery);
 
     const users = await User.find(searchQuery)
-      .select('-_id -__v -acc.logins -acc.status -info.email -subs.stripeID -subs.active -messages -saves')
+      .select("-_id -__v -acc.logins -acc.status -info.email -subs.stripeID -subs.active -messages -saves")
       .skip(skip)
-      .limit(pageSize)
-      
+      .limit(pageSize);
+
     return res.status(200).json({ users, totalRecords });
   } catch (error) {
     res.status(500).json({ error });
   }
-}
+};
 
 // ________________________________________ manage saves(favorite)
 
@@ -71,20 +71,20 @@ const listFavorites = async (req: Request, res: Response) => {
   try {
     const user = await User.findOne({ "acc.userID": userID })
       .populate({
-        select: '-_id -head.see -head.seen -head.shares -head.saves',
-        path: 'saves',
+        select: "-_id -head.see -head.seen -head.shares -head.saves",
+        path: "saves",
         populate: {
-          path: 'user', // Populate the 'user' field in the 'IEstate' model
-          select: '-_id acc.userID info.name subs.access', // Select specific fields from the 'user' object
-        },
-      })
+          path: "user", // Populate the 'user' field in the 'IEstate' model
+          select: "-_id acc.userID info.name subs.access", // Select specific fields from the 'user' object
+          },
+      });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     // Extract saved estates from user document
-    const savedEstates = user.saves
+    const savedEstates = user.saves;
 
     res.status(200).json({ favorites: savedEstates });
   } catch (error) {
@@ -99,7 +99,7 @@ const checkFavorites = async (req: Request, res: Response) => {
     const user = await User.findOne({ "acc.userID": userID });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     // Extract saved estates from user document and map to get estateID values
@@ -118,32 +118,32 @@ const saveFavorite = async (req: Request, res: Response) => {
     const { userID, estateID } = req.body;
 
     // find user
-    const user = await User.findOne({ 'acc.userID': userID });
+    const user = await User.findOne({ "acc.userID": userID });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     // find estate
-    const estate = await Estate.findOne({ 'head.estateID': estateID })
+    const estate = await Estate.findOne({ "head.estateID": estateID });
 
     if (!estate) {
-      return res.status(404).json({ error: 'Estate not found' });
+      return res.status(404).json({ error: "Estate not found" });
     }
 
     // Check if the estate is already saved by the user
     if (user.saves.includes(estate._id)) {
-      return res.status(400).json({ error: 'Estate already saved' });
+      return res.status(400).json({ error: "Estate already saved" });
     }
 
     // Save the estate ID to the user's favorites
     user.saves.push(estate._id);
     await user.save();
 
-    res.status(200).json({ message: 'Estate saved successfully' });
+    res.status(200).json({ message: "Estate saved successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -152,34 +152,36 @@ const removeFavorite = async (req: Request, res: Response) => {
     const { userID, estateID } = req.body;
 
     // find user
-    const user = await User.findOne({ 'acc.userID': userID });
+    const user = await User.findOne({ "acc.userID": userID });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     // find estate
-    const estate = await Estate.findOne({ 'head.estateID': estateID })
+    const estate = await Estate.findOne({ "head.estateID": estateID });
 
     if (!estate) {
-      return res.status(404).json({ error: 'Estate not found' });
+      return res.status(404).json({ error: "Estate not found" });
     }
 
     // Check if the estate is in the user's favorites
     const index = user.saves.indexOf(estate._id);
 
     if (index === -1) {
-      return res.status(400).json({ error: 'Estate not found in favorites' });
+      return res.status(400).json({ error: "Estate not found in favorites" });
     }
 
     // Remove the estate ID from the user's favorites
     user.saves.splice(index, 1);
     await user.save();
 
-    res.status(200).json({ message: 'Estate removed from favorites successfully' });
+    res
+      .status(200)
+      .json({ message: "Estate removed from favorites successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -188,13 +190,15 @@ const removeFavorite = async (req: Request, res: Response) => {
 const manageListing = async (req: Request, res: Response) => {
   try {
     // console.log(req.params)
-    const userID = req.params.userID; 
+    const userID = req.params.userID;
 
     // Retrieve the user's data including their owned items
-    const user = await User.findOne({ 'acc.userID': userID }).populate('estates');
+    const user = await User.findOne({ "acc.userID": userID }).populate(
+      "estates"
+    );
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     // Extract owned items from the user object
@@ -203,143 +207,143 @@ const manageListing = async (req: Request, res: Response) => {
     return res.status(200).json({ ownedItems });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Internal Server Error' });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
 // ________________________________________ update user
 
-const updateName = async(req: Request, res: Response) => {
+const updateName = async (req: Request, res: Response) => {
   try {
     const { userID } = req.params;
     const { name } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
-      { 'acc.userID': userID },
-      { 'info.name': name },
+      { "acc.userID": userID },
+      { "info.name": name },
       { new: true }
     );
 
     if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     return res.status(200).json(updatedUser);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
-const updatePhone = async(req: Request, res: Response) => {
+const updatePhone = async (req: Request, res: Response) => {
   try {
     const { userID } = req.params;
     const { phone } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
-      { 'acc.userID': userID },
-      { 'info.phone': phone },
+      { "acc.userID": userID },
+      { "info.phone": phone },
       { new: true }
     );
 
     if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     return res.status(200).json(updatedUser);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
-const updateSpeak = async(req: Request, res: Response) => {
+const updateSpeak = async (req: Request, res: Response) => {
   try {
     const { userID } = req.params;
     const { speak } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
-      { 'acc.userID': userID },
-      { 'info.speak': speak },
+      { "acc.userID": userID },
+      { "info.speak": speak },
       { new: true }
     );
 
     if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     return res.status(200).json(updatedUser);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
-const updateWork = async(req: Request, res: Response) => {
+const updateWork = async (req: Request, res: Response) => {
   try {
     const { userID } = req.params;
     const { work } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
-      { 'acc.userID': userID },
-      { 'info.work': work },
+      { "acc.userID": userID },
+      { "info.work": work },
       { new: true }
     );
 
     if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     return res.status(200).json(updatedUser);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
-const updateLive = async(req: Request, res: Response) => {
+const updateLive = async (req: Request, res: Response) => {
   try {
     const { userID } = req.params;
     const { live } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
-      { 'acc.userID': userID },
-      { 'info.live': live },
+      { "acc.userID": userID },
+      { "info.live": live },
       { new: true }
     );
 
     if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     return res.status(200).json(updatedUser);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
-const updateAbout = async(req: Request, res: Response) => {
+const updateAbout = async (req: Request, res: Response) => {
   try {
     const { userID } = req.params;
     const { about } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
-      { 'acc.userID': userID },
-      { 'info.about': about },
+      { "acc.userID": userID },
+      { "info.about": about },
       { new: true }
     );
 
     if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     return res.status(200).json(updatedUser);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 const updateLinks = async (req: Request, res: Response) => {
   try {
@@ -347,26 +351,26 @@ const updateLinks = async (req: Request, res: Response) => {
     const { link1, link2, link3, link4 } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
-      { 'acc.userID': userID },
+      { "acc.userID": userID },
       {
-        'info.link1': link1,
-        'info.link2': link2,
-        'info.link3': link3,
-        'info.link4': link4,
+        "info.link1": link1,
+        "info.link2": link2,
+        "info.link3": link3,
+        "info.link4": link4,
       },
       { new: true }
     );
 
     if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     return res.status(200).json(updatedUser);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 export default {
   getUserByID,
