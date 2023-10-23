@@ -169,7 +169,10 @@ const getEstateByID = async (req: Request, res: Response) => {
 
   try {
     const estate = await Estate.findOne({ "head.estateID": estateID })
-      .populate('user')
+      .populate({
+        path: 'user',
+        select: '-_id acc.userID acc.verified info.image info.name info.work subs.access',
+      })
       .select('-__v');
     if (estate) {
       // Update views
@@ -275,7 +278,10 @@ const searchEstate = async (req: Request, res: Response) => {
 
     // Search and retrieve estates
     const estates = await Estate.find(searchQuery)
-      .populate('user')
+      .populate({
+        path: 'user',
+        select: '-_id acc.userID acc.verified info.image info.name info.work subs.access',
+      })
       .select('-__v')
       .sort(sortOption)
       .skip(skip)

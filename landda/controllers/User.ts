@@ -2,21 +2,15 @@ import { Request, Response } from "express";
 import User, { IUser } from "../models/user";
 import Estate, { IEstate } from "../models/estate";
 
-// ________________________________________ get users
-
-const getAllUser = async (req: Request, res: Response) => {
- return User.find()
-  .then((users) => res.status(200).json({ users }))
-  .catch((error) => res.status(500).json({ error }));
-}
-
 // ________________________________________ get user
 
 const getUserByID = async (req: Request, res: Response) => {
   const userID = req.params.userID;
 
   try {
-    const user = await User.findOne({ "acc.userID": userID }).populate('estates');
+    const user = await User.findOne({ "acc.userID": userID })
+      .select('-_id -__v -acc.logins -info.email -subs.stripeID -subs.active -messages -saves')
+      .populate('estates');
 
     if (user) {
       res.status(200).json({ user });
@@ -39,6 +33,7 @@ const searchAgent = async (req: Request, res: Response) => {
   const pageSize = 9; 
   
   const searchQuery: any = {
+    'acc.role': 'agent',
     'acc.status': 'active', 
   };
 
@@ -58,7 +53,7 @@ const searchAgent = async (req: Request, res: Response) => {
     const totalRecords = await User.countDocuments(searchQuery);
 
     const users = await User.find(searchQuery)
-      .select('-__v')
+      .select('-_id -__v -acc.logins -acc.status -info.email -subs.stripeID -subs.active -messages -saves')
       .skip(skip)
       .limit(pageSize)
       
@@ -76,9 +71,11 @@ const listFavorites = async (req: Request, res: Response) => {
   try {
     const user = await User.findOne({ "acc.userID": userID })
       .populate({
+        select: '-_id -head.see -head.seen -head.shares -head.saves',
         path: 'saves',
         populate: {
           path: 'user', // Populate the 'user' field in the 'IEstate' model
+          select: '-_id acc.userID info.name subs.access', // Select specific fields from the 'user' object
         },
       })
 
@@ -372,7 +369,6 @@ const updateLinks = async (req: Request, res: Response) => {
 }
 
 export default {
-  getAllUser,
   getUserByID,
   searchAgent,
   // Saves

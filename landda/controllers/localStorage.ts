@@ -5,7 +5,7 @@ import Blog, { BlogDocument } from "../models/blog";
 
 const limitAgent = async (req: Request, res: Response) => {
   try {
-    const users: IUser[] = await User.find({ "acc.status": "active" })
+    const users: IUser[] = await User.find({ "acc.role": "agent", "acc.status": "active" })
       .limit(6)
       .select({
         _id: 0,
@@ -43,9 +43,7 @@ const limitBlog = async (req: Request, res: Response) => {
     const blogs: BlogDocument[] = await Blog.find({ "lead.status": "active" })
       .populate({
         path: "user",
-        // Include both info.name and info.image and exclude _id
-        // select: "info.name info.image -_id", 
-        select: "info.name -_id", 
+        select: "-_id info.name", 
       })
       .select({
         _id: 0,
