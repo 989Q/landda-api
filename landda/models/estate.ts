@@ -1,23 +1,23 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { IUser } from './user';
+import { IUser } from "./user";
 
 export interface IEstate {
   head: {
     estateID: string;
-    post: 'active' | 'waiting' | 'hidden' | 'sold';
-    seen: number; 
+    post: "active" | "waiting" | "hidden" | "sold";
+    seen: number;
     see: {
-      date: string,
-      count: number
+      date: string;
+      count: number;
     };
-    shares: number
-    saves: number
+    shares: number;
+    saves: number;
     createdAt: Date;
     updatedAt: Date;
   };
   desc: {
     images: string[];
-    status: 'rentPerDay' | 'rentPerMonth' | 'rentPerYear' | 'sale'
+    status: "rentPerDay" | "rentPerMonth" | "rentPerYear" | "sale";
     type: string;
     curr: string;
     price: number;
@@ -31,13 +31,13 @@ export interface IEstate {
     secs: string[];
   };
   maps: {
-    link?: string; 
-    address?: string; 
+    link?: string;
+    address?: string;
     subdistrict: string;
     district: string;
     province: string;
-    postcode?: number; 
-    country: string; 
+    postcode?: number;
+    country: string;
   };
   user: mongoose.Types.ObjectId | IUser;
 }
@@ -56,11 +56,11 @@ const EstateSchema = new Schema<EstateDocument>({
     seen: { type: Number, default: 0 },
     see: {
       date: { type: String, default: "2020-1-01" },
-      count: { type: Number, default: 0},
+      count: { type: Number, default: 0 },
     },
-    shares: { type: Number, default: 0},
-    saves: { type: Number, default: 0},
-    createdAt: { type: Date, required: true }, 
+    shares: { type: Number, default: 0 },
+    saves: { type: Number, default: 0 },
+    createdAt: { type: Date, required: true },
     updatedAt: { type: Date, required: true },
   },
   desc: {

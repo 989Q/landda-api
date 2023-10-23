@@ -1,14 +1,14 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { IUser } from './user';
+import { IUser } from "./user";
 
 export interface IBlog {
   lead: {
     blogID: string;
-    status: 'active' | 'waiting' | 'hidden';
-    seen: number; 
+    status: "active" | "waiting" | "hidden";
+    seen: number;
     see: {
-      date: string,
-      count: number
+      date: string;
+      count: number;
     };
     shares?: string[];
     saves?: string[];
@@ -30,16 +30,16 @@ export interface BlogDocument extends IBlog, Document {}
 const Blog = new Schema<BlogDocument>({
   lead: {
     blogID: { type: String, required: true },
-    status: { 
-      type: String, 
-      enum: ["active", "waiting", "hidden"], 
+    status: {
+      type: String,
+      enum: ["active", "waiting", "hidden"],
       default: "active",
-      required: true 
+      required: true,
     },
     seen: { type: Number, default: 0 },
     see: {
       date: { type: String, default: "2020-1-01" },
-      count: { type: Number, default: 0},
+      count: { type: Number, default: 0 },
     },
     shares: { type: [String], required: false },
     saves: { type: [String], required: false },
@@ -49,10 +49,10 @@ const Blog = new Schema<BlogDocument>({
   body: {
     images: { type: [String], required: true },
     link: { type: String, required: false },
-    tag: { 
-      type: [String], 
-      required: true, 
-      enum: ['article', 'supported', 'promotion'], 
+    tag: {
+      type: [String],
+      required: true,
+      enum: ["article", "supported", "promotion"],
     },
     title: { type: String, required: true },
     about: { type: String, required: true },

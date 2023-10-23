@@ -3,10 +3,10 @@ import mongoose, { Document, Schema } from "mongoose";
 export interface IUser {
   acc: {
     userID: string;
-    logins: ('google' | 'facebook' | 'email')[];
-    status: 'active' | 'wait' | 'hidden';
-    role: 'user' | 'agent' | 'partner' | 'admin';
-    verified: 'false' | 'true';
+    logins: ("google" | "facebook" | "email")[];
+    status: "active" | "wait" | "hidden";
+    role: "user" | "agent" | "partner" | "admin";
+    verified: "false" | "true";
     createdAt: Date;
     updatedAt: Date;
   };
@@ -26,8 +26,8 @@ export interface IUser {
   };
   subs: {
     stripeID: string;
-    active: 'false' | 'true';
-    access: 'free' | 'basic' | 'standard' | 'premium';
+    active: "false" | "true";
+    access: "free" | "basic" | "standard" | "premium";
     payment: String;
     startDate: Date;
     endDate: Date;
@@ -42,11 +42,11 @@ export interface IUserModel extends IUser, Document {}
 const UserSchema: Schema = new Schema({
   acc: {
     userID: { type: String, required: true },
-    logins: { 
-      type: [String], 
-      enum: ["google", "facebook", "email"], 
-      required: true 
-    }, 
+    logins: {
+      type: [String],
+      enum: ["google", "facebook", "email"],
+      required: true,
+    },
     status: {
       type: String,
       enum: ["active", "wait", "hidden"],
@@ -84,18 +84,18 @@ const UserSchema: Schema = new Schema({
   },
   subs: {
     stripeID: { type: String, required: true },
-    active: { 
-      type: String, 
-      enum: ["false", "true"], 
+    active: {
+      type: String,
+      enum: ["false", "true"],
       default: "false",
-      required: true 
+      required: true,
     },
-    access: { 
-      type: String, 
-      enum: ["free", "basic", "standard", "premium"], 
+    access: {
+      type: String,
+      enum: ["free", "basic", "standard", "premium"],
       default: "free",
-      required: true 
-    }, 
+      required: true,
+    },
     payment: { type: String, required: false },
     startDate: { type: Date, required: false },
     endDate: { type: Date, required: false },
