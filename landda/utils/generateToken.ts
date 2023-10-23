@@ -3,7 +3,11 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 // sign jwt
-const signToken = (payload: JwtPayload, secret: any, expiresIn: string): any => {
+const signToken = (
+  payload: JwtPayload,
+  secret: any,
+  expiresIn: string
+): any => {
   return jwt.sign(payload, secret, { expiresIn });
 };
 

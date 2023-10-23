@@ -5,9 +5,9 @@ function getRandomCharacter(characters: string) {
 }
 
 function generateRandomString(length: number, probability: number) {
-  let result = '';
-  const letters = 'abcdefghijklmnopqrstuvwxyz';
-  const numbers = '0123456789';
+  let result = "";
+  const letters = "abcdefghijklmnopqrstuvwxyz";
+  const numbers = "0123456789";
   for (let i = 0; i < length; i++) {
     const randomNumber = Math.random();
     if (randomNumber <= probability) {
@@ -63,7 +63,7 @@ export function generateBlogID() {
 //   let result = "";
 //   const characters = "abcdefghijklmnopqrstuvwxyz01234567890123456789012345678901234567890123456789";
 //   const segmentLengths = [6, 4, 4];
-  
+
 //   for (let i = 0; i < segmentLengths.length; i++) {
 //     for (let j = 0; j < segmentLengths[i]; j++) {
 //       const randomIndex = Math.floor(Math.random() * characters.length);
@@ -73,6 +73,6 @@ export function generateBlogID() {
 //       result += "-";
 //     }
 //   }
-  
+
 //   return result;
 // }
