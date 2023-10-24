@@ -6,6 +6,7 @@ import { validateToken } from "../middlewares/validate";
 
 const router = express.Router();
 
+// get, search
 router.get("/get/:userID", controller.getUserByID);
 router.get("/limit-agents", localStorage.limitAgent);
 router.get("/search-agents", controller.searchAgent);
