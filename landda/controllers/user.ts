@@ -213,9 +213,26 @@ const manageListing = async (req: Request, res: Response) => {
 
 // ________________________________________ update user
 
-const updateName = async (req: Request, res: Response) => {
+const getUserInfo = async (req: any, res: Response) => {
+  const userID = req.user.userID;
+
   try {
-    const { userID } = req.params;
+    const user = await User.findOne({ "acc.userID": userID })
+      .select("-_id -__v -acc.logins -messages -saves");
+
+    if (user) {
+      res.status(200).json({ user });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+const updateName = async (req: any, res: Response) => {
+  try {
+    const userID = req.user.userID;
     const { name } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
@@ -235,9 +252,9 @@ const updateName = async (req: Request, res: Response) => {
   }
 };
 
-const updatePhone = async (req: Request, res: Response) => {
+const updatePhone = async (req: any, res: Response) => {
   try {
-    const { userID } = req.params;
+    const userID = req.user.userID;
     const { phone } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
@@ -257,9 +274,9 @@ const updatePhone = async (req: Request, res: Response) => {
   }
 };
 
-const updateSpeak = async (req: Request, res: Response) => {
+const updateSpeak = async (req: any, res: Response) => {
   try {
-    const { userID } = req.params;
+    const userID = req.user.userID;
     const { speak } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
@@ -279,9 +296,9 @@ const updateSpeak = async (req: Request, res: Response) => {
   }
 };
 
-const updateWork = async (req: Request, res: Response) => {
+const updateWork = async (req: any, res: Response) => {
   try {
-    const { userID } = req.params;
+    const userID = req.user.userID;
     const { work } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
@@ -301,9 +318,9 @@ const updateWork = async (req: Request, res: Response) => {
   }
 };
 
-const updateLive = async (req: Request, res: Response) => {
+const updateLive = async (req: any, res: Response) => {
   try {
-    const { userID } = req.params;
+    const userID = req.user.userID;
     const { live } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
@@ -323,9 +340,9 @@ const updateLive = async (req: Request, res: Response) => {
   }
 };
 
-const updateAbout = async (req: Request, res: Response) => {
+const updateAbout = async (req: any, res: Response) => {
   try {
-    const { userID } = req.params;
+    const userID = req.user.userID;
     const { about } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
@@ -345,9 +362,9 @@ const updateAbout = async (req: Request, res: Response) => {
   }
 };
 
-const updateLinks = async (req: Request, res: Response) => {
+const updateLinks = async (req: any, res: Response) => {
   try {
-    const { userID } = req.params;
+    const userID = req.user.userID;
     const { link1, link2, link3, link4 } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
@@ -383,6 +400,7 @@ export default {
   // Manage
   manageListing,
   // Update
+  getUserInfo,
   updateName,
   updatePhone,
   updateSpeak,
