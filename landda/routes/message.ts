@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.post("/send-message", controller.sendMessage);
 router.get("/search", validateToken, controller.searchMessages);
-router.delete("/delete-message/:message", validateToken, controller.deleteMessages);
+router.delete("/delete-message/:messageObjectId", validateToken, controller.deleteMessages);
 
 export default router;

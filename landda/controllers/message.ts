@@ -1,14 +1,29 @@
 import { Request, Response } from "express";
 import User from "../models/user";
 import Message from "../models/message";
- 
+import Estate from "../models/estate";
+
 const sendMessage = async (req: Request, res: Response) => {
+  const { sender, text, userID, estateID } = req.body;
+
   try {
-    console.log("req.body: ", req.body);
-    const { sender, text, user, estate } = req.body;
+    // find user by userID
+    const user = await User.findOne({ "acc.userID": userID });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // find estate by estateID
+    const estate = await Estate.findOne({ "head.estateID": estateID });
+  
+    if (!estate) {
+      return res.status(404).json({ error: "Estate not found" });
+    }
+
     const sentAt = new Date();
 
-    // Create a new message
+    // create new message
     const newMessage = new Message({
       sender,
       text,
@@ -20,18 +35,11 @@ const sendMessage = async (req: Request, res: Response) => {
     // Save the message to the database
     await newMessage.save();
 
-    // Find the user by ID
-    const currentUser = await User.findById(user);
-
-    if (!currentUser) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
     // Add the new message to the user's messages array
-    currentUser.messages.push(newMessage._id);
+    user.messages.push(newMessage._id);
 
     // Save the updated user document
-    await currentUser.save();
+    await user.save();
 
     return res.status(201).json({ message: "Message sent successfully" });
   } catch (error) {
@@ -40,10 +48,10 @@ const sendMessage = async (req: Request, res: Response) => {
 };
 
 export const searchMessages = async (req: any, res: Response) => {
-  try {
-    const userID = req.user.userID; 
-    const { keyword, sorting } = req.query;
+  const userID = req.user.userID; 
+  const { keyword, sorting } = req.query;
 
+  try {
     const user = await User.findOne({ "acc.userID": userID })
       .populate({
         path: "messages",
@@ -91,26 +99,33 @@ export const searchMessages = async (req: any, res: Response) => {
   }
 };
 
-export const deleteMessages = async (req: Request, res: Response) => {
+export const deleteMessages = async (req: any, res: Response) => {  
+  const userID = req.user.userID; 
+  const messageObjectId = req.params.messageObjectId;
+  
   try {
-    const message = req.params.message;
+    // Find the user by userID and populate the "messages" field
+    const user = await User.findOne({ "acc.userID": userID }).populate("messages");
 
-    if (!message) {
-      return res
-        .status(400)
-        .json({ error: "Message ID parameter is required" });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
     }
 
-    // Find and remove the message by its ID
-    const deletedMessage = await Message.findByIdAndDelete(message);
+    // Find the message in the user's messages list
+    const messageIndex = user.messages.findIndex((message) => message._id.toString() === messageObjectId);
 
-    if (!deletedMessage) {
+    if (messageIndex === -1) {
       return res.status(404).json({ error: "Message not found" });
     }
 
-    return res
-      .status(200)
-      .json({ message: "Message deleted successfully", deletedMessage });
+    // Remove the message from the user's messages list
+    user.messages.splice(messageIndex, 1);
+    await user.save();
+
+    // You may also want to delete the message from the database if needed
+    await Message.findByIdAndRemove(messageObjectId);
+
+    res.json({ message: "Message deleted successfully" });
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });
   }
