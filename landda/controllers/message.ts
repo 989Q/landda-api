@@ -68,17 +68,20 @@ export const searchMessages = async (req: any, res: Response) => {
     let messages = user.messages; // Use let here to allow reassignment
 
     if (keyword) {
+      // Limit the keyword to 60 characters
+      const limitedKeyword = keyword.substring(0, 60).toLowerCase();
+
       // If a keyword is provided, filter messages based on the keyword
       const filteredMessages = messages.filter((message: any) => {
-        const messageText = message.text || "";
-        const senderEmail = message.sender.email || "";
-        const senderPhone = message.sender.phone || "";
+        const messageText = (message.text || "").toLowerCase();
+        const senderEmail = (message.sender.email || "").toLowerCase();
+        const senderPhone = (message.sender.phone || "").toLowerCase();
 
         // Check for the keyword in text, sender.email, and sender.phone
         return (
-          messageText.includes(keyword as string) ||
-          senderEmail.includes(keyword as string) ||
-          senderPhone.includes(keyword as string)
+          messageText.includes(limitedKeyword) ||
+          senderEmail.includes(limitedKeyword) ||
+          senderPhone.includes(limitedKeyword)
         );
       });
       

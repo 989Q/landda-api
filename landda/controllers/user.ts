@@ -201,20 +201,23 @@ const searchListing = async (req: any, res: Response) => {
     let ownedItems = user.estates;
 
     if (keyword) {
+      // Limit the keyword to 60 characters
+      const limitedKeyword = keyword.substring(0, 60).toLowerCase();
+
       // Filter ownedItems based on the keyword
       ownedItems = ownedItems.filter((item: any) => {
         // Modify this condition to match your filtering criteria
         return (
-          item.desc.title.toLowerCase().includes(keyword.toLowerCase()) ||
-          item.desc.about.toLowerCase().includes(keyword.toLowerCase()) ||
+          item.desc.title.toLowerCase().includes(limitedKeyword) ||
+          item.desc.about.toLowerCase().includes(limitedKeyword) ||
           // maps
-          item.maps.address.toLowerCase().includes(keyword.toLowerCase()) ||
-          item.maps.subdistrict.toLowerCase().includes(keyword.toLowerCase()) ||
-          item.maps.district.toLowerCase().includes(keyword.toLowerCase()) ||
-          item.maps.address.toLowerCase().includes(keyword.toLowerCase()) ||
-          item.maps.province.toLowerCase().includes(keyword.toLowerCase()) ||
+          item.maps.address.toLowerCase().includes(limitedKeyword) ||
+          item.maps.subdistrict.toLowerCase().includes(limitedKeyword) ||
+          item.maps.district.toLowerCase().includes(limitedKeyword) ||
+          item.maps.address.toLowerCase().includes(limitedKeyword) ||
+          item.maps.province.toLowerCase().includes(limitedKeyword) ||
           // item.maps.postcode.includes(keyword) ||
-          item.maps.country.toLowerCase().includes(keyword.toLowerCase()) 
+          item.maps.country.toLowerCase().includes(limitedKeyword) 
         );
       });
     }

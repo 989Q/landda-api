@@ -15,7 +15,7 @@ router.get("/list-favorite/:userID", controller.listFavorites);
 router.get("/check-favorite/:userID", controller.checkFavorites);
 router.post("/save-favorite", validateToken, controller.saveFavorite);
 router.delete("/remove-favorite", validateToken, controller.removeFavorite);
-// Manage, search listing
+// manage, search listing
 router.get("/search-listing", validateToken, controller.searchListing);
 // update
 router.get("/get-info", validateToken, controller.getUserInfo);
