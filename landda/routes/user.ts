@@ -10,14 +10,14 @@ const router = express.Router();
 router.get("/get/:userID", controller.getUserByID);
 router.get("/limit-agents", localStorage.limitAgent);
 router.get("/search-agents", controller.searchAgent);
-// Saves
+// saves
 router.get("/list-favorite/:userID", controller.listFavorites);
 router.get("/check-favorite/:userID", controller.checkFavorites);
 router.post("/save-favorite", validateToken, controller.saveFavorite);
 router.delete("/remove-favorite", validateToken, controller.removeFavorite);
-// Manage
-router.get("/manage/:userID", validateToken, controller.manageListing);
-// Update
+// Manage, search listing
+router.get("/search-listing", validateToken, controller.searchListing);
+// update
 router.get("/get-info", validateToken, controller.getUserInfo);
 router.put("/update-name", validateToken, controller.updateName);
 router.put("/update-work", validateToken, controller.updateWork);

@@ -187,22 +187,47 @@ const removeFavorite = async (req: Request, res: Response) => {
 
 // ________________________________________ manage owned estate listing
 
-const manageListing = async (req: Request, res: Response) => {
+const searchListing = async (req: any, res: Response) => {
+  const userID = req.user.userID;
+  const { keyword, sorting } = req.query;
+
   try {
-    // console.log(req.params)
-    const userID = req.params.userID;
+    const user = await User.findOne({ "acc.userID": userID })
+      .populate("estates");
 
-    // Retrieve the user's data including their owned items
-    const user = await User.findOne({ "acc.userID": userID }).populate(
-      "estates"
-    );
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    if (!user) {return res.status(404).json({ message: "User not found" });}
 
     // Extract owned items from the user object
-    const ownedItems = user.estates;
+    let ownedItems = user.estates;
+
+    if (keyword) {
+      // Filter ownedItems based on the keyword
+      ownedItems = ownedItems.filter((item: any) => {
+        // Modify this condition to match your filtering criteria
+        return (
+          item.desc.title.toLowerCase().includes(keyword.toLowerCase()) ||
+          item.desc.about.toLowerCase().includes(keyword.toLowerCase()) ||
+          // maps
+          item.maps.address.toLowerCase().includes(keyword.toLowerCase()) ||
+          item.maps.subdistrict.toLowerCase().includes(keyword.toLowerCase()) ||
+          item.maps.district.toLowerCase().includes(keyword.toLowerCase()) ||
+          item.maps.address.toLowerCase().includes(keyword.toLowerCase()) ||
+          item.maps.province.toLowerCase().includes(keyword.toLowerCase()) ||
+          // item.maps.postcode.includes(keyword) ||
+          item.maps.country.toLowerCase().includes(keyword.toLowerCase()) 
+        );
+      });
+    }
+
+    if (sorting === 'highestPrice') {
+      ownedItems.sort((a: any, b: any) => b.desc.price - a.desc.price);
+    } else if (sorting === 'lowestPrice') {
+      ownedItems.sort((a: any, b: any) => a.desc.price - b.desc.price);
+    } else if (sorting === 'newestDate') {
+      ownedItems.sort((a: any, b: any) => b.head.updatedAt - a.head.updatedAt);
+    } else if (sorting === 'oldestDate') {
+      ownedItems.sort((a: any, b: any) => a.head.updatedAt - b.head.updatedAt);
+    }
 
     return res.status(200).json({ ownedItems });
   } catch (error) {
@@ -398,7 +423,7 @@ export default {
   saveFavorite,
   removeFavorite,
   // Manage
-  manageListing,
+  searchListing,
   // Update
   getUserInfo,
   updateName,
