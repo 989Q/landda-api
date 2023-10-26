@@ -36,7 +36,7 @@ export interface IEstate {
     subdistrict: string;
     district: string;
     province: string;
-    postcode?: number;
+    postcode?: string;
     country: string;
   };
   user: mongoose.Types.ObjectId | IUser;
@@ -88,7 +88,7 @@ const EstateSchema = new Schema<EstateDocument>({
     subdistrict: { type: String, required: true },
     district: { type: String, required: true },
     province: { type: String, required: true },
-    postcode: { type: Number, required: false },
+    postcode: { type: String, required: false },
     country: { type: String, required: true },
   },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

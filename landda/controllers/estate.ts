@@ -222,7 +222,7 @@ const searchEstate = async (req: Request, res: Response) => {
       { "maps.subdistrict": { $regex: keyword, $options: "i" } },
       { "maps.district": { $regex: keyword, $options: "i" } },
       { "maps.province": { $regex: keyword, $options: "i" } },
-      // { "maps.postcode": { $regex: keyword, $options: "i" } },
+      { "maps.postcode": { $regex: keyword, $options: "i" } },
       { "maps.country": { $regex: keyword, $options: "i" } },
     ];
   }
@@ -296,6 +296,7 @@ const searchEstate = async (req: Request, res: Response) => {
 
     res.status(200).json({ estates, totalRecords });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error });
   }
 };

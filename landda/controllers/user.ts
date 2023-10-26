@@ -216,7 +216,7 @@ const searchListing = async (req: any, res: Response) => {
           item.maps.district.toLowerCase().includes(limitedKeyword) ||
           item.maps.address.toLowerCase().includes(limitedKeyword) ||
           item.maps.province.toLowerCase().includes(limitedKeyword) ||
-          // item.maps.postcode.includes(keyword) ||
+          item.maps.postcode.toString().includes(limitedKeyword) ||
           item.maps.country.toLowerCase().includes(limitedKeyword) 
         );
       });
