@@ -11,10 +11,10 @@ router.get("/get/:userID", controller.getUserByID);
 router.get("/limit-agents", localStorage.limitAgent);
 router.get("/search-agents", controller.searchAgent);
 // saves
-router.get("/list-favorite/:userID", controller.listFavorites);
-router.get("/check-favorite/:userID", controller.checkFavorites);
-router.post("/save-favorite", validateToken, controller.saveFavorite);
-router.delete("/remove-favorite", validateToken, controller.removeFavorite);
+router.get("/list-favorite", validateToken, controller.listFavorites);
+router.get("/check-favorite", validateToken, controller.checkFavorites);
+router.post("/save-favorite/:estateID", validateToken, controller.saveFavorite);
+router.delete("/remove-favorite/:estateID", validateToken, controller.removeFavorite);
 // manage, search listing
 router.get("/search-listing", validateToken, controller.searchListing);
 // update

@@ -65,8 +65,8 @@ const searchAgent = async (req: Request, res: Response) => {
 
 // ________________________________________ manage saves(favorite)
 
-const listFavorites = async (req: Request, res: Response) => {
-  const userID = req.params.userID;
+const listFavorites = async (req: any, res: Response) => {
+  const userID = req.user.userID;
 
   try {
     const user = await User.findOne({ "acc.userID": userID })
@@ -92,8 +92,8 @@ const listFavorites = async (req: Request, res: Response) => {
   }
 };
 
-const checkFavorites = async (req: Request, res: Response) => {
-  const userID = req.params.userID;
+const checkFavorites = async (req: any, res: Response) => {
+  const userID = req.user.userID;
 
   try {
     const user = await User.findOne({ "acc.userID": userID });
@@ -113,18 +113,17 @@ const checkFavorites = async (req: Request, res: Response) => {
   }
 };
 
-const saveFavorite = async (req: Request, res: Response) => {
-  try {
-    const { userID, estateID } = req.body;
+const saveFavorite = async (req: any, res: Response) => {
+  const userID = req.user.userID;
+  const estateID = req.params.estateID;
 
-    // find user
+  try {
     const user = await User.findOne({ "acc.userID": userID });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // find estate
     const estate = await Estate.findOne({ "head.estateID": estateID });
 
     if (!estate) {
@@ -147,18 +146,17 @@ const saveFavorite = async (req: Request, res: Response) => {
   }
 };
 
-const removeFavorite = async (req: Request, res: Response) => {
-  try {
-    const { userID, estateID } = req.body;
+const removeFavorite = async (req: any, res: Response) => {
+  const userID = req.user.userID;
+  const estateID = req.params.estateID;
 
-    // find user
+  try {
     const user = await User.findOne({ "acc.userID": userID });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // find estate
     const estate = await Estate.findOne({ "head.estateID": estateID });
 
     if (!estate) {
