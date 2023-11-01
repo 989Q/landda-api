@@ -2,7 +2,6 @@
 
 import User from "../models/user";
 import { Request, Response } from "express";
-import { stripe } from "../middlewares/stripe";
 import { signToken, verifyToken } from "../utils/generateToken";
 import { generateUserID, addLetterID } from "../utils/generateID";
 
@@ -16,18 +15,8 @@ const signIn = async (req: Request, res: Response) => {
   const createdAt = new Date();
   const updatedAt = new Date();
 
-  const stripeCustomer = await stripe.customers.create(
-    {
-      email,
-    },
-    {
-      apiKey: process.env.STRIPE_SECRET_KEY,
-    }
-  );
-  const stripeID = stripeCustomer.id;
-
   // generate unique userID
-  const generateUniqueUserID = async () => {
+  const funcUniqueUserID = async () => {
     let userID = generateUserID();
     let addLetterCount = 0;
     let isUniqueUserID = false;
@@ -46,7 +35,7 @@ const signIn = async (req: Request, res: Response) => {
   };
 
   // generate unique userID
-  const userID = await generateUniqueUserID();
+  const userID = await funcUniqueUserID();
 
   User.findOne({ "info.email": email })
     .then((existingUser) => {
@@ -79,9 +68,6 @@ const signIn = async (req: Request, res: Response) => {
             email,
             image,
             name,
-          },
-          subs: {
-            stripeID,
           },
         });
 
