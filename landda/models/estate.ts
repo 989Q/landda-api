@@ -5,6 +5,7 @@ export interface IEstate {
   head: {
     estateID: string;
     post: "active" | "waiting" | "hidden" | "sold";
+    score: number;
     seen: number;
     see: {
       date: string;
@@ -53,6 +54,7 @@ const EstateSchema = new Schema<EstateDocument>({
       default: "active",
       required: true,
     },
+    score: { type: Number, default: 100 },
     seen: { type: Number, default: 0 },
     see: {
       date: { type: String, default: "2020-1-01" },

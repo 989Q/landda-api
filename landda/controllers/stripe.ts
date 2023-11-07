@@ -18,17 +18,18 @@ export const createSession = async (req: any, res: Response) => {
     return res.status(404).json({ error: "User not found" });
   }
 
-  const stripeCustomer = await stripe.customers.create(
-    { email },
-    { apiKey: process.env.STRIPE_SECRET_KEY }
-  );
-  const stripeID = stripeCustomer.id;
+  // check if subs.stripeID exists in user document
+  if (!user.subs.stripeID) {
+    // if doesn't exist, create it and set value to stripeID from Stripe
+    const stripeCustomer = await stripe.customers.create(
+      { email },
+      { apiKey: process.env.STRIPE_SECRET_KEY }
+    );
 
-  // Update the user's subs object with the stripeID
-  user.subs.stripeID = stripeID;
-
-  // Save the updated user document to the database
-  await user.save();
+    user.subs.stripeID = stripeCustomer.id;
+    
+    await user.save();
+  }
 
   const session = await stripe.checkout.sessions.create(
     {
