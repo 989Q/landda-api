@@ -1,9 +1,7 @@
-// controllers/Auth.ts
-
 import User from "../models/user";
 import { Request, Response } from "express";
 import { signToken, verifyToken } from "../utils/generateToken";
-import { generateUserID, addLetterID } from "../utils/generateID";
+import { generateUserId, addLetterId } from "../utils/generateId";
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
@@ -15,51 +13,51 @@ const signIn = async (req: Request, res: Response) => {
   const createdAt = new Date();
   const updatedAt = new Date();
 
-  // generate unique userID
-  const funcUniqueUserID = async () => {
-    let userID = generateUserID();
+  // generate unique userId
+  const funcUniqueUserId = async () => {
+    let userId = generateUserId();
     let addLetterCount = 0;
-    let isUniqueUserID = false;
+    let isUniqueUserId = false;
 
-    while (!isUniqueUserID) {
-      const existingUserID = await User.findOne({ "acc.userID": userID });
-      if (!existingUserID) {
-        isUniqueUserID = true;
+    while (!isUniqueUserId) {
+      const existingUserId = await User.findOne({ "acc.userId": userId });
+      if (!existingUserId) {
+        isUniqueUserId = true;
       } else {
         addLetterCount += 2; // increment by 2 as per your requirement
-        userID = generateUserID() + addLetterID(addLetterCount);
+        userId= generateUserId() + addLetterId(addLetterCount);
       }
     }
 
-    return userID;
+    return userId;
   };
 
-  // generate unique userID
-  const userID = await funcUniqueUserID();
+  // generate unique userId
+  const userId = await funcUniqueUserId();
 
   User.findOne({ "info.email": email })
     .then((existingUser) => {
       if (existingUser) {
         const accessToken = careteAccessToken(
-          existingUser.acc.userID,
+          existingUser.acc.userId,
           existingUser.info.email,
           existingUser.info.image,
           existingUser.info.name,
           existingUser.subs.access
         );
-        const refreshToken = createRefreshToken(existingUser.acc.userID);
-        const userID = existingUser.acc.userID;
+        const refreshToken = createRefreshToken(existingUser.acc.userId);
+        const userId = existingUser.acc.userId;
         const expires = Math.floor(Date.now() + setTime);
         const response = res
           .status(200)
-          .json({ accessToken, refreshToken, userID, expires });
+          .json({ accessToken, refreshToken, userId, expires });
 
         // console.log("existingUser: ", response);
         return response;
       } else {
         const newUser = new User({
           acc: {
-            userID,
+            userId,
             logins,
             createdAt,
             updatedAt,
@@ -75,18 +73,18 @@ const signIn = async (req: Request, res: Response) => {
           .save()
           .then((savedUser) => {
             const accessToken = careteAccessToken(
-              savedUser.acc.userID,
+              savedUser.acc.userId,
               savedUser.info.email,
               savedUser.info.image,
               savedUser.info.name,
               savedUser.subs.access
             );
-            const refreshToken = createRefreshToken(savedUser.acc.userID);
-            const userID = savedUser.acc.userID;
+            const refreshToken = createRefreshToken(savedUser.acc.userId);
+            const userId = savedUser.acc.userId;
             const expires = Math.floor(Date.now() + setTime);
             const response = res
               .status(201)
-              .json({ accessToken, refreshToken, userID, expires });
+              .json({ accessToken, refreshToken, userId, expires });
 
             // console.log("newUser: ", response);
             return response;
@@ -114,13 +112,13 @@ const refreshToken = (req: Request, res: Response) => {
     // vertify refreshToken
     const decoded = verifyToken(refreshToken, refreshTokenSecret) as any;
 
-    User.findOne({ "acc.userID": decoded.userID })
+    User.findOne({ "acc.userId": decoded.userId })
       .then((userData) => {
         if (userData) {
           // create new accessToekn
           const newAccessToken = signToken(
             {
-              userID: userData.acc.userID,
+              userId: userData.acc.userId,
               email: userData.info.email,
               image: userData.info.image,
               name: userData.info.name,
@@ -131,7 +129,7 @@ const refreshToken = (req: Request, res: Response) => {
           );
           // create new refreshToken
           const newRefreshToken = signToken(
-            { userID: decoded.userID },
+            { userId: decoded.userId },
             refreshTokenSecret,
             "7d"
           );
@@ -165,14 +163,14 @@ const refreshToken = (req: Request, res: Response) => {
 // ________________________________________ JWT Function
 
 const careteAccessToken = (
-  userID: string,
+  userId: string,
   email: string,
   image: string,
   name: string,
   access: string
 ): string => {
   const accessToken = signToken(
-    { userID, email, image, name, access },
+    { userId, email, image, name, access },
     accessTokenSecret,
     "1d"
   );
@@ -180,8 +178,8 @@ const careteAccessToken = (
   return accessToken;
 };
 
-const createRefreshToken = (userID: string): string => {
-  const refreshToken = signToken({ userID }, refreshTokenSecret, "7d");
+const createRefreshToken = (userId: string): string => {
+  const refreshToken = signToken({ userId }, refreshTokenSecret, "7d");
 
   return refreshToken;
 };

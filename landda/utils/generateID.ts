@@ -21,21 +21,21 @@ function generateRandomString(length: number, probability: number) {
 
 // ________________________________________ add letter
 
-export function addLetterID(count: number) {
+export function addLetterId(count: number) {
   const set1 = generateRandomString(count, 0.5);
   return `${set1}`;
 }
 
 // ________________________________________ user ID
 
-export function generateUserID() {
+export function generateUserId() {
   const set1 = generateRandomString(10, 0.5);
   return `user-${set1}`;
 }
 
 // ________________________________________ list ID
 
-export function generateListID() {
+export function generateListId() {
   const set1 = generateRandomString(4, 0.5);
   const set2 = generateRandomString(4, 0.5);
   const set3 = generateRandomString(4, 0.5);
@@ -45,7 +45,7 @@ export function generateListID() {
 
 // ________________________________________ image ID
 
-export function generateImageID() {
+export function generateImageId() {
   const set1 = generateRandomString(32, 0.5);
 
   return `image-${set1}`;
@@ -53,7 +53,7 @@ export function generateImageID() {
 
 // ________________________________________ blog ID
 
-export function generateBlogID() {
+export function generateBlogId() {
   const set1 = generateRandomString(8, 0.5);
 
   return `blog-${set1}`;

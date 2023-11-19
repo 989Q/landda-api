@@ -4,12 +4,12 @@ import Estate, { IEstate } from "../models/estate";
 
 // ________________________________________ get user
 
-const getUserByID = async (req: Request, res: Response) => {
-  const userID = req.params.userID;
+const getUserById = async (req: Request, res: Response) => {
+  const userId = req.params.userId;
 
   try {
-    const user = await User.findOne({ "acc.userID": userID })
-      .select("-_id -__v -acc.logins -info.email -subs.stripeID -subs.active -messages -saves")
+    const user = await User.findOne({ "acc.userId": userId })
+      .select("-_id -__v -acc.logins -info.email -subs.stripeId -subs.active -messages -saves")
       .populate("estates");
 
     if (user) {
@@ -53,7 +53,7 @@ const searchAgent = async (req: Request, res: Response) => {
     const totalRecords = await User.countDocuments(searchQuery);
 
     const users = await User.find(searchQuery)
-      .select("-_id -__v -acc.logins -acc.status -info.email -subs.stripeID -subs.active -messages -saves")
+      .select("-_id -__v -acc.logins -acc.status -info.email -subs.stripeId -subs.active -messages -saves")
       .skip(skip)
       .limit(pageSize);
 
@@ -66,16 +66,16 @@ const searchAgent = async (req: Request, res: Response) => {
 // ________________________________________ manage saves(favorite)
 
 const listFavorites = async (req: any, res: Response) => {
-  const userID = req.user.userID;
+  const userId = req.user.userId;
 
   try {
-    const user = await User.findOne({ "acc.userID": userID })
+    const user = await User.findOne({ "acc.userId": userId })
       .populate({
         select: "-_id -head.see -head.seen -head.shares -head.saves",
         path: "saves",
         populate: {
           path: "user", // Populate the 'user' field in the 'IEstate' model
-          select: "-_id acc.userID info.name subs.access", // Select specific fields from the 'user' object
+          select: "-_id acc.userId info.name subs.access", // Select specific fields from the 'user' object
           },
       });
 
@@ -93,38 +93,38 @@ const listFavorites = async (req: any, res: Response) => {
 };
 
 const checkFavorites = async (req: any, res: Response) => {
-  const userID = req.user.userID;
+  const userId = req.user.userId;
 
   try {
-    const user = await User.findOne({ "acc.userID": userID });
+    const user = await User.findOne({ "acc.userId": userId });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Extract saved estates from user document and map to get estateID values
+    // Extract saved estates from user document and map to get estateId values
     const savedEstates = await Estate.find({ _id: { $in: user.saves } });
 
-    const estateIDs = savedEstates.map((estate) => estate.head.estateID);
+    const estateIds = savedEstates.map((estate) => estate.head.estateId);
 
-    res.status(200).json({ favorites: estateIDs });
+    res.status(200).json({ favorites: estateIds });
   } catch (error) {
     res.status(500).json({ error });
   }
 };
 
 const saveFavorite = async (req: any, res: Response) => {
-  const userID = req.user.userID;
-  const estateID = req.params.estateID;
+  const userId = req.user.userId;
+  const estateId = req.params.estateId;
 
   try {
-    const user = await User.findOne({ "acc.userID": userID });
+    const user = await User.findOne({ "acc.userId": userId });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const estate = await Estate.findOne({ "head.estateID": estateID });
+    const estate = await Estate.findOne({ "head.estateId": estateId });
 
     if (!estate) {
       return res.status(404).json({ error: "Estate not found" });
@@ -147,17 +147,17 @@ const saveFavorite = async (req: any, res: Response) => {
 };
 
 const removeFavorite = async (req: any, res: Response) => {
-  const userID = req.user.userID;
-  const estateID = req.params.estateID;
+  const userId = req.user.userId;
+  const estateId = req.params.estateId;
 
   try {
-    const user = await User.findOne({ "acc.userID": userID });
+    const user = await User.findOne({ "acc.userId": userId });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const estate = await Estate.findOne({ "head.estateID": estateID });
+    const estate = await Estate.findOne({ "head.estateId": estateId });
 
     if (!estate) {
       return res.status(404).json({ error: "Estate not found" });
@@ -186,11 +186,11 @@ const removeFavorite = async (req: any, res: Response) => {
 // ________________________________________ manage owned estate listing
 
 const searchListing = async (req: any, res: Response) => {
-  const userID = req.user.userID;
+  const userId = req.user.userId;
   const { keyword, sorting } = req.query;
 
   try {
-    const user = await User.findOne({ "acc.userID": userID })
+    const user = await User.findOne({ "acc.userId": userId })
       .populate("estates");
 
     if (!user) {return res.status(404).json({ message: "User not found" });}
@@ -240,10 +240,10 @@ const searchListing = async (req: any, res: Response) => {
 // ________________________________________ update user
 
 const getUserInfo = async (req: any, res: Response) => {
-  const userID = req.user.userID;
+  const userId = req.user.userId;
 
   try {
-    const user = await User.findOne({ "acc.userID": userID })
+    const user = await User.findOne({ "acc.userId": userId })
       .select("-_id -__v -acc.logins -messages -saves");
 
     if (user) {
@@ -258,11 +258,11 @@ const getUserInfo = async (req: any, res: Response) => {
 
 const updateName = async (req: any, res: Response) => {
   try {
-    const userID = req.user.userID;
+    const userId = req.user.userId;
     const { name } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
-      { "acc.userID": userID },
+      { "acc.userId": userId },
       { "info.name": name },
       { new: true }
     );
@@ -280,11 +280,11 @@ const updateName = async (req: any, res: Response) => {
 
 const updatePhone = async (req: any, res: Response) => {
   try {
-    const userID = req.user.userID;
+    const userId = req.user.userId;
     const { phone } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
-      { "acc.userID": userID },
+      { "acc.userId": userId },
       { "info.phone": phone },
       { new: true }
     );
@@ -302,11 +302,11 @@ const updatePhone = async (req: any, res: Response) => {
 
 const updateSpeak = async (req: any, res: Response) => {
   try {
-    const userID = req.user.userID;
+    const userId = req.user.userId;
     const { speak } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
-      { "acc.userID": userID },
+      { "acc.userId": userId },
       { "info.speak": speak },
       { new: true }
     );
@@ -324,11 +324,11 @@ const updateSpeak = async (req: any, res: Response) => {
 
 const updateWork = async (req: any, res: Response) => {
   try {
-    const userID = req.user.userID;
+    const userId = req.user.userId;
     const { work } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
-      { "acc.userID": userID },
+      { "acc.userId": userId },
       { "info.work": work },
       { new: true }
     );
@@ -346,11 +346,11 @@ const updateWork = async (req: any, res: Response) => {
 
 const updateLive = async (req: any, res: Response) => {
   try {
-    const userID = req.user.userID;
+    const userId = req.user.userId;
     const { live } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
-      { "acc.userID": userID },
+      { "acc.userId": userId },
       { "info.live": live },
       { new: true }
     );
@@ -368,11 +368,11 @@ const updateLive = async (req: any, res: Response) => {
 
 const updateAbout = async (req: any, res: Response) => {
   try {
-    const userID = req.user.userID;
+    const userId = req.user.userId;
     const { about } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
-      { "acc.userID": userID },
+      { "acc.userId": userId },
       { "info.about": about },
       { new: true }
     );
@@ -390,11 +390,11 @@ const updateAbout = async (req: any, res: Response) => {
 
 const updateLinks = async (req: any, res: Response) => {
   try {
-    const userID = req.user.userID;
+    const userId = req.user.userId;
     const { link1, link2, link3, link4 } = req.body;
 
     const updatedUser = await User.findOneAndUpdate(
-      { "acc.userID": userID },
+      { "acc.userId": userId },
       {
         "info.link1": link1,
         "info.link2": link2,
@@ -416,7 +416,7 @@ const updateLinks = async (req: any, res: Response) => {
 };
 
 export default {
-  getUserByID,
+  getUserById,
   searchAgent,
   // Saves
   listFavorites,

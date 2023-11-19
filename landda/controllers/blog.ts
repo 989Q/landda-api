@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import Blog, { BlogDocument } from "../models/blog";
-import { generateBlogID } from "../utils/generateID";
+import { generateBlogId } from "../utils/generateId";
 
 // ________________________________________ lib
 
@@ -33,23 +33,23 @@ const createBlog = async (req: Request, res: Response) => {
   const { body } = req.body;
   const { user } = req.body;
 
-  let checkBlogID: any;
-  let isUniqueBlogID: boolean = false;
+  let checkBlogId: any;
+  let isUniqueBlogId: boolean = false;
 
-  if (!isUniqueBlogID) {
-    checkBlogID = generateBlogID();
+  if (!isUniqueBlogId) {
+    checkBlogId = generateBlogId();
 
-    const existingBlogID = await Blog.findOne({ "lead.blogID": checkBlogID });
+    const existingBlogId = await Blog.findOne({ "lead.blogId": checkBlogId });
 
-    if (!existingBlogID) {
-      isUniqueBlogID = true;
+    if (!existingBlogId) {
+      isUniqueBlogId = true;
     }
   }
 
   const blog = new Blog({
     _id: new mongoose.Types.ObjectId(),
     lead: {
-      blogID: checkBlogID,
+      blogId: checkBlogId,
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -87,11 +87,11 @@ const createBlog = async (req: Request, res: Response) => {
 //   }
 // };
 
-const getBlogByID = async (req: Request, res: Response) => {
-  const blogID = req.params.blogID;
+const getBlogById = async (req: Request, res: Response) => {
+  const blogId = req.params.blogId;
 
   try {
-    const blog = await Blog.findOne({ "lead.blogID": blogID })
+    const blog = await Blog.findOne({ "lead.blogId": blogId })
       .populate("user");
 
     if (blog) {
@@ -173,7 +173,7 @@ const searchBlog = async (req: Request, res: Response) => {
 
 export default {
   createBlog,
-  getBlogByID,
+  getBlogById,
   getAllBlog,
   searchBlog,
 };

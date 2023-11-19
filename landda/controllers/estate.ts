@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Estate, { EstateDocument, IEstate } from "../models/estate";
 import { NextFunction, Request, Response } from "express";
-import { generateImageID, generateListID, addLetterID } from "../utils/generateID";
+import { generateImageId, generateListId, addLetterId } from "../utils/generateId";
 import { uploadToWasabi } from "../middlewares/wasabi";
 
 // ________________________________________ lib
@@ -36,7 +36,7 @@ const uploadImages = async (req: any, res: any) => {
 
   if (req.files && req.files.length > 0) {
     for (let i = 0; i < req.files.length; i++) {
-      const key = `${generateImageID()}.jpg`;
+      const key = `${generateImageId()}.jpg`;
 
       // uploadToWasabi(key, req.files[i].buffer).then((result) => {
       //   console.log("uploaded image url", result);
@@ -59,29 +59,29 @@ const createEstate = async (req: Request, res: Response) => {
   const images = desc.images; // Extract the images array from the request body
   const user = req.body.user;
 
-  // generate unique estateID
-  const generateUniqueEstateID = async () => {
-    let estateID = generateListID();
+  // generate unique estateId
+  const generateUniqueEstateId = async () => {
+    let estateId = generateListId();
     let addLetterCount = 0;
     let isUnique = false;
 
     while (!isUnique) {
-      const existingEstateID = await Estate.findOne({
-        "head.estateID": estateID,
+      const existingEstateId = await Estate.findOne({
+        "head.estateId": estateId,
       });
-      if (!existingEstateID) {
+      if (!existingEstateId) {
         isUnique = true;
       } else {
         addLetterCount += 2;
-        estateID = generateListID() + addLetterID(addLetterCount);
+        estateId = generateListId() + addLetterId(addLetterCount);
       }
     }
 
-    return estateID;
+    return estateId;
   };
 
-  // generate unique estateID
-  const estateID = await generateUniqueEstateID();
+  // generate unique estateId
+  const estateId = await generateUniqueEstateId();
 
   // upload images to wasabi
   await uploadToWasabi(images.originalname, images.buffer);
@@ -89,7 +89,7 @@ const createEstate = async (req: Request, res: Response) => {
   const estate = new Estate({
     _id: new mongoose.Types.ObjectId(),
     head: {
-      estateID: estateID,
+      estateId: estateId,
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -106,12 +106,12 @@ const createEstate = async (req: Request, res: Response) => {
 
 // doing
 const updateEstate = async (req: Request, res: Response) => {
-  const estateID = req.params.estateID;
-  console.log("estateID ", estateID);
+  const estateId = req.params.estateId;
+  console.log("estateId ", estateId);
 
   try {
-    // Find the estate by ID
-    const estate = await Estate.findOne({ "head.estateID": estateID });
+    // Find the estate by Id
+    const estate = await Estate.findOne({ "head.estateId": estateId });
 
     if (!estate) {
       return res.status(404).json({ message: "Estate not found" });
@@ -150,12 +150,12 @@ const updateEstate = async (req: Request, res: Response) => {
 };
 
 const deleteEstate = async (req: Request, res: Response) => {
-  const estateID = req.params.estateID;
+  const estateId = req.params.estateId;
 
   try {
     // Find the estate by ID and remove it
     const deletedEstate = await Estate.findOneAndRemove({
-      "head.estateID": estateID,
+      "head.estateId": estateId,
     });
 
     if (!deletedEstate) {
@@ -168,11 +168,11 @@ const deleteEstate = async (req: Request, res: Response) => {
   }
 };
 
-const getEstateByID = async (req: Request, res: Response) => {
-  const estateID = req.params.estateID;
+const getEstateById = async (req: Request, res: Response) => {
+  const estateId = req.params.estateId;
 
   try {
-    const estate = await Estate.findOne({ "head.estateID": estateID })
+    const estate = await Estate.findOne({ "head.estateId": estateId })
       .populate({
         path: "user",
         select: "-_id acc.userID acc.verified info.image info.name info.work subs.access",
@@ -307,5 +307,5 @@ export default {
   updateEstate,
   deleteEstate,
   searchEstate,
-  getEstateByID,
+  getEstateById,
 };

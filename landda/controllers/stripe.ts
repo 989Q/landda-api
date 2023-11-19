@@ -18,15 +18,15 @@ export const createSession = async (req: any, res: Response) => {
     return res.status(404).json({ error: "User not found" });
   }
 
-  // check if subs.stripeID exists in user document
-  if (!user.subs.stripeID) {
-    // if doesn't exist, create it and set value to stripeID from Stripe
+  // check if subs.stripeId exists in user document
+  if (!user.subs.stripeId) {
+    // if doesn't exist, create it and set value to stripeId from Stripe
     const stripeCustomer = await stripe.customers.create(
       { email },
       { apiKey: process.env.STRIPE_SECRET_KEY }
     );
 
-    user.subs.stripeID = stripeCustomer.id;
+    user.subs.stripeId = stripeCustomer.id;
     
     await user.save();
   }
@@ -42,7 +42,7 @@ export const createSession = async (req: any, res: Response) => {
       ],
       success_url: "http://localhost:3000",
       cancel_url: "http://localhost:3000",
-      customer: user.subs.stripeID,
+      customer: user.subs.stripeId,
     },
     {
       apiKey: process.env.STRIPE_SECRET_KEY,

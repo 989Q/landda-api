@@ -9,7 +9,7 @@ const router = express.Router();
 router.post("/create", controller.createBlog);
 // get, search
 router.get("/get", controller.getAllBlog);
-router.get("/get/:blogID", controller.getBlogByID);
+router.get("/get/:blogId", controller.getBlogById);
 router.get("/limit-blogs", localStorage.limitBlog);
 router.get("/search", controller.searchBlog);
 

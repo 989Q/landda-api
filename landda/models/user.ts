@@ -2,7 +2,7 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface IUser {
   acc: {
-    userID: string;
+    userId: string;
     logins: ("google" | "facebook" | "email")[];
     status: "active" | "wait" | "hidden";
     role: "user" | "agent" | "partner" | "admin";
@@ -25,7 +25,7 @@ export interface IUser {
     link4: string;
   };
   subs: {
-    stripeID: string;
+    stripeId: string;
     active: "false" | "true";
     access: "Free" | "Basic" | "Standard" | "Premium";
     payment: String;
@@ -41,7 +41,7 @@ export interface IUserModel extends IUser, Document {}
 
 const UserSchema: Schema = new Schema({
   acc: {
-    userID: { type: String, required: true },
+    userId: { type: String, required: true },
     logins: {
       type: [String],
       enum: ["google", "facebook", "email"],
@@ -83,7 +83,7 @@ const UserSchema: Schema = new Schema({
     link4: { type: String, required: false },
   },
   subs: {
-    stripeID: { type: String, required: false },
+    stripeId: { type: String, required: false },
     active: {
       type: String,
       enum: ["false", "true"],

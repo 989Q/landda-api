@@ -3,7 +3,7 @@ import { IUser } from "./user";
 
 export interface IBlog {
   lead: {
-    blogID: string;
+    blogId: string;
     status: "active" | "waiting" | "hidden";
     seen: number;
     see: {
@@ -29,7 +29,7 @@ export interface BlogDocument extends IBlog, Document {}
 
 const Blog = new Schema<BlogDocument>({
   lead: {
-    blogID: { type: String, required: true },
+    blogId: { type: String, required: true },
     status: {
       type: String,
       enum: ["active", "waiting", "hidden"],

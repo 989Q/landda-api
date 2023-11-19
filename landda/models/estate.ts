@@ -3,7 +3,7 @@ import { IUser } from "./user";
 
 export interface IEstate {
   head: {
-    estateID: string;
+    estateId: string;
     post: "active" | "waiting" | "hidden" | "sold";
     score: number;
     seen: number;
@@ -47,7 +47,7 @@ export interface EstateDocument extends IEstate, Document {}
 
 const EstateSchema = new Schema<EstateDocument>({
   head: {
-    estateID: { type: String, required: true },
+    estateId: { type: String, required: true },
     post: {
       type: String,
       enum: ["active", "waiting", "hidden", "sold"],

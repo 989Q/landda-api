@@ -103,7 +103,7 @@ const limitEstate = async (req: Request, res: Response) => {
           "user.info.link3": 0,
           "user.info.link4": 0,
           // user.subs.access
-          "user.subs.stripeID": 0, // Exclude user.subs
+          "user.subs.stripeId": 0, // Exclude user.subs
           "user.subs.active": 0, // Exclude user.subs
           "user.subs.payment": 0, // Exclude user.subs
           "user.subs.startDate": 0, // Exclude user.subs

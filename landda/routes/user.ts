@@ -7,14 +7,14 @@ import { validateToken } from "../middlewares/validate";
 const router = express.Router();
 
 // get, search
-router.get("/get/:userID", controller.getUserByID);
+router.get("/get/:userId", controller.getUserById);
 router.get("/limit-agents", localStorage.limitAgent);
 router.get("/search-agents", controller.searchAgent);
 // saves
 router.get("/list-favorite", validateToken, controller.listFavorites);
 router.get("/check-favorite", validateToken, controller.checkFavorites);
-router.post("/save-favorite/:estateID", validateToken, controller.saveFavorite);
-router.delete("/remove-favorite/:estateID", validateToken, controller.removeFavorite);
+router.post("/save-favorite/:estateId", validateToken, controller.saveFavorite);
+router.delete("/remove-favorite/:estateId", validateToken, controller.removeFavorite);
 // manage, search listing
 router.get("/search-listing", validateToken, controller.searchListing);
 // update

@@ -10,11 +10,11 @@ const router = express.Router();
 // post, push, delete
 router.post("/upload-multiple", upload.array("images", 3), controller.uploadImages);
 router.post("/create", validateToken, controller.createEstate);
-router.patch("/update/:estateID", validateToken, controller.updateEstate);
-router.delete("/delete/:estateID", validateToken, controller.deleteEstate);
+router.patch("/update/:estateId", validateToken, controller.updateEstate);
+router.delete("/delete/:estateId", validateToken, controller.deleteEstate);
 // get, search
 router.get("/search", controller.searchEstate);
-router.get("/get/:estateID", controller.getEstateByID);
+router.get("/get/:estateId", controller.getEstateById);
 router.get("/limit-estates", localStorage.limitEstate);
 
 export default router;
