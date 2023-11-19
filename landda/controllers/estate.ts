@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import Estate, { EstateDocument, IEstate } from "../models/estate";
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
+import Estate, { EstateDocument } from "../models/estate";
 import { generateImageId, generateListId, addLetterId } from "../utils/generateId";
 import { uploadToWasabi } from "../middlewares/wasabi";
 
@@ -30,7 +30,7 @@ const updateEstateViews = (estate: EstateDocument) => {
 
 // ________________________________________ main function
 
-const uploadImages = async (req: any, res: any) => {
+export const uploadImages = async (req: any, res: any) => {
   console.log("request files: ", req.files);
   const imageUrls: string[] = [];
 
@@ -53,7 +53,7 @@ const uploadImages = async (req: any, res: any) => {
 };
 
 // doing
-const createEstate = async (req: Request, res: Response) => {
+export const createEstate = async (req: Request, res: Response) => {
   // console.log("req.body: ", req.body);
   const { desc, maps } = req.body;
   const images = desc.images; // Extract the images array from the request body
@@ -105,7 +105,7 @@ const createEstate = async (req: Request, res: Response) => {
 };
 
 // doing
-const updateEstate = async (req: Request, res: Response) => {
+export const updateEstate = async (req: Request, res: Response) => {
   const estateId = req.params.estateId;
   console.log("estateId ", estateId);
 
@@ -149,7 +149,7 @@ const updateEstate = async (req: Request, res: Response) => {
   }
 };
 
-const deleteEstate = async (req: Request, res: Response) => {
+export const deleteEstate = async (req: Request, res: Response) => {
   const estateId = req.params.estateId;
 
   try {
@@ -168,7 +168,7 @@ const deleteEstate = async (req: Request, res: Response) => {
   }
 };
 
-const getEstateById = async (req: Request, res: Response) => {
+export const getEstateById = async (req: Request, res: Response) => {
   const estateId = req.params.estateId;
 
   try {
@@ -195,7 +195,7 @@ const getEstateById = async (req: Request, res: Response) => {
 
 // ________________________________________ searching
 
-const searchEstate = async (req: Request, res: Response) => {
+export const searchEstate = async (req: Request, res: Response) => {
   const {
     keyword,
     findStatus,
@@ -299,13 +299,4 @@ const searchEstate = async (req: Request, res: Response) => {
     console.log(error)
     res.status(500).json({ error });
   }
-};
-
-export default {
-  uploadImages,
-  createEstate,
-  updateEstate,
-  deleteEstate,
-  searchEstate,
-  getEstateById,
 };

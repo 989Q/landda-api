@@ -1,13 +1,40 @@
-import User from "../models/user";
+import User from "../../models/user";
 import { Request, Response } from "express";
-import { signToken, verifyToken } from "../utils/generateToken";
-import { generateUserId, addLetterId } from "../utils/generateId";
+import { signToken, verifyToken } from "../../utils/generateToken";
+import { generateUserId, addLetterId } from "../../utils/generateId";
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
-const setTime = 86400000; // 1 day - 86400000, 1 hour - 3600000, 1 min - 60000
+// 1 day - 86400000, 1 hour - 3600000, 1 min - 60000
+const setTime = 86400000; 
 
-const signIn = async (req: Request, res: Response) => {
+// ________________________________________ lib
+
+const careteAccessToken = (
+  userId: string,
+  email: string,
+  image: string,
+  name: string,
+  access: string
+): string => {
+  const accessToken = signToken(
+    { userId, email, image, name, access },
+    accessTokenSecret,
+    "1d"
+  );
+
+  return accessToken;
+};
+
+const createRefreshToken = (userId: string): string => {
+  const refreshToken = signToken({ userId }, refreshTokenSecret, "7d");
+
+  return refreshToken;
+};
+
+// ________________________________________ signIn, signUp
+
+export const signIn = async (req: Request, res: Response) => {
   // console.log("req.body: ", req.body)
   const { logins, email, image, name } = req.body;
   const createdAt = new Date();
@@ -101,7 +128,7 @@ const signIn = async (req: Request, res: Response) => {
     });
 };
 
-const refreshToken = (req: Request, res: Response) => {
+export const refreshToken = (req: Request, res: Response) => {
   const refreshToken = req.body.refreshToken;
 
   if (!refreshToken) {
@@ -158,33 +185,4 @@ const refreshToken = (req: Request, res: Response) => {
       .status(401)
       .json({ message: "Invalid or expired refresh token." });
   }
-};
-
-// ________________________________________ JWT Function
-
-const careteAccessToken = (
-  userId: string,
-  email: string,
-  image: string,
-  name: string,
-  access: string
-): string => {
-  const accessToken = signToken(
-    { userId, email, image, name, access },
-    accessTokenSecret,
-    "1d"
-  );
-
-  return accessToken;
-};
-
-const createRefreshToken = (userId: string): string => {
-  const refreshToken = signToken({ userId }, refreshTokenSecret, "7d");
-
-  return refreshToken;
-};
-
-export default {
-  signIn,
-  refreshToken,
 };

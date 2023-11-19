@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import User, { IUser } from "../models/user";
-import Estate, { IEstate } from "../models/estate";
-import Blog, { BlogDocument } from "../models/blog";
+import User, { IUser } from "../../models/user";
+import Estate, { IEstate } from "../../models/estate";
+import Blog, { BlogDocument } from "../../models/blog";
 
-const limitAgent = async (req: Request, res: Response) => {
+export const limitAgent = async (req: Request, res: Response) => {
   try {
     const users: IUser[] = await User.find({
       "acc.role": "agent",
@@ -41,7 +41,7 @@ const limitAgent = async (req: Request, res: Response) => {
   }
 };
 
-const limitBlog = async (req: Request, res: Response) => {
+export const limitBlog = async (req: Request, res: Response) => {
   try {
     const blogs: BlogDocument[] = await Blog.find({ "lead.status": "active" })
       .populate({
@@ -64,7 +64,7 @@ const limitBlog = async (req: Request, res: Response) => {
   }
 };
 
-const limitEstate = async (req: Request, res: Response) => {
+export const limitEstate = async (req: Request, res: Response) => {
   try {
     const estates: IEstate[] = await Estate.aggregate([
       { $match: { "head.post": "active" } }, // Match only documents with 'head.post' set to 'active'
@@ -119,13 +119,4 @@ const limitEstate = async (req: Request, res: Response) => {
   } catch (error) {
     return res.status(500).json({ error });
   }
-};
-
-export default {
-  // user
-  limitAgent,
-  // estate
-  limitEstate,
-  // blog
-  limitBlog,
 };

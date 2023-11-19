@@ -1,21 +1,21 @@
 import { Request, Response } from "express";
-import User from "../models/user";
-import Message from "../models/message";
-import Estate from "../models/estate";
+import User from "../../models/user";
+import Message from "../../models/message";
+import Estate from "../../models/estate";
 
-const sendMessage = async (req: Request, res: Response) => {
-  const { sender, text, userID, estateID } = req.body;
+export const sendMessage = async (req: Request, res: Response) => {
+  const { sender, text, userId, estateId } = req.body;
 
   try {
-    // find user by userID
-    const user = await User.findOne({ "acc.userID": userID });
+    // find user by userId
+    const user = await User.findOne({ "acc.userId": userId });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // find estate by estateID
-    const estate = await Estate.findOne({ "head.estateID": estateID });
+    // find estate by estateId
+    const estate = await Estate.findOne({ "head.estateId": estateId });
   
     if (!estate) {
       return res.status(404).json({ error: "Estate not found" });
@@ -48,11 +48,11 @@ const sendMessage = async (req: Request, res: Response) => {
 };
 
 export const searchMessages = async (req: any, res: Response) => {
-  const userID = req.user.userID; 
+  const userId = req.user.userId; 
   const { keyword, sorting } = req.query;
 
   try {
-    const user = await User.findOne({ "acc.userID": userID })
+    const user = await User.findOne({ "acc.userId": userId })
       .populate({
         path: "messages",
         populate: {
@@ -103,12 +103,12 @@ export const searchMessages = async (req: any, res: Response) => {
 };
 
 export const deleteMessages = async (req: any, res: Response) => {  
-  const userID = req.user.userID; 
+  const userId = req.user.userId; 
   const messageObjectId = req.params.messageObjectId;
   
   try {
-    // Find the user by userID and populate the "messages" field
-    const user = await User.findOne({ "acc.userID": userID }).populate("messages");
+    // Find the user by userId and populate the "messages" field
+    const user = await User.findOne({ "acc.userId": userId }).populate("messages");
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -132,10 +132,4 @@ export const deleteMessages = async (req: any, res: Response) => {
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });
   }
-};
-
-export default {
-  sendMessage,
-  searchMessages,
-  deleteMessages,
 };

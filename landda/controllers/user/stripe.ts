@@ -1,6 +1,6 @@
-import User from "../models/user";
+import User from "../../models/user";
 import { Request, Response } from "express";
-import { stripe } from "../middlewares/stripe";
+import { stripe } from "../../middlewares/stripe";
 
 export const getPrices = async (req: Request, res: Response) => {
   const prices = await stripe.prices.list({

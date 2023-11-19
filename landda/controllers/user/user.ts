@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
-import User, { IUser } from "../models/user";
-import Estate, { IEstate } from "../models/estate";
+import User from "../../models/user";
 
 // ________________________________________ get user
 
-const getUserById = async (req: Request, res: Response) => {
+export const getUserById = async (req: Request, res: Response) => {
   const userId = req.params.userId;
 
   try {
@@ -24,7 +23,7 @@ const getUserById = async (req: Request, res: Response) => {
 
 // ________________________________________ searching
 
-const searchAgent = async (req: Request, res: Response) => {
+export const searchAgent = async (req: Request, res: Response) => {
   const { 
     keyword,
     page = 1
@@ -63,129 +62,9 @@ const searchAgent = async (req: Request, res: Response) => {
   }
 };
 
-// ________________________________________ manage saves(favorite)
-
-const listFavorites = async (req: any, res: Response) => {
-  const userId = req.user.userId;
-
-  try {
-    const user = await User.findOne({ "acc.userId": userId })
-      .populate({
-        select: "-_id -head.see -head.seen -head.shares -head.saves",
-        path: "saves",
-        populate: {
-          path: "user", // Populate the 'user' field in the 'IEstate' model
-          select: "-_id acc.userId info.name subs.access", // Select specific fields from the 'user' object
-          },
-      });
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    // Extract saved estates from user document
-    const savedEstates = user.saves;
-
-    res.status(200).json({ favorites: savedEstates });
-  } catch (error) {
-    res.status(500).json({ error });
-  }
-};
-
-const checkFavorites = async (req: any, res: Response) => {
-  const userId = req.user.userId;
-
-  try {
-    const user = await User.findOne({ "acc.userId": userId });
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    // Extract saved estates from user document and map to get estateId values
-    const savedEstates = await Estate.find({ _id: { $in: user.saves } });
-
-    const estateIds = savedEstates.map((estate) => estate.head.estateId);
-
-    res.status(200).json({ favorites: estateIds });
-  } catch (error) {
-    res.status(500).json({ error });
-  }
-};
-
-const saveFavorite = async (req: any, res: Response) => {
-  const userId = req.user.userId;
-  const estateId = req.params.estateId;
-
-  try {
-    const user = await User.findOne({ "acc.userId": userId });
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    const estate = await Estate.findOne({ "head.estateId": estateId });
-
-    if (!estate) {
-      return res.status(404).json({ error: "Estate not found" });
-    }
-
-    // Check if the estate is already saved by the user
-    if (user.saves.includes(estate._id)) {
-      return res.status(400).json({ error: "Estate already saved" });
-    }
-
-    // Save the estate ID to the user's favorites
-    user.saves.push(estate._id);
-    await user.save();
-
-    res.status(200).json({ message: "Estate saved successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-const removeFavorite = async (req: any, res: Response) => {
-  const userId = req.user.userId;
-  const estateId = req.params.estateId;
-
-  try {
-    const user = await User.findOne({ "acc.userId": userId });
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    const estate = await Estate.findOne({ "head.estateId": estateId });
-
-    if (!estate) {
-      return res.status(404).json({ error: "Estate not found" });
-    }
-
-    // Check if the estate is in the user's favorites
-    const index = user.saves.indexOf(estate._id);
-
-    if (index === -1) {
-      return res.status(400).json({ error: "Estate not found in favorites" });
-    }
-
-    // Remove the estate ID from the user's favorites
-    user.saves.splice(index, 1);
-    await user.save();
-
-    res
-      .status(200)
-      .json({ message: "Estate removed from favorites successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
 // ________________________________________ manage owned estate listing
 
-const searchListing = async (req: any, res: Response) => {
+export const searchListing = async (req: any, res: Response) => {
   const userId = req.user.userId;
   const { keyword, sorting } = req.query;
 
@@ -239,7 +118,7 @@ const searchListing = async (req: any, res: Response) => {
 
 // ________________________________________ update user
 
-const getUserInfo = async (req: any, res: Response) => {
+export const getUserInfo = async (req: any, res: Response) => {
   const userId = req.user.userId;
 
   try {
@@ -256,7 +135,7 @@ const getUserInfo = async (req: any, res: Response) => {
   }
 };
 
-const updateName = async (req: any, res: Response) => {
+export const updateName = async (req: any, res: Response) => {
   try {
     const userId = req.user.userId;
     const { name } = req.body;
@@ -278,7 +157,7 @@ const updateName = async (req: any, res: Response) => {
   }
 };
 
-const updatePhone = async (req: any, res: Response) => {
+export const updatePhone = async (req: any, res: Response) => {
   try {
     const userId = req.user.userId;
     const { phone } = req.body;
@@ -300,7 +179,7 @@ const updatePhone = async (req: any, res: Response) => {
   }
 };
 
-const updateSpeak = async (req: any, res: Response) => {
+export const updateSpeak = async (req: any, res: Response) => {
   try {
     const userId = req.user.userId;
     const { speak } = req.body;
@@ -322,7 +201,7 @@ const updateSpeak = async (req: any, res: Response) => {
   }
 };
 
-const updateWork = async (req: any, res: Response) => {
+export const updateWork = async (req: any, res: Response) => {
   try {
     const userId = req.user.userId;
     const { work } = req.body;
@@ -344,7 +223,7 @@ const updateWork = async (req: any, res: Response) => {
   }
 };
 
-const updateLive = async (req: any, res: Response) => {
+export const updateLive = async (req: any, res: Response) => {
   try {
     const userId = req.user.userId;
     const { live } = req.body;
@@ -366,7 +245,7 @@ const updateLive = async (req: any, res: Response) => {
   }
 };
 
-const updateAbout = async (req: any, res: Response) => {
+export const updateAbout = async (req: any, res: Response) => {
   try {
     const userId = req.user.userId;
     const { about } = req.body;
@@ -388,7 +267,7 @@ const updateAbout = async (req: any, res: Response) => {
   }
 };
 
-const updateLinks = async (req: any, res: Response) => {
+export const updateLinks = async (req: any, res: Response) => {
   try {
     const userId = req.user.userId;
     const { link1, link2, link3, link4 } = req.body;
@@ -413,25 +292,4 @@ const updateLinks = async (req: any, res: Response) => {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
-};
-
-export default {
-  getUserById,
-  searchAgent,
-  // Saves
-  listFavorites,
-  checkFavorites,
-  saveFavorite,
-  removeFavorite,
-  // Manage
-  searchListing,
-  // Update
-  getUserInfo,
-  updateName,
-  updatePhone,
-  updateSpeak,
-  updateWork,
-  updateLive,
-  updateAbout,
-  updateLinks,
 };

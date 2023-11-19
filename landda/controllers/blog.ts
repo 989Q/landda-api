@@ -1,7 +1,5 @@
-import { NextFunction, Request, Response } from "express";
-import mongoose from "mongoose";
+import { Request, Response } from "express";
 import Blog, { BlogDocument } from "../models/blog";
-import { generateBlogId } from "../utils/generateId";
 
 // ________________________________________ lib
 
@@ -29,65 +27,16 @@ const updateBlogViews = (blog: BlogDocument) => {
 
 // ________________________________________ main function
 
-const createBlog = async (req: Request, res: Response) => {
-  const { body } = req.body;
-  const { user } = req.body;
-
-  let checkBlogId: any;
-  let isUniqueBlogId: boolean = false;
-
-  if (!isUniqueBlogId) {
-    checkBlogId = generateBlogId();
-
-    const existingBlogId = await Blog.findOne({ "lead.blogId": checkBlogId });
-
-    if (!existingBlogId) {
-      isUniqueBlogId = true;
-    }
+export const getAllBlog = async (req: Request, res: Response) => {
+  try {
+    const blogs: BlogDocument[] = await Blog.find({ "lead.status": "active" });
+    return res.status(200).json({ blogs });
+  } catch (error) {
+    return res.status(500).json({ error });
   }
-
-  const blog = new Blog({
-    _id: new mongoose.Types.ObjectId(),
-    lead: {
-      blogId: checkBlogId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    body,
-    user,
-  });
-
-  return blog
-    .save()
-    .then((blog) => res.status(201).json({ blog }))
-    .catch((error) => res.status(500).json({ error }));
 };
 
-// const createBlog = async (req: Request, res: Response) => {
-//   try {
-//     const {
-//       lead,
-//       body,
-//       user
-//     } = req.body;
-
-//     const newBlog = new Blog({
-//       lead,
-//       body,
-//       user
-//     });
-
-//     await newBlog.save();
-
-//     return res.status(201).json({ message: 'Blog created successfully', blog: newBlog });
-//   } catch (error) {
-//     console.error('Error creating blog:', error);
-
-//     return res.status(500).json({ message: 'Internal server error' });
-//   }
-// };
-
-const getBlogById = async (req: Request, res: Response) => {
+export const getBlogById = async (req: Request, res: Response) => {
   const blogId = req.params.blogId;
 
   try {
@@ -108,18 +57,9 @@ const getBlogById = async (req: Request, res: Response) => {
   }
 };
 
-const getAllBlog = async (req: Request, res: Response) => {
-  try {
-    const blogs: BlogDocument[] = await Blog.find({ "lead.status": "active" });
-    return res.status(200).json({ blogs });
-  } catch (error) {
-    return res.status(500).json({ error });
-  }
-};
-
 // ________________________________________ searching
 
-const searchBlog = async (req: Request, res: Response) => {
+export const searchBlog = async (req: Request, res: Response) => {
   const { 
     keyword,
     select,
@@ -169,11 +109,4 @@ const searchBlog = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ error });
   }
-};
-
-export default {
-  createBlog,
-  getBlogById,
-  getAllBlog,
-  searchBlog,
 };

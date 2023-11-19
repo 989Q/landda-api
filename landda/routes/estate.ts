@@ -1,20 +1,18 @@
 import express from "express";
-import controller from "../controllers/estate";
-import localStorage from "../controllers/localStorage";
+import * as estate from "../controllers/estate";
 import { upload } from "../middlewares/wasabi";
 import { validateToken } from "../middlewares/validate";
-// import { Schemas, ValidateJoi } from '../middleware/Joi';
 
 const router = express.Router();
 
-// post, push, delete
-router.post("/upload-multiple", upload.array("images", 3), controller.uploadImages);
-router.post("/create", validateToken, controller.createEstate);
-router.patch("/update/:estateId", validateToken, controller.updateEstate);
-router.delete("/delete/:estateId", validateToken, controller.deleteEstate);
+// post, push
+router.post("/upload-multiple", upload.array("images", 3), estate.uploadImages);
+router.post("/create", validateToken, estate.createEstate);
+router.patch("/update/:estateId", validateToken, estate.updateEstate);
 // get, search
-router.get("/search", controller.searchEstate);
-router.get("/get/:estateId", controller.getEstateById);
-router.get("/limit-estates", localStorage.limitEstate);
+router.get("/search", estate.searchEstate);
+router.get("/get/:estateId", estate.getEstateById);
+// delete
+router.delete("/delete/:estateId", validateToken, estate.deleteEstate);
 
 export default router;

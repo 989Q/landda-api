@@ -1,16 +1,16 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import http from "http";
 import cors from "cors";
 import mongoose from "mongoose";
 import { config } from "./config/config";
 import Logging from "./utils/bashlog";
 
-import auth from "./routes/Auth";
-import user from "./routes/User";
-import stripe from "./routes/Stripe";
+import admin from "./routes/admin";
+import auth from "./routes/user/auth";
+import userModel from "./routes/user/user";
+import userManage from "./routes/user/manage";
 import estate from "./routes/estate";
 import blog from "./routes/blog";
-import message from "./routes/message";
 
 const router = express();
 
@@ -25,17 +25,16 @@ mongoose
     Logging.error(error);
   });
 
-// Only start the server if Mongo Connects
+// start server if mongo connect
 const StartServer = () => {
-  // Log the request
-  router.use((req, res, next) => {
-    // Log the req
+  router.use((req: Request, res: Response, next: NextFunction) => {
+    // show log request
     Logging.info(
       `Incomming - METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`
     );
 
     res.on("finish", () => {
-      // Log the res
+      // show log response
       Logging.info(
         `Result - METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}] - STATUS: [${res.statusCode}]`
       );
@@ -47,16 +46,14 @@ const StartServer = () => {
   router.use(cors());
   router.use(express.json());
 
-  // Routes
+  router.use("/admin", admin);
   router.use("/auth/user", auth);
-  router.use("/api/user", user);
-  router.use("/api/stripe", stripe);
-  router.use("/api/message", message);
+  router.use("/api/user", userModel);
+  router.use("/api/user", userManage);
   router.use("/api/estate", estate);
   router.use("/api/blog", blog);
 
-  // Healthcheck
-  router.get("/test/ping", (req: Request, res: Response) =>
+  router.get("/test", (req: Request, res: Response) =>
     res.status(200).json({ hello: "world" })
   );
 
