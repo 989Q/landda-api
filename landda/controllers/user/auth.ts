@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import User from "../../models/user";
 import {
-  tokenConfig,
   signToken,
   verifyToken,
   careteAccessToken,
   createRefreshToken,
 } from "../../middlewares/accessToken";
+import { tokenConfig } from "../../configs/token";
 import { generateUniqueUserId } from "../../utils/commons/createUniqueId";
 
 // ________________________________________ lib

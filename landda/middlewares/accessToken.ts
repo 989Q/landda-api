@@ -1,11 +1,5 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
-
-export const tokenConfig = {
-  accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
-  refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
-  // 1 day - 86400000, 1 hour - 3600000, 1 min - 60000
-  setTimeToken: 86400000,
-};
+import { tokenConfig } from "../configs/token";
 
 export const signToken = (
   payload: JwtPayload,

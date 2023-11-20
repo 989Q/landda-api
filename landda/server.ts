@@ -2,8 +2,8 @@ import express, { Request, Response, NextFunction } from "express";
 import http from "http";
 import cors from "cors";
 import mongoose from "mongoose";
-import { config } from "./configs/db-mongo";
-import Logging from "./utils/bashlog";
+import { config } from "./configs/mongodb";
+import Logging from "./utils/helpers/bashlog";
 
 import admin from "./routes/admin";
 import auth from "./routes/user/auth";
