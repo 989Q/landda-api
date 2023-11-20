@@ -32,13 +32,13 @@ export const sendMessage = async (req: Request, res: Response) => {
       estate,
     });
 
-    // Save the message to the database
+    // save message to database
     await newMessage.save();
 
-    // Add the new message to the user's messages array
+    // add new message to user's messages array
     user.messages.push(newMessage._id);
 
-    // Save the updated user document
+    // save updated user document
     await user.save();
 
     return res.status(201).json({ message: "Message sent successfully" });
@@ -64,20 +64,20 @@ export const searchMessages = async (req: any, res: Response) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Extract the messages property from the user object
-    let messages = user.messages; // Use let here to allow reassignment
+    // extract messages property from user object
+    let messages = user.messages; // use let here to allow reassignment
 
     if (keyword) {
-      // Limit the keyword to 60 characters
+      // limit keyword to 60 characters
       const limitedKeyword = keyword.substring(0, 60).toLowerCase();
 
-      // If a keyword is provided, filter messages based on the keyword
+      // if keyword is provided, filter messages based on the keyword
       const filteredMessages = messages.filter((message: any) => {
         const messageText = (message.text || "").toLowerCase();
         const senderEmail = (message.sender.email || "").toLowerCase();
         const senderPhone = (message.sender.phone || "").toLowerCase();
 
-        // Check for the keyword in text, sender.email, and sender.phone
+        // check for keyword in text, sender.email, and sender.phone
         return (
           messageText.includes(limitedKeyword) ||
           senderEmail.includes(limitedKeyword) ||
@@ -88,14 +88,14 @@ export const searchMessages = async (req: any, res: Response) => {
       messages = filteredMessages;
     }
 
-    // Sort messages based on sorting parameter
+    // sort messages based on sorting parameter
     if (sorting === "oldestDate") {
       messages.sort((a: any, b: any) => a.sentAt - b.sentAt);
     } else if (sorting === "newestDate") {
       messages.sort((a: any, b: any) => b.sentAt - a.sentAt);
     }
 
-    // If no keyword is provided, return all messages
+    // if no keyword is provided, return all messages
     return res.status(200).json({ messages });
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });
@@ -107,25 +107,25 @@ export const deleteMessages = async (req: any, res: Response) => {
   const messageObjectId = req.params.messageObjectId;
   
   try {
-    // Find the user by userId and populate the "messages" field
+    // find user by userId and populate "messages" field
     const user = await User.findOne({ "acc.userId": userId }).populate("messages");
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Find the message in the user's messages list
+    // find message in user's messages list
     const messageIndex = user.messages.findIndex((message) => message._id.toString() === messageObjectId);
 
     if (messageIndex === -1) {
       return res.status(404).json({ error: "Message not found" });
     }
 
-    // Remove the message from the user's messages list
+    // remove message from user's messages list
     user.messages.splice(messageIndex, 1);
     await user.save();
 
-    // You may also want to delete the message from the database if needed
+    // may also want to delete message from database if needed
     await Message.findByIdAndRemove(messageObjectId);
 
     res.json({ message: "Message deleted successfully" });

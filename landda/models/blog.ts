@@ -1,10 +1,11 @@
 import mongoose, { Document, Schema } from "mongoose";
 import { IUser } from "./user";
+import { BlogStatus, BlogTag } from "../utils/types";
 
 export interface IBlog {
   lead: {
     blogId: string;
-    status: "active" | "waiting" | "hidden";
+    status: BlogStatus;
     seen: number;
     see: {
       date: string;
@@ -18,7 +19,7 @@ export interface IBlog {
   body: {
     images: string[];
     link?: string;
-    tag: string[];
+    tag: BlogTag[];
     title: string;
     about: string;
   };
@@ -32,8 +33,8 @@ const Blog = new Schema<BlogDocument>({
     blogId: { type: String, required: true },
     status: {
       type: String,
-      enum: ["active", "waiting", "hidden"],
-      default: "active",
+      enum: Object.values(BlogStatus),
+      default: BlogStatus.Active,
       required: true,
     },
     seen: { type: Number, default: 0 },
@@ -52,7 +53,7 @@ const Blog = new Schema<BlogDocument>({
     tag: {
       type: [String],
       required: true,
-      enum: ["article", "supported", "promotion"],
+      enum: Object.values(BlogTag),
     },
     title: { type: String, required: true },
     about: { type: String, required: true },

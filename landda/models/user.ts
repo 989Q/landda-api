@@ -1,12 +1,20 @@
 import mongoose, { Document, Schema } from "mongoose";
+import {
+  UserLoginProvider,
+  UserStatus,
+  UserRole,
+  UserVerificationStatus,
+  SubscriptionStatus,
+  SubscriptionAccess,
+} from "../utils/types";
 
 export interface IUser {
   acc: {
     userId: string;
-    logins: ("google" | "facebook" | "email")[];
-    status: "active" | "wait" | "hidden";
-    role: "user" | "agent" | "partner" | "admin";
-    verified: "false" | "true";
+    logins: UserLoginProvider[];
+    status: UserStatus;
+    role: UserRole;
+    verified: UserVerificationStatus;
     createdAt: Date;
     updatedAt: Date;
   };
@@ -26,8 +34,8 @@ export interface IUser {
   };
   subs: {
     stripeId: string;
-    active: "false" | "true";
-    access: "Free" | "Basic" | "Standard" | "Premium";
+    active: SubscriptionStatus;
+    access: SubscriptionAccess;
     payment: String;
     startDate: Date;
     endDate: Date;
@@ -44,25 +52,25 @@ const UserSchema: Schema = new Schema({
     userId: { type: String, required: true },
     logins: {
       type: [String],
-      enum: ["google", "facebook", "email"],
+      enum: Object.values(UserLoginProvider),
       required: true,
     },
     status: {
       type: String,
-      enum: ["active", "wait", "hidden"],
+      enum: Object.values(UserStatus),
+      default: UserStatus.Active,
       required: true,
-      default: "active",
     },
     role: {
       type: String,
-      enum: ["user", "agent", "partner", "admin"],
-      default: "user",
+      enum: Object.values(UserRole),
+      default: UserRole.User,
       required: true,
     },
     verified: {
       type: String,
-      enum: ["false", "true"],
-      default: "false",
+      enum: Object.values(UserVerificationStatus),
+      default: UserVerificationStatus.False,
       required: true,
     },
     createdAt: { type: Date, required: true },
@@ -86,13 +94,13 @@ const UserSchema: Schema = new Schema({
     stripeId: { type: String, required: false },
     active: {
       type: String,
-      enum: ["false", "true"],
+      enum: Object.values(SubscriptionStatus),
       required: false,
     },
     access: {
       type: String,
-      enum: ["Free", "Basic", "Standard", "Premium"],
-      default: "Free",
+      enum: Object.values(SubscriptionAccess),
+      default: SubscriptionAccess.Free,
       required: true,
     },
     payment: { type: String, required: false },

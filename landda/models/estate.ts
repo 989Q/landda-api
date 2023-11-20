@@ -1,10 +1,11 @@
 import mongoose, { Document, Schema } from "mongoose";
 import { IUser } from "./user";
+import { EstatePostStatus, EstateDescStatus } from "../utils/types";
 
 export interface IEstate {
   head: {
     estateId: string;
-    post: "active" | "waiting" | "hidden" | "sold";
+    post: EstatePostStatus;
     score: number;
     seen: number;
     see: {
@@ -18,7 +19,7 @@ export interface IEstate {
   };
   desc: {
     images: string[];
-    status: "rentPerDay" | "rentPerMonth" | "rentPerYear" | "sale";
+    status: EstateDescStatus;
     type: string;
     curr: string;
     price: number;
@@ -50,8 +51,8 @@ const EstateSchema = new Schema<EstateDocument>({
     estateId: { type: String, required: true },
     post: {
       type: String,
-      enum: ["active", "waiting", "hidden", "sold"],
-      default: "active",
+      enum: Object.values(EstatePostStatus),
+      default: EstatePostStatus.Active,
       required: true,
     },
     score: { type: Number, default: 100 },
@@ -69,7 +70,7 @@ const EstateSchema = new Schema<EstateDocument>({
     images: { type: [String], required: true },
     status: {
       type: String,
-      enum: ["rentPerDay", "rentPerMonth", "rentPerYear", "sale"],
+      enum: Object.values(EstateDescStatus),
       required: true,
     },
     type: { type: String, required: true }, // land, home, condo

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import User from "../../models/user";
+import { UserRole, UserStatus } from "../../utils/types";
 
 export const getUserById = async (req: Request, res: Response) => {
   const userId = req.params.userId;
@@ -20,16 +21,13 @@ export const getUserById = async (req: Request, res: Response) => {
 };
 
 export const searchAgent = async (req: Request, res: Response) => {
-  const { 
-    keyword,
-    page = 1
-  } = req.query;
+  const { keyword, page = 1 } = req.query;
 
   const pageSize = 9;
 
   const searchQuery: any = {
-    "acc.role": "agent",
-    "acc.status": "active",
+    "acc.role": UserRole.Agent,
+    "acc.status": UserStatus.Active,
   };
 
   if (keyword && keyword.toString().length <= 60) {
@@ -41,10 +39,10 @@ export const searchAgent = async (req: Request, res: Response) => {
   }
 
   try {
-    // Calculate skip value for pagination
+    // calculate skip value for pagination
     const skip = (Number(page) - 1) * pageSize;
 
-    // Calculate total number of records without pagination
+    // calculate total number of records without pagination
     const totalRecords = await User.countDocuments(searchQuery);
 
     const users = await User.find(searchQuery)
@@ -70,16 +68,16 @@ export const searchListing = async (req: any, res: Response) => {
 
     if (!user) {return res.status(404).json({ message: "User not found" });}
 
-    // Extract owned items from the user object
+    // extract owned items from user object
     let ownedItems = user.estates;
 
     if (keyword) {
-      // Limit the keyword to 60 characters
+      // limit keyword to 60 characters
       const limitedKeyword = keyword.substring(0, 60).toLowerCase();
 
-      // Filter ownedItems based on the keyword
+      // filter ownedItems based on the keyword
       ownedItems = ownedItems.filter((item: any) => {
-        // Modify this condition to match your filtering criteria
+        // modify this condition to match filtering criteria
         return (
           item.desc.title.toLowerCase().includes(limitedKeyword) ||
           item.desc.about.toLowerCase().includes(limitedKeyword) ||
@@ -132,10 +130,10 @@ export const getUserInfo = async (req: any, res: Response) => {
 };
 
 export const updateName = async (req: any, res: Response) => {
-  try {
-    const userId = req.user.userId;
-    const { name } = req.body;
+  const userId = req.user.userId;
+  const { name } = req.body;
 
+  try {
     const updatedUser = await User.findOneAndUpdate(
       { "acc.userId": userId },
       { "info.name": name },
@@ -154,10 +152,10 @@ export const updateName = async (req: any, res: Response) => {
 };
 
 export const updatePhone = async (req: any, res: Response) => {
-  try {
-    const userId = req.user.userId;
-    const { phone } = req.body;
+  const userId = req.user.userId;
+  const { phone } = req.body;
 
+  try {
     const updatedUser = await User.findOneAndUpdate(
       { "acc.userId": userId },
       { "info.phone": phone },
@@ -176,10 +174,10 @@ export const updatePhone = async (req: any, res: Response) => {
 };
 
 export const updateSpeak = async (req: any, res: Response) => {
-  try {
-    const userId = req.user.userId;
-    const { speak } = req.body;
+  const userId = req.user.userId;
+  const { speak } = req.body;
 
+  try {
     const updatedUser = await User.findOneAndUpdate(
       { "acc.userId": userId },
       { "info.speak": speak },
@@ -198,10 +196,10 @@ export const updateSpeak = async (req: any, res: Response) => {
 };
 
 export const updateWork = async (req: any, res: Response) => {
-  try {
-    const userId = req.user.userId;
-    const { work } = req.body;
+  const userId = req.user.userId;
+  const { work } = req.body;
 
+  try {
     const updatedUser = await User.findOneAndUpdate(
       { "acc.userId": userId },
       { "info.work": work },
@@ -220,10 +218,10 @@ export const updateWork = async (req: any, res: Response) => {
 };
 
 export const updateLive = async (req: any, res: Response) => {
-  try {
-    const userId = req.user.userId;
-    const { live } = req.body;
+  const userId = req.user.userId;
+  const { live } = req.body;
 
+  try {
     const updatedUser = await User.findOneAndUpdate(
       { "acc.userId": userId },
       { "info.live": live },
@@ -242,10 +240,10 @@ export const updateLive = async (req: any, res: Response) => {
 };
 
 export const updateAbout = async (req: any, res: Response) => {
-  try {
-    const userId = req.user.userId;
-    const { about } = req.body;
+  const userId = req.user.userId;
+  const { about } = req.body;
 
+  try {
     const updatedUser = await User.findOneAndUpdate(
       { "acc.userId": userId },
       { "info.about": about },
@@ -264,10 +262,10 @@ export const updateAbout = async (req: any, res: Response) => {
 };
 
 export const updateLinks = async (req: any, res: Response) => {
-  try {
-    const userId = req.user.userId;
-    const { link1, link2, link3, link4 } = req.body;
+  const userId = req.user.userId;
+  const { link1, link2, link3, link4 } = req.body;
 
+  try {
     const updatedUser = await User.findOneAndUpdate(
       { "acc.userId": userId },
       {

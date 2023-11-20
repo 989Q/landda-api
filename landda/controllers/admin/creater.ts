@@ -4,8 +4,7 @@ import Blog from "../../models/blog";
 import { generateBlogId } from "../../utils/generateId";
 
 export const createBlog = async (req: Request, res: Response) => {
-  const { body } = req.body;
-  const { user } = req.body;
+  const { body, user } = req.body;
 
   let checkBlogId: any;
   let isUniqueBlogId: boolean = false;

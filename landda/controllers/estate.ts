@@ -3,19 +3,20 @@ import { Request, Response } from "express";
 import Estate, { EstateDocument } from "../models/estate";
 import { generateImageId, generateListId, addLetterId } from "../utils/generateId";
 import { uploadToWasabi } from "../middlewares/wasabi";
+import { EstatePostStatus } from "../utils/types";
 
 // ________________________________________ lib
 
 const updateEstateViews = (estate: EstateDocument) => {
-  // Update seen
+  // update seen
   estate.head.seen = (estate.head.seen || 0) + 1;
 
-  // Update see for the current date
+  // update see for current date
   const today = new Date().toISOString().split("T")[0];
   const seeEntry = estate.head.see;
 
   if (seeEntry) {
-    // If the date is different, update it
+    // if date is different, update it
     if (seeEntry.date !== today) {
       seeEntry.date = today;
       seeEntry.count = 1;
@@ -23,7 +24,7 @@ const updateEstateViews = (estate: EstateDocument) => {
       seeEntry.count++;
     }
   } else {
-    // If no entry exists, create a new one
+    // if no entry exists, create a new one
     estate.head.see = { date: today, count: 1 };
   }
 };
@@ -56,7 +57,7 @@ export const uploadImages = async (req: any, res: any) => {
 export const createEstate = async (req: Request, res: Response) => {
   // console.log("req.body: ", req.body);
   const { desc, maps } = req.body;
-  const images = desc.images; // Extract the images array from the request body
+  const images = desc.images; // extract images array from request body
   const user = req.body.user;
 
   // generate unique estateId
@@ -110,7 +111,7 @@ export const updateEstate = async (req: Request, res: Response) => {
   console.log("estateId ", estateId);
 
   try {
-    // Find the estate by Id
+    // find estate by Id
     const estate = await Estate.findOne({ "head.estateId": estateId });
 
     if (!estate) {
@@ -118,17 +119,17 @@ export const updateEstate = async (req: Request, res: Response) => {
     }
 
     if (req.body.desc) {
-      // Append the new image URLs to the existing images array
+      // append new image URLs to the existing images array
       if (req.body.desc.images && Array.isArray(req.body.desc.images)) {
         req.body.desc.images.forEach((imageUrl: string) => {
           estate.desc.images.push(imageUrl);
         });
       }
-      // Handle other desc properties as needed
+      // handle other desc properties as needed
       estate.desc = { ...estate.desc, ...req.body.desc };
     }
 
-    // Update estate properties based on your requirements
+    // update estate properties based on requirements
     if (req.body.head) {
       estate.head = { ...estate.head, ...req.body.head };
     }
@@ -139,7 +140,7 @@ export const updateEstate = async (req: Request, res: Response) => {
       estate.maps = { ...estate.maps, ...req.body.maps };
     }
 
-    // Save the updated estate
+    // save updated estate
     const updatedEstate = await estate.save();
 
     return res.status(200).json({ estate: updatedEstate });
@@ -153,7 +154,7 @@ export const deleteEstate = async (req: Request, res: Response) => {
   const estateId = req.params.estateId;
 
   try {
-    // Find the estate by ID and remove it
+    // find estate by ID and remove it
     const deletedEstate = await Estate.findOneAndRemove({
       "head.estateId": estateId,
     });
@@ -179,9 +180,9 @@ export const getEstateById = async (req: Request, res: Response) => {
       })
       .select("-__v");
     if (estate) {
-      // Update views
+      // update views
       updateEstateViews(estate);
-      // Save the changes
+      // save changes
       await estate.save();
 
       res.status(200).json({ estate });
@@ -208,10 +209,10 @@ export const searchEstate = async (req: Request, res: Response) => {
     page = 1,
   } = req.query;
 
-  const pageSize = 12; // Set your default pageSize here
+  const pageSize = 12; // set default pageSize
 
   const searchQuery: any = {
-    "head.post": "active", // filter head.post
+    "head.post":  EstatePostStatus.Active
   };
 
   if (keyword && keyword.toString().length <= 60) {
@@ -272,18 +273,18 @@ export const searchEstate = async (req: Request, res: Response) => {
       sortOption = { "desc.bed": -1 };
       break;
     default:
-      // Default sorting or no sorting
+      // default sorting or no sorting
       break;
   }
 
   try {
-    // Calculate skip value for pagination
+    // calculate skip value for pagination
     const skip = (Number(page) - 1) * pageSize;
 
-    // Calculate total number of records without pagination
+    // calculate total number of records without pagination
     const totalRecords = await Estate.countDocuments(searchQuery);
 
-    // Search and retrieve estates
+    // search and retrieve estates
     const estates = await Estate.find(searchQuery)
       .populate({
         path: "user",
