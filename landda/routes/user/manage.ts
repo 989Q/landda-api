@@ -2,8 +2,8 @@ import express from "express";
 import * as favorite from "../../controllers/user/favorite";
 import * as stripe from "../../controllers/user/stripe";
 import * as message from "../../controllers/user/message";
+import { validateToken } from "../../middlewares/accessToken";
 // import { Schemas, ValidateJoi } from '../middleware/Joi';
-import { validateToken } from "../../middlewares/validate";
 
 const router = express.Router();
 

@@ -1,7 +1,7 @@
 import express from "express";
 import * as estate from "../controllers/estate";
 import { upload } from "../middlewares/wasabi";
-import { validateToken } from "../middlewares/validate";
+import { validateToken } from "../middlewares/accessToken";
 
 const router = express.Router();
 

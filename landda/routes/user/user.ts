@@ -1,7 +1,7 @@
 import express from "express";
 import * as user from "../../controllers/user/user";
+import { validateToken } from "../../middlewares/accessToken";
 // import { Schemas, ValidateJoi } from '../middleware/Joi';
-import { validateToken } from "../../middlewares/validate";
 
 const router = express.Router();
 

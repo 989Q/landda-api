@@ -1,5 +1,20 @@
-import jwt, { JwtPayload } from "jsonwebtoken";
+import { Request, NextFunction } from "express";
 import { tokenConfig } from "../configs/token";
+import jwt, { JwtPayload } from "jsonwebtoken";
+
+// ________________________________________ interface
+
+export interface AuthRequest extends Request {
+  // userToken?: {
+  user?: {
+    userId?: string,
+    email?: string,
+    image?: string,
+    access?: string, 
+  };
+}
+
+// ________________________________________ function
 
 export const signToken = (
   payload: JwtPayload,
@@ -15,6 +30,36 @@ export const verifyToken = (token: string, secret: any): JwtPayload | any => {
     return decoded as JwtPayload;
   } catch (error) {
     return "Invalid token";
+  }
+};
+
+export const validateToken = (req: AuthRequest, res: any, next: NextFunction) => {
+  let token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({ message: "Access denied." });
+  }
+
+  token = token.split(" ")[1];
+
+  try {
+    const decoded: jwt.JwtPayload = jwt.verify(
+      token,
+      tokenConfig.accessTokenSecret
+    ) as jwt.JwtPayload;
+
+    // req.userToken = {
+    req.user = {
+      userId: decoded.userId,
+      email: decoded.email,
+      image: decoded.image,
+      access: decoded.access,
+    };
+
+    next();
+  } catch (error) {
+    // return res.status(403).json({ "unauthorized" });
+    return res.status(401).json({ error });
   }
 };
 
