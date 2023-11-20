@@ -25,7 +25,7 @@ const updateBlogViews = (blog: BlogDocument) => {
   }
 };
 
-// ________________________________________ main function
+// ________________________________________ main
 
 export const getAllBlog = async (req: Request, res: Response) => {
   try {

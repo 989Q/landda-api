@@ -28,7 +28,7 @@ const updateEstateViews = (estate: EstateDocument) => {
   }
 };
 
-// ________________________________________ main function
+// ________________________________________ main
 
 export const uploadImages = async (req: any, res: any) => {
   console.log("request files: ", req.files);

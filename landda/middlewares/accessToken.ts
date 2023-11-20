@@ -1,9 +1,11 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-export const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
-export const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
-// 1 day - 86400000, 1 hour - 3600000, 1 min - 60000
-export const setTimeToken = 86400000; 
+export const tokenConfig = {
+  accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
+  refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
+  // 1 day - 86400000, 1 hour - 3600000, 1 min - 60000
+  setTimeToken: 86400000,
+};
 
 export const signToken = (
   payload: JwtPayload,
@@ -31,7 +33,7 @@ export const careteAccessToken = (
 ): string => {
   const accessToken = signToken(
     { userId, email, image, name, access },
-    accessTokenSecret,
+    tokenConfig.accessTokenSecret,
     "1d"
   );
 
@@ -39,7 +41,7 @@ export const careteAccessToken = (
 };
 
 export const createRefreshToken = (userId: string): string => {
-  const refreshToken = signToken({ userId }, refreshTokenSecret, "7d");
+  const refreshToken = signToken({ userId }, tokenConfig.refreshTokenSecret, "7d");
 
   return refreshToken;
 };

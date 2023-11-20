@@ -49,9 +49,10 @@ const StartServer = () => {
   router.use("/admin", admin);
   router.use("/auth/user", auth);
   router.use("/api/user", userModel);
-  router.use("/api/user", userManage);
   router.use("/api/estate", estate);
   router.use("/api/blog", blog);
+  // custom routes
+  router.use("/api", userManage);
 
   router.get("/test/ping", (req: Request, res: Response) =>
     res.status(200).json({ hello: "world" })

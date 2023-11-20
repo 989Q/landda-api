@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import User from "../../models/user";
 
-// ________________________________________ get user
-
 export const getUserById = async (req: Request, res: Response) => {
   const userId = req.params.userId;
 
@@ -20,8 +18,6 @@ export const getUserById = async (req: Request, res: Response) => {
     res.status(500).json({ error });
   }
 };
-
-// ________________________________________ searching
 
 export const searchAgent = async (req: Request, res: Response) => {
   const { 
