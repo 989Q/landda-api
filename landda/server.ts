@@ -2,7 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import http from "http";
 import cors from "cors";
 import mongoose from "mongoose";
-import { config } from "./config/config";
+import { config } from "./configs/db-mongo";
 import Logging from "./utils/bashlog";
 
 import admin from "./routes/admin";
@@ -53,7 +53,7 @@ const StartServer = () => {
   router.use("/api/estate", estate);
   router.use("/api/blog", blog);
 
-  router.get("/test", (req: Request, res: Response) =>
+  router.get("/test/ping", (req: Request, res: Response) =>
     res.status(200).json({ hello: "world" })
   );
 

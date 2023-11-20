@@ -1,38 +1,15 @@
-import User from "../../models/user";
 import { Request, Response } from "express";
-import { signToken, verifyToken } from "../../utils/generateToken";
+import User from "../../models/user";
+import {
+  accessTokenSecret,
+  refreshTokenSecret,
+  setTimeToken,
+  signToken,
+  verifyToken,
+  careteAccessToken,
+  createRefreshToken,
+} from "../../middlewares/accessToken";
 import { generateUserId, addLetterId } from "../../utils/generateId";
-
-const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
-const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
-// 1 day - 86400000, 1 hour - 3600000, 1 min - 60000
-const setTime = 86400000; 
-
-// ________________________________________ lib
-
-const careteAccessToken = (
-  userId: string,
-  email: string,
-  image: string,
-  name: string,
-  access: string
-): string => {
-  const accessToken = signToken(
-    { userId, email, image, name, access },
-    accessTokenSecret,
-    "1d"
-  );
-
-  return accessToken;
-};
-
-const createRefreshToken = (userId: string): string => {
-  const refreshToken = signToken({ userId }, refreshTokenSecret, "7d");
-
-  return refreshToken;
-};
-
-// ________________________________________ signIn, signUp
 
 export const signIn = async (req: Request, res: Response) => {
   // console.log("req.body: ", req.body)
@@ -51,7 +28,7 @@ export const signIn = async (req: Request, res: Response) => {
       if (!existingUserId) {
         isUniqueUserId = true;
       } else {
-        addLetterCount += 2; // increment by 2 as per your requirement
+        addLetterCount += 2; // increment by 2 as per requirement
         userId= generateUserId() + addLetterId(addLetterCount);
       }
     }
@@ -74,10 +51,8 @@ export const signIn = async (req: Request, res: Response) => {
         );
         const refreshToken = createRefreshToken(existingUser.acc.userId);
         const userId = existingUser.acc.userId;
-        const expires = Math.floor(Date.now() + setTime);
-        const response = res
-          .status(200)
-          .json({ accessToken, refreshToken, userId, expires });
+        const expires = Math.floor(Date.now() + setTimeToken);
+        const response = res.status(200).json({ accessToken, refreshToken, userId, expires });
 
         // console.log("existingUser: ", response);
         return response;
@@ -108,16 +83,14 @@ export const signIn = async (req: Request, res: Response) => {
             );
             const refreshToken = createRefreshToken(savedUser.acc.userId);
             const userId = savedUser.acc.userId;
-            const expires = Math.floor(Date.now() + setTime);
-            const response = res
-              .status(201)
-              .json({ accessToken, refreshToken, userId, expires });
+            const expires = Math.floor(Date.now() + setTimeToken);
+            const response = res.status(201).json({ accessToken, refreshToken, userId, expires });
 
             // console.log("newUser: ", response);
             return response;
           })
           .catch((error) => {
-            console.log(error);
+            console.log("savedUser:", error);
             return res.status(500);
           });
       }
@@ -161,7 +134,7 @@ export const refreshToken = (req: Request, res: Response) => {
             "7d"
           );
 
-          const newExpires = Math.floor(Date.now() + setTime);
+          const newExpires = Math.floor(Date.now() + setTimeToken);
           // send new response
           const response = res
             .status(201)
@@ -176,13 +149,11 @@ export const refreshToken = (req: Request, res: Response) => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.log("refreshToken:", error);
         return res.status(500);
       });
-  } catch (error) {
+  } catch (error: any) {
     // console.log(error)
-    return res
-      .status(401)
-      .json({ message: "Invalid or expired refresh token." });
+    return res.status(401).json({ message: "Invalid or expired refresh token." });
   }
 };

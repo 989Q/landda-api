@@ -1,5 +1,3 @@
-// utils/generateID.ts
-
 function getRandomCharacter(characters: string) {
   return characters[Math.floor(Math.random() * characters.length)];
 }
@@ -26,14 +24,14 @@ export function addLetterId(count: number) {
   return `${set1}`;
 }
 
-// ________________________________________ user ID
+// ________________________________________ userId
 
 export function generateUserId() {
   const set1 = generateRandomString(10, 0.5);
   return `user-${set1}`;
 }
 
-// ________________________________________ list ID
+// ________________________________________ listId
 
 export function generateListId() {
   const set1 = generateRandomString(4, 0.5);
@@ -43,7 +41,7 @@ export function generateListId() {
   return `list-${set1}${set2}${set3}`;
 }
 
-// ________________________________________ image ID
+// ________________________________________ imageId
 
 export function generateImageId() {
   const set1 = generateRandomString(32, 0.5);
@@ -51,7 +49,7 @@ export function generateImageId() {
   return `image-${set1}`;
 }
 
-// ________________________________________ blog ID
+// ________________________________________ blogId
 
 export function generateBlogId() {
   const set1 = generateRandomString(8, 0.5);
