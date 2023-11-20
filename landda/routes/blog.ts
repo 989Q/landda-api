@@ -3,8 +3,7 @@ import * as blog from "../controllers/blog";
 
 const router = express.Router();
 
-router.get("/get", blog.getAllBlog);
-router.get("/get/:blogId", blog.getBlogById);
 router.get("/search", blog.searchBlog);
+router.get("/get/:blogId", blog.getBlogById);
 
 export default router;

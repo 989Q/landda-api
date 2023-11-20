@@ -1,35 +1,11 @@
 import mongoose from "mongoose";
 import { Request, Response } from "express";
-import Estate, { EstateDocument } from "../models/estate";
-import { generateImageId, generateListId, addLetterId } from "../utils/generateId";
+import Estate from "../models/estate";
 import { uploadToWasabi } from "../middlewares/wasabi";
-import { EstatePostStatus } from "../utils/types";
-
-// ________________________________________ lib
-
-const updateEstateViews = (estate: EstateDocument) => {
-  // update seen
-  estate.head.seen = (estate.head.seen || 0) + 1;
-
-  // update see for current date
-  const today = new Date().toISOString().split("T")[0];
-  const seeEntry = estate.head.see;
-
-  if (seeEntry) {
-    // if date is different, update it
-    if (seeEntry.date !== today) {
-      seeEntry.date = today;
-      seeEntry.count = 1;
-    } else {
-      seeEntry.count++;
-    }
-  } else {
-    // if no entry exists, create a new one
-    estate.head.see = { date: today, count: 1 };
-  }
-};
-
-// ________________________________________ main
+import { EstatePostStatus } from "../utils/helpers/types";
+import { generateImageId } from "../utils/commons/createId";
+import { generateUniqueEstateId } from "../utils/commons/createUniqueId";
+import { updateEstateViews } from "../utils/commons/updateView";
 
 export const uploadImages = async (req: any, res: any) => {
   console.log("request files: ", req.files);
@@ -59,50 +35,33 @@ export const createEstate = async (req: Request, res: Response) => {
   const { desc, maps } = req.body;
   const images = desc.images; // extract images array from request body
   const user = req.body.user;
+  
+  try {
+    // generate unique estateId
+    const estateId = await generateUniqueEstateId();
 
-  // generate unique estateId
-  const generateUniqueEstateId = async () => {
-    let estateId = generateListId();
-    let addLetterCount = 0;
-    let isUnique = false;
+    // upload images to Wasabi
+    await uploadToWasabi(images.originalname, images.buffer);
 
-    while (!isUnique) {
-      const existingEstateId = await Estate.findOne({
-        "head.estateId": estateId,
-      });
-      if (!existingEstateId) {
-        isUnique = true;
-      } else {
-        addLetterCount += 2;
-        estateId = generateListId() + addLetterId(addLetterCount);
-      }
-    }
+    const estate = new Estate({
+      _id: new mongoose.Types.ObjectId(),
+      head: {
+        estateId: estateId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      desc,
+      maps,
+      user,
+    });
 
-    return estateId;
-  };
+    const savedEstate = await estate.save();
 
-  // generate unique estateId
-  const estateId = await generateUniqueEstateId();
-
-  // upload images to wasabi
-  await uploadToWasabi(images.originalname, images.buffer);
-
-  const estate = new Estate({
-    _id: new mongoose.Types.ObjectId(),
-    head: {
-      estateId: estateId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    desc,
-    maps,
-    user,
-  });
-
-  return estate
-    .save()
-    .then((estate) => res.status(201).json({ estate }))
-    .catch((error) => res.status(500).json({ error }));
+    res.status(201).json({ estate: savedEstate });
+  } catch (error) {
+    console.error("Error in createEstate:", error);
+    res.status(500).json({ error: "Internal Server Error." });
+  }
 };
 
 // doing

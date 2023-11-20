@@ -1,41 +1,7 @@
 import { Request, Response } from "express";
-import Blog, { BlogDocument } from "../models/blog";
-import { BlogStatus, BlogTag } from "../utils/types";
-
-// ________________________________________ lib
-
-const updateBlogViews = (blog: BlogDocument) => {
-  // update seen
-  blog.lead.seen = (blog.lead.seen || 0) + 1;
-
-  // update see for current date
-  const today = new Date().toISOString().split("T")[0];
-  const seeEntry = blog.lead.see;
-
-  if (seeEntry) {
-    // if date is different, update it
-    if (seeEntry.date !== today) {
-      seeEntry.date = today;
-      seeEntry.count = 1;
-    } else {
-      seeEntry.count++;
-    }
-  } else {
-    // if no entry exists, create a new one
-    blog.lead.see = { date: today, count: 1 };
-  }
-};
-
-// ________________________________________ main
-
-export const getAllBlog = async (req: Request, res: Response) => {
-  try {
-    const blogs = await Blog.find({ "lead.status": BlogStatus.Active });
-    return res.status(200).json({ blogs });
-  } catch (error) {
-    return res.status(500).json({ error });
-  }
-};
+import Blog from "../models/blog";
+import { BlogStatus, BlogTag } from "../utils/helpers/types";
+import { updateBlogViews } from "../utils/commons/updateView";
 
 export const getBlogById = async (req: Request, res: Response) => {
   const blogId = req.params.blogId;

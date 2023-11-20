@@ -6,7 +6,7 @@ import {
   UserVerificationStatus,
   SubscriptionStatus,
   SubscriptionAccess,
-} from "../utils/types";
+} from "../utils/helpers/types";
 
 export interface IUser {
   acc: {

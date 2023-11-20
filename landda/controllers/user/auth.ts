@@ -7,23 +7,9 @@ import {
   careteAccessToken,
   createRefreshToken,
 } from "../../middlewares/accessToken";
-import { generateUserId, addLetterId } from "../../utils/generateId";
+import { generateUniqueUserId } from "../../utils/commons/createUniqueId";
 
 // ________________________________________ lib
-
-const generateUniqueUserId = async () => {
-  let userId: string;
-  let addLetterCount = 0;
-
-  do {
-    userId = generateUserId() + addLetterId(addLetterCount);
-    const existingUserId = await User.findOne({ "acc.userId": userId });
-    if (!existingUserId) break;
-    addLetterCount += 2;
-  } while (true);
-
-  return userId;
-};
 
 const handleExistingUser = (user: any, res: Response, statusCode: number) => {
   // extract properties from user
