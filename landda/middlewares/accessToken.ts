@@ -1,4 +1,4 @@
-import { Request, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import { tokenConfig } from "../configs/token";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
@@ -32,7 +32,7 @@ export const verifyToken = (token: string, secret: any): JwtPayload | any => {
   }
 };
 
-export const validateToken = (req: AuthRequest, res: any, next: NextFunction) => {
+export const validateToken = (req: AuthRequest, res: Response, next: NextFunction) => {
   let token = req.headers.authorization;
 
   if (!token) {

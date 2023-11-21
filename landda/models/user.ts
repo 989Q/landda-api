@@ -64,7 +64,7 @@ const UserSchema: Schema = new Schema({
     role: {
       type: String,
       enum: Object.values(UserRole),
-      default: UserRole.User,
+      default: UserRole.Regular,
       required: true,
     },
     verified: {

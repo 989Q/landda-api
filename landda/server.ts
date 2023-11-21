@@ -2,7 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import http from "http";
 import cors from "cors";
 import mongoose from "mongoose";
-import { config } from "./configs/mongodb";
+import { serverConfig } from "./configs/server";
 import Logging from "./utils/helpers/bashlog";
 
 import admin from "./routes/admin";
@@ -15,7 +15,7 @@ import blog from "./routes/blog";
 const router = express();
 
 mongoose
-  .connect(config.mongo.url!)
+  .connect(serverConfig.mongo.url!)
   .then(() => {
     Logging.info("Connected to mongoDB.");
     StartServer();
@@ -68,7 +68,7 @@ const StartServer = () => {
 
   http
     .createServer(router)
-    .listen(config.server.port, () =>
-      Logging.info(`Server is running on port ${config.server.port}`)
+    .listen(serverConfig.server.port, () =>
+      Logging.info(`Server is running on port ${serverConfig.server.port}`)
     );
 };

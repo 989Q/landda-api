@@ -8,15 +8,18 @@ export enum UserLoginProvider {
 
 export enum UserStatus {
   Active = "active",
-  Wait = "wait",
-  Hidden = "hidden",
+  Inactive = "inactive",
+  Suspended = "suspended",
+  Pending = "pending",
+  Blocked = "blocked",
 }
 
 export enum UserRole {
   Admin = "admin",
   Partner = "partner",
-  User = "user",
   Agent = "agent",
+  Regular = "regular",
+  Banned = "banned",
 }
 
 export enum UserVerificationStatus {
@@ -29,7 +32,7 @@ export enum SubscriptionStatus {
   True = "true",
 }
 
-// stripe
+// Stripe (must have the same value as in the strip)
 export enum SubscriptionAccess {
   Free = "Free",
   Basic = "Basic",
