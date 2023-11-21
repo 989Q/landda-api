@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import User from "../../models/user";
 import Estate from "../../models/estate";
+import { AuthRequest } from "../../middlewares/accessToken";
 
-export const listFavorites = async (req: any, res: Response) => {
-  const userId = req.user.userId;
+export const listFavorites = async (req: AuthRequest, res: Response) => {
+  const userId = req.userToken?.userId;
 
   try {
     const user = await User.findOne({ "acc.userId": userId })
@@ -29,8 +30,8 @@ export const listFavorites = async (req: any, res: Response) => {
   }
 };
 
-export const checkFavorites = async (req: any, res: Response) => {
-  const userId = req.user.userId;
+export const checkFavorites = async (req: AuthRequest, res: Response) => {
+  const userId = req.userToken?.userId;
 
   try {
     const user = await User.findOne({ "acc.userId": userId });
@@ -50,8 +51,8 @@ export const checkFavorites = async (req: any, res: Response) => {
   }
 };
 
-export const saveFavorite = async (req: any, res: Response) => {
-  const userId = req.user.userId;
+export const saveFavorite = async (req: AuthRequest, res: Response) => {
+  const userId = req.userToken?.userId;
   const estateId = req.params.estateId;
 
   try {
@@ -83,8 +84,8 @@ export const saveFavorite = async (req: any, res: Response) => {
   }
 };
 
-export const removeFavorite = async (req: any, res: Response) => {
-  const userId = req.user.userId;
+export const removeFavorite = async (req: AuthRequest, res: Response) => {
+  const userId = req.userToken?.userId;
   const estateId = req.params.estateId;
 
   try {
@@ -111,9 +112,7 @@ export const removeFavorite = async (req: any, res: Response) => {
     user.saves.splice(index, 1);
     await user.save();
 
-    res
-      .status(200)
-      .json({ message: "Estate removed from favorites successfully" });
+    res.status(200).json({ message: "Estate removed from favorites successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });

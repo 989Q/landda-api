@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User from "../../models/user";
 import { UserRole, UserStatus } from "../../utils/helpers/types";
+import { AuthRequest } from "../../middlewares/accessToken";
 
 export const getUserById = async (req: Request, res: Response) => {
   const userId = req.params.userId;
@@ -58,8 +59,8 @@ export const searchAgent = async (req: Request, res: Response) => {
 
 // ________________________________________ manage owned estate listing
 
-export const searchListing = async (req: any, res: Response) => {
-  const userId = req.user.userId;
+export const searchListing = async (req: AuthRequest, res: Response) => {
+  const userId = req.userToken?.userId;
   const { keyword, sorting } = req.query;
 
   try {
@@ -71,7 +72,7 @@ export const searchListing = async (req: any, res: Response) => {
     // extract owned items from user object
     let ownedItems = user.estates;
 
-    if (keyword) {
+    if (typeof keyword === 'string') {
       // limit keyword to 60 characters
       const limitedKeyword = keyword.substring(0, 60).toLowerCase();
 
@@ -112,8 +113,8 @@ export const searchListing = async (req: any, res: Response) => {
 
 // ________________________________________ update user
 
-export const getUserInfo = async (req: any, res: Response) => {
-  const userId = req.user.userId;
+export const getUserInfo = async (req: AuthRequest, res: Response) => {
+  const userId = req.userToken?.userId;
 
   try {
     const user = await User.findOne({ "acc.userId": userId })
@@ -129,8 +130,8 @@ export const getUserInfo = async (req: any, res: Response) => {
   }
 };
 
-export const updateName = async (req: any, res: Response) => {
-  const userId = req.user.userId;
+export const updateName = async (req: AuthRequest, res: Response) => {
+  const userId = req.userToken?.userId;
   const { name } = req.body;
 
   try {
@@ -151,8 +152,8 @@ export const updateName = async (req: any, res: Response) => {
   }
 };
 
-export const updatePhone = async (req: any, res: Response) => {
-  const userId = req.user.userId;
+export const updatePhone = async (req: AuthRequest, res: Response) => {
+  const userId = req.userToken?.userId;
   const { phone } = req.body;
 
   try {
@@ -173,8 +174,8 @@ export const updatePhone = async (req: any, res: Response) => {
   }
 };
 
-export const updateSpeak = async (req: any, res: Response) => {
-  const userId = req.user.userId;
+export const updateSpeak = async (req: AuthRequest, res: Response) => {
+  const userId = req.userToken?.userId;
   const { speak } = req.body;
 
   try {
@@ -195,8 +196,8 @@ export const updateSpeak = async (req: any, res: Response) => {
   }
 };
 
-export const updateWork = async (req: any, res: Response) => {
-  const userId = req.user.userId;
+export const updateWork = async (req: AuthRequest, res: Response) => {
+  const userId = req.userToken?.userId;
   const { work } = req.body;
 
   try {
@@ -217,8 +218,8 @@ export const updateWork = async (req: any, res: Response) => {
   }
 };
 
-export const updateLive = async (req: any, res: Response) => {
-  const userId = req.user.userId;
+export const updateLive = async (req: AuthRequest, res: Response) => {
+  const userId = req.userToken?.userId;
   const { live } = req.body;
 
   try {
@@ -239,8 +240,8 @@ export const updateLive = async (req: any, res: Response) => {
   }
 };
 
-export const updateAbout = async (req: any, res: Response) => {
-  const userId = req.user.userId;
+export const updateAbout = async (req: AuthRequest, res: Response) => {
+  const userId = req.userToken?.userId;
   const { about } = req.body;
 
   try {
@@ -261,8 +262,8 @@ export const updateAbout = async (req: any, res: Response) => {
   }
 };
 
-export const updateLinks = async (req: any, res: Response) => {
-  const userId = req.user.userId;
+export const updateLinks = async (req: AuthRequest, res: Response) => {
+  const userId = req.userToken?.userId;
   const { link1, link2, link3, link4 } = req.body;
 
   try {

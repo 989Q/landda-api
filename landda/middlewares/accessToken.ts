@@ -5,8 +5,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 // ________________________________________ interface
 
 export interface AuthRequest extends Request {
-  // userToken?: {
-  user?: {
+  userToken?: {
     userId?: string,
     email?: string,
     image?: string,
@@ -48,8 +47,7 @@ export const validateToken = (req: AuthRequest, res: any, next: NextFunction) =>
       tokenConfig.accessTokenSecret
     ) as jwt.JwtPayload;
 
-    // req.userToken = {
-    req.user = {
+    req.userToken = {
       userId: decoded.userId,
       email: decoded.email,
       image: decoded.image,
@@ -58,7 +56,6 @@ export const validateToken = (req: AuthRequest, res: any, next: NextFunction) =>
 
     next();
   } catch (error) {
-    // return res.status(403).json({ "unauthorized" });
     return res.status(401).json({ error });
   }
 };

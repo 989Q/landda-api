@@ -1,6 +1,7 @@
 import User from "../../models/user";
 import { Request, Response } from "express";
 import { stripe } from "../../middlewares/stripe";
+import { AuthRequest } from "../../middlewares/accessToken";
 
 export const getPrices = async (req: Request, res: Response) => {
   const prices = await stripe.prices.list({
@@ -10,8 +11,8 @@ export const getPrices = async (req: Request, res: Response) => {
   return res.json(prices);
 };
 
-export const createSession = async (req: any, res: Response) => {
-  const email = req.user.email;
+export const createSession = async (req: AuthRequest, res: Response) => {
+  const email = req.userToken?.email;
   const user = await User.findOne({ "info.email": email });
 
   if (!user) {
@@ -52,8 +53,8 @@ export const createSession = async (req: any, res: Response) => {
   return res.json(session);
 };
 
-export const getSubscribed = async (req: any, res: Response) => {
-  const email = req.user.email;
+export const getSubscribed = async (req: AuthRequest, res: Response) => {
+  const email = req.userToken?.email;
   const user = await User.findOne({ "info.email": email });
 
   const subscriptions = await stripe.subscriptions.list(

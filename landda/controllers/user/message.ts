@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import User from "../../models/user";
 import Message from "../../models/message";
 import Estate from "../../models/estate";
+import { AuthRequest } from "../../middlewares/accessToken";
 
 export const sendMessage = async (req: Request, res: Response) => {
   const { sender, text, userId, estateId } = req.body;
@@ -47,8 +48,8 @@ export const sendMessage = async (req: Request, res: Response) => {
   }
 };
 
-export const searchMessages = async (req: any, res: Response) => {
-  const userId = req.user.userId; 
+export const searchMessages = async (req: AuthRequest, res: Response) => {
+  const userId = req.userToken?.userId;
   const { keyword, sorting } = req.query;
 
   try {
@@ -67,7 +68,7 @@ export const searchMessages = async (req: any, res: Response) => {
     // extract messages property from user object
     let messages = user.messages; // use let here to allow reassignment
 
-    if (keyword) {
+    if (typeof keyword === "string") {
       // limit keyword to 60 characters
       const limitedKeyword = keyword.substring(0, 60).toLowerCase();
 
@@ -102,8 +103,8 @@ export const searchMessages = async (req: any, res: Response) => {
   }
 };
 
-export const deleteMessages = async (req: any, res: Response) => {  
-  const userId = req.user.userId; 
+export const deleteMessages = async (req: AuthRequest, res: Response) => {  
+  const userId = req.userToken?.userId;
   const messageObjectId = req.params.messageObjectId;
   
   try {
