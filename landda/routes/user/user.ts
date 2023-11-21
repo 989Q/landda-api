@@ -1,12 +1,13 @@
 import express from "express";
 import * as user from "../../controllers/user/user";
 import { validateToken } from "../../middlewares/accessToken";
+import { limitParams } from "../../middlewares/checkRequest";
 // import { Schemas, ValidateJoi } from '../middleware/Joi';
 
 const router = express.Router();
 
 // search user
-router.get("/get/:userId", user.getUserById);
+router.get("/get/:userId", limitParams("userId", 20), user.getUserById);
 router.get("/search-agents", user.searchAgent);
 
 // update user
