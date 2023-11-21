@@ -23,6 +23,22 @@ This project utilizes `NextAuth` for authentication, allowing users to log in us
 **User Account**
 - email: user123@gmail.com
 
+## Security System
+
+### Authentication Middleware
+
+The application utilizes a token-based authentication system. Two middleware functions are implemented
+
+- `validateToken:` This ensures the validity of the authentication token.
+<!-- - `adminAccess:` Grants access to admin functionalities. -->
+<!-- - `userAccess:` Grants access to user functionalities. -->
+
+### Request Validation Middleware
+
+limitParams
+
+The `limitParams` function is implemented in middlewares/checkRequest.ts. It serves as a request middleware to limit and validate parameters in incoming requests. This ensures that the API handles requests with appropriate parameters, enhancing security and preventing potential issues.
+
 ## Additional Resources
 
 > config/config.ts, utils/Logging.ts, server.ts/mongoose
@@ -32,36 +48,42 @@ RESTful API using Node JS, MongoDB & Typescript IN-DEPTH [2022]
 
 ## Installation
 
-Make sure to have `pnpm` installed.
+Initialize the project
 ```bash
 pnpm init 
+```
 
+Install Express and related dependencies
+```bash
 pnpm i @types/node ts-node
 pnpm i nodemon 
 
 pnpm i express
 pnpm i --save-dev typescript @types/express
 
-pnpm i cors
-pnpm i --save-dev @types/cors
-
-pnpm i dotenv mongoose
-
-# terminal
-pnpm i chalk@^4.1.2
-
 pnpm i jsonwebtoken
 pnpm i --save-dev @types/jsonwebtoken
 
-# aws-sdk & multer
-dependencies:
-+ @aws-sdk/client-s3 3.370.0
-+ multer 1.4.5-lts.1
+pnpm i cors
+pnpm i --save-dev @types/cors
 
-devDependencies:
-+ @types/multer 1.4.7
+# terminal
+pnpm i chalk@^4.1.2
+```
 
-# pnpm i @aws-sdk/s3-request-presigner
+Install MongoDB 
+```bash
+pnpm i dotenv mongoose
+```
 
+Install AWS SDK and Multer
+```bash
+pnpm i @aws-sdk/client-s3 
+pnpm i multer 
+pnpm i --save-dev @types/multer 
+```
+
+Install Stripe
+```bash
 pnpm i stripe
 ```
