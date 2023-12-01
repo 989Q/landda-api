@@ -13,11 +13,11 @@ import { generateUniqueUserId } from "../../utils/commons/createUniqueId";
 
 const handleExistingUser = (user: any, res: Response, statusCode: number) => {
   // extract properties from user
-  const { userId } = user.acc;
+  const { userId, role } = user.acc;
   const { email, image, name } = user.info;
   const { access } = user.subs;
   
-  const accessToken = careteAccessToken(userId, email, image, name, access);
+  const accessToken = careteAccessToken(userId, role, email, image, name, access);
   const refreshToken = createRefreshToken(userId);
   const expires = Math.floor(Date.now() + tokenConfig.setTimeToken);
 

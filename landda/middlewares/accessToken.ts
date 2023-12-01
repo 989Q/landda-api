@@ -7,6 +7,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 export interface AuthRequest extends Request {
   userToken?: {
     userId?: string,
+    role?: string,
     email?: string,
     image?: string,
     access?: string, 
@@ -49,6 +50,7 @@ export const validateToken = (req: AuthRequest, res: Response, next: NextFunctio
 
     req.userToken = {
       userId: decoded.userId,
+      role: decoded.role,
       email: decoded.email,
       image: decoded.image,
       access: decoded.access,
@@ -62,13 +64,14 @@ export const validateToken = (req: AuthRequest, res: Response, next: NextFunctio
 
 export const careteAccessToken = (
   userId: string,
+  role: string,
   email: string,
   image: string,
   name: string,
   access: string
 ): string => {
   const accessToken = signToken(
-    { userId, email, image, name, access },
+    { userId, role, email, image, name, access },
     tokenConfig.accessTokenSecret,
     "1d"
   );
