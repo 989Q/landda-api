@@ -1,0 +1,38 @@
+@baseurl = http://localhost:5000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ3dTdxMjYiLCJ1c2VybmFtZSI6Im5ld3VzZXIiLCJlbWFpbCI6Im5ld3VzZXJAZXhhbXBsZS5jb20iLCJyb2xlIjoicmVndWxhciIsImlhdCI6MTcwMTM1Mzc5OCwiZXhwIjoxNzAxNDM2NTk4fQ.9utTyUHlQym6-Kz-M6vganE84VTuSc3V0l_16PYU5LQ
+
+### Test Express
+GET {{baseurl}}/test/ping
+
+# ________________________________________ Admin
+
+# @name Admin_api_tests
+
+### Limit Blogs
+GET {{baseurl}}/admin/limit-blogs
+
+### Limit Estates
+GET {{baseurl}}/admin/limit-estates
+
+### Limit Agents
+GET {{baseurl}}/admin/limit-agents
+
+# ________________________________________ Blog
+
+# @name Blog_api_tests
+
+### Search Blogs
+GET {{baseurl}}/api/blog/search
+
+### Get Blog by ID
+GET {{baseurl}}/api/blog/get/your-blog-id
+
+# ________________________________________ Estate
+
+# @name Estate_api_tests
+
+### Search Estates
+GET {{baseurl}}/api/estate/search
+
+### Get Estate by ID
+GET {{baseurl}}/api/estate/get/list-u9cn0q9c3c
