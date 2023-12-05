@@ -158,6 +158,7 @@ export const getEstateById = async (req: Request, res: Response) => {
 export const searchEstate = async (req: Request, res: Response) => {
   const {
     keyword,
+    location,
     findStatus,
     findType,
     minBed,
@@ -165,11 +166,9 @@ export const searchEstate = async (req: Request, res: Response) => {
     minPrice,
     maxPrice,
     sorting,
-    page = 1,
   } = req.query;
-
-  const pageSize = 12; // set default pageSize
-
+  const page = 1;
+  const pageSize = 12;
   const searchQuery: any = {
     "head.post":  EstatePostStatus.Active
   };
@@ -179,11 +178,15 @@ export const searchEstate = async (req: Request, res: Response) => {
       { "desc.title": { $regex: keyword, $options: "i" } },
       { "desc.about": { $regex: keyword, $options: "i" } },
       { "maps.address": { $regex: keyword, $options: "i" } },
-      { "maps.subdistrict": { $regex: keyword, $options: "i" } },
-      { "maps.district": { $regex: keyword, $options: "i" } },
-      { "maps.province": { $regex: keyword, $options: "i" } },
       { "maps.postcode": { $regex: keyword, $options: "i" } },
-      { "maps.country": { $regex: keyword, $options: "i" } },
+    ];
+  }
+  if (location && location.toString().length <= 30) {
+    searchQuery["$or"] = [
+      { "maps.subdistrict": { $regex: location, $options: "i" } },
+      { "maps.district": { $regex: location, $options: "i" } },
+      { "maps.province": { $regex: location, $options: "i" } },
+      { "maps.country": { $regex: location, $options: "i" } },
     ];
   }
   if (findStatus) {
