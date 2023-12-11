@@ -27,8 +27,10 @@ export const searchAgent = async (req: Request, res: Response) => {
   const pageSize = 9;
 
   const searchQuery: any = {
-    "acc.role": UserRole.Agent,
-    "acc.status": UserStatus.Active,
+    $or: [
+      { "acc.role": { $in: [UserRole.Partner, UserRole.Agent] } },
+      { "acc.status": { $in: [UserStatus.Active, UserStatus.Inactive] } },
+    ],
   };
 
   if (keyword && keyword.toString().length <= 60) {

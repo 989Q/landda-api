@@ -9,8 +9,8 @@ export enum UserLoginProvider {
 export enum UserStatus {
   Active = "active",
   Inactive = "inactive",
-  Suspended = "suspended",
   Pending = "pending",
+  Suspended = "suspended",
   Blocked = "blocked",
 }
 
