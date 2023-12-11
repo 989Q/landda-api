@@ -153,6 +153,51 @@ export const getEstateById = async (req: Request, res: Response) => {
   }
 };
 
+export const getPopularProvincesTH = async (req: Request, res: Response) => {
+  try {
+    const popularProvinces = [
+      'Bangkok',
+      'Nonthaburi',
+      'Pathum Thani',
+      'Chiang Mai',
+      'Chiang Rai',
+      'Phuket',
+      'Chonburi',
+    ];
+
+    // aggregate to count number of estates in each popular province
+    const provinceCounts = await Estate.aggregate([
+      {
+        $match: {
+          'maps.province': { $in: popularProvinces },
+        },
+      },
+      {
+        $group: {
+          _id: '$maps.province',
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    // create map to store results
+    const provinceCountsMap = new Map<string, number>();
+    provinceCounts.forEach((result: { _id: string; count: number }) => {
+      provinceCountsMap.set(result._id, result.count);
+    });
+
+    // prepare final result
+    const result = popularProvinces.map((province) => ({
+      province,
+      count: provinceCountsMap.get(province) || 0,
+    }));
+
+    res.status(200).json({ result });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
 // ________________________________________ searching
 
 export const searchEstate = async (req: Request, res: Response) => {

@@ -25,11 +25,14 @@ GET {{baseurl}}/admin/limit-agents
 GET {{baseurl}}/api/blog/search
 
 ### Get Blog by ID
-GET {{baseurl}}/api/blog/get/your-blog-id
+GET {{baseurl}}/api/blog/get/blog-1234
 
 # ________________________________________ Estate
 
 # @name Estate_api_tests
+
+### Popular provinces in Thailand
+GET {{baseurl}}/api/estate/popular-provinces-th
 
 ### Search Estates
 GET {{baseurl}}/api/estate/search

@@ -11,6 +11,7 @@ router.post("/upload-multiple", upload.array("images", 3), estate.uploadImages);
 router.post("/create", validateToken, estate.createEstate);
 router.patch("/update/:estateId", validateToken, limitParams("estateId", 20), estate.updateEstate);
 // get, search
+router.get("/popular-provinces-th", estate.getPopularProvincesTH);
 router.get("/search", estate.searchEstate);
 router.get("/get/:estateId", limitParams("estateId", 20), estate.getEstateById);
 // delete
