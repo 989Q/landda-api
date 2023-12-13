@@ -1,132 +1,7 @@
-import mongoose from "mongoose";
+import Estate from "../../models/estate";
 import { Request, Response } from "express";
-import Estate from "../models/estate";
-import { uploadToWasabi } from "../middlewares/wasabi";
-import { EstatePostStatus } from "../utils/helpers/types";
-import { generateImageId } from "../utils/commons/createId";
-import { generateUniqueEstateId } from "../utils/commons/createUniqueId";
-import { updateEstateViews } from "../utils/commons/updateView";
-
-export const uploadImages = async (req: any, res: any) => {
-  console.log("request files: ", req.files);
-  const imageUrls: string[] = [];
-
-  if (req.files && req.files.length > 0) {
-    for (let i = 0; i < req.files.length; i++) {
-      const key = `${generateImageId()}.jpg`;
-
-      // uploadToWasabi(key, req.files[i].buffer).then((result) => {
-      //   console.log("uploaded image url", result);
-      // });
-      const imageUrl = await uploadToWasabi(key, req.files[i].buffer);
-      imageUrls.push(imageUrl);
-    }
-  }
-
-  res.json({
-    msg: `${req.files.length} Images uploaded successfully`,
-    imageUrls: imageUrls,
-  });
-};
-
-// doing
-export const createEstate = async (req: Request, res: Response) => {
-  // console.log("req.body: ", req.body);
-  const { desc, maps } = req.body;
-  const images = desc.images; // extract images array from request body
-  const user = req.body.user;
-  
-  try {
-    // generate unique estateId
-    const estateId = await generateUniqueEstateId();
-
-    // upload images to Wasabi
-    await uploadToWasabi(images.originalname, images.buffer);
-
-    const estate = new Estate({
-      _id: new mongoose.Types.ObjectId(),
-      head: {
-        estateId: estateId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      desc,
-      maps,
-      user,
-    });
-
-    const savedEstate = await estate.save();
-
-    res.status(201).json({ estate: savedEstate });
-  } catch (error) {
-    console.error("Error in createEstate:", error);
-    res.status(500).json({ error: "Internal Server Error." });
-  }
-};
-
-// doing
-export const updateEstate = async (req: Request, res: Response) => {
-  const estateId = req.params.estateId;
-  console.log("estateId ", estateId);
-
-  try {
-    // find estate by Id
-    const estate = await Estate.findOne({ "head.estateId": estateId });
-
-    if (!estate) {
-      return res.status(404).json({ message: "Estate not found" });
-    }
-
-    if (req.body.desc) {
-      // append new image URLs to the existing images array
-      if (req.body.desc.images && Array.isArray(req.body.desc.images)) {
-        req.body.desc.images.forEach((imageUrl: string) => {
-          estate.desc.images.push(imageUrl);
-        });
-      }
-      // handle other desc properties as needed
-      estate.desc = { ...estate.desc, ...req.body.desc };
-    }
-
-    // update estate properties based on requirements
-    if (req.body.head) {
-      estate.head = { ...estate.head, ...req.body.head };
-    }
-    if (req.body.desc) {
-      estate.desc = { ...estate.desc, ...req.body.desc };
-    }
-    if (req.body.maps) {
-      estate.maps = { ...estate.maps, ...req.body.maps };
-    }
-
-    // save updated estate
-    const updatedEstate = await estate.save();
-
-    return res.status(200).json({ estate: updatedEstate });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: "Internal server error" });
-  }
-};
-
-export const deleteEstate = async (req: Request, res: Response) => {
-  const estateId = req.params.estateId;
-
-  try {
-    // find estate by ID and remove it
-    const deletedEstate = await Estate.findOneAndRemove({
-      "head.estateId": estateId,
-    });
-
-    if (!deletedEstate) {
-      return res.status(404).json({ message: "Estate not found" });
-    }
-
-    return res.status(200).json({ message: "Estate deleted successfully" });
-  } catch (error) {
-    return res.status(500).json({ error: "Internal server error" });
-  }
-};
+import { EstateDescStatus, EstatePostStatus } from "../../utils/helpers/types";
+import { updateEstateViews } from "../../utils/commons/updateView";
 
 export const getEstateById = async (req: Request, res: Response) => {
   const estateId = req.params.estateId;
@@ -150,6 +25,60 @@ export const getEstateById = async (req: Request, res: Response) => {
     }
   } catch (error) {
     return res.status(500).json({ error });
+  }
+};
+
+export const getPopularCategoriesTH = async (req: Request, res: Response) => {
+  try {
+    // define popular categories
+    const popularCategories = [
+      { type: 'land', status: EstateDescStatus.Sale, category: 'landForSale' },
+      { type: 'condo', status: EstateDescStatus.Sale, category: 'condoForSale' },
+      { type: 'condo', status: EstateDescStatus.RentPerMonth, category: 'condoForRent' },
+      { type: 'house', status: EstateDescStatus.Sale, category: 'houseForSale' },
+      { type: 'condo', titleOrAboutIncludes: ['bts'], category: 'condoNearBTS' },
+      { type: 'condo', titleOrAboutIncludes: ['mrt'], category: 'condoNearMRT' },
+      { type: 'all', titleOrAboutIncludes: ['new', 'ใหม่'], category: 'newRealEstateProject' },
+    ];
+
+    // create array to store results for each category
+    const results: { category: string; type: string; status: any; count: number }[] = [];
+
+    // iterate over popular categories and fetch counts
+    for (const category of popularCategories) {
+      let query: Record<string, any> = {
+        'desc.status': category.status,
+      };
+
+      if (category.type !== 'all') {
+        query['desc.type'] = category.type;
+      }
+
+      if (category.titleOrAboutIncludes) {
+        query = {
+          ...query,
+          $or: category.titleOrAboutIncludes.map(keyword => ({
+            $or: [
+              { 'desc.title': { $regex: keyword, $options: 'i' } },
+              { 'desc.about': { $regex: keyword, $options: 'i' } },
+            ],
+          })),
+        };
+      }
+
+      const count = await Estate.countDocuments(query);
+
+      results.push({
+        category: category.category,
+        type: category.type,
+        status: category.status,
+        count,
+      });
+    }
+
+    res.status(200).json({ results });
+  } catch (error) {
+    res.status(500).json({ error });
   }
 };
 

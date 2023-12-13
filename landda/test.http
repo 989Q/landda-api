@@ -31,6 +31,9 @@ GET {{baseurl}}/api/blog/get/blog-1234
 
 # @name Estate_api_tests
 
+### Popular categories for Thailand
+GET {{baseurl}}/api/estate/popular-categories-th
+
 ### Popular provinces in Thailand
 GET {{baseurl}}/api/estate/popular-provinces-th
 
