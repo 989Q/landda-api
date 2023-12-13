@@ -47,6 +47,7 @@ export const getPopularCategoriesTH = async (req: Request, res: Response) => {
     // iterate over popular categories and fetch counts
     for (const category of popularCategories) {
       let query: Record<string, any> = {
+        'head.post': EstatePostStatus.Active,
         'desc.status': category.status,
       };
 
@@ -98,6 +99,7 @@ export const getPopularProvincesTH = async (req: Request, res: Response) => {
     const provinceCounts = await Estate.aggregate([
       {
         $match: {
+          'head.post': EstatePostStatus.Active, 
           'maps.province': { $in: popularProvinces },
         },
       },
@@ -116,12 +118,12 @@ export const getPopularProvincesTH = async (req: Request, res: Response) => {
     });
 
     // prepare final result
-    const result = popularProvinces.map((province) => ({
+    const results = popularProvinces.map((province) => ({
       province,
       count: provinceCountsMap.get(province) || 0,
     }));
 
-    res.status(200).json({ result });
+    res.status(200).json({ results });
   } catch (error) {
     res.status(500).json({ error });
   }
