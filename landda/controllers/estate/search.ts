@@ -2,6 +2,8 @@ import Estate from "../../models/estate";
 import { Request, Response } from "express";
 import { EstateDescStatus, EstatePostStatus } from "../../utils/helpers/types";
 import { updateEstateViews } from "../../utils/commons/updateView";
+import { cacheCategoriesTH, cacheProvincesTH } from "../../cache/estate";
+import { CACHE_EXPIRATION_TIME } from "../../configs/cache";
 
 export const getEstateById = async (req: Request, res: Response) => {
   const estateId = req.params.estateId;
@@ -30,55 +32,71 @@ export const getEstateById = async (req: Request, res: Response) => {
 
 export const getPopularCategoriesTH = async (req: Request, res: Response) => {
   try {
-    // define popular categories
-    const popularCategories = [
-      { type: 'land', status: EstateDescStatus.Sale, category: 'landForSale' },
-      { type: 'condo', status: EstateDescStatus.Sale, category: 'condoForSale' },
-      { type: 'condo', status: EstateDescStatus.RentPerMonth, category: 'condoForRent' },
-      { type: 'house', status: EstateDescStatus.Sale, category: 'houseForSale' },
-      { type: 'condo', titleOrAboutIncludes: ['bts'], category: 'condoNearBTS' },
-      { type: 'condo', titleOrAboutIncludes: ['mrt'], category: 'condoNearMRT' },
-      { type: 'all', titleOrAboutIncludes: ['new', 'ใหม่'], category: 'newRealEstateProject' },
-    ];
+    const currentTime = new Date();
+    const timeDifference = (currentTime.getTime() - cacheCategoriesTH.timestamp.lastUpdated.getTime()) / 1000;
 
-    // create array to store results for each category
-    const results: { category: string; type: string; status: any; count: number }[] = [];
+    // check if data is still valid (less than CACHE_EXPIRATION_TIME seconds old)
+    if (timeDifference < CACHE_EXPIRATION_TIME / 1000 && cacheCategoriesTH.data.length > 0) {
+      res.status(200).json({ results: cacheCategoriesTH.data });
+    } else {
+      // define popular categories
+      const popularCategories = [
+        { type: 'land', status: EstateDescStatus.Sale, category: 'landForSale' },
+        { type: 'condo', status: EstateDescStatus.Sale, category: 'condoForSale' },
+        { type: 'condo', status: EstateDescStatus.RentPerMonth, category: 'condoForRent' },
+        { type: 'house', status: EstateDescStatus.Sale, category: 'houseForSale' },
+        { type: 'condo', titleOrAboutIncludes: ['bts'], category: 'condoNearBTS' },
+        { type: 'condo', titleOrAboutIncludes: ['mrt'], category: 'condoNearMRT' },
+        { type: 'all', titleOrAboutIncludes: ['new', 'ใหม่'], category: 'newRealEstateProject' },
+      ];
 
-    // iterate over popular categories and fetch counts
-    for (const category of popularCategories) {
-      let query: Record<string, any> = {
-        'head.post': EstatePostStatus.Active,
-        'desc.status': category.status,
-      };
+      // create an array to store results for each category
+      const results: { category: string; type: string; status: any; count: number }[] = [];
 
-      if (category.type !== 'all') {
-        query['desc.type'] = category.type;
-      }
-
-      if (category.titleOrAboutIncludes) {
-        query = {
-          ...query,
-          $or: category.titleOrAboutIncludes.map(keyword => ({
-            $or: [
-              { 'desc.title': { $regex: keyword, $options: 'i' } },
-              { 'desc.about': { $regex: keyword, $options: 'i' } },
-            ],
-          })),
+      // iterate over popular categories and fetch counts
+      for (const category of popularCategories) {
+        let query: Record<string, any> = {
+          'head.post': EstatePostStatus.Active,
+          'desc.status': category.status,
         };
+
+        if (category.type !== 'all') {
+          query['desc.type'] = category.type;
+        }
+
+        if (category.titleOrAboutIncludes) {
+          query = {
+            ...query,
+            $or: category.titleOrAboutIncludes.map((keyword) => ({
+              $or: [
+                { 'desc.title': { $regex: keyword, $options: 'i' } },
+                { 'desc.about': { $regex: keyword, $options: 'i' } },
+              ],
+            })),
+          };
+        }
+
+        const count = await Estate.countDocuments(query);
+
+        results.push({
+          category: category.category,
+          type: category.type,
+          status: category.status,
+          count,
+        });
       }
 
-      const count = await Estate.countDocuments(query);
+      // update cache with new data and timestamp
+      cacheCategoriesTH.timestamp.lastUpdated = currentTime;
 
-      results.push({
-        category: category.category,
-        type: category.type,
-        status: category.status,
-        count,
-      });
+      // clear existing data and push new results
+      cacheCategoriesTH.data.length = 0;
+      cacheCategoriesTH.data.push(...results);
+
+      res.status(200).json({ results });
     }
-
-    res.status(200).json({ results });
   } catch (error) {
+    console.error('Error:', error);
     res.status(500).json({ error });
   }
 };
@@ -95,36 +113,53 @@ export const getPopularProvincesTH = async (req: Request, res: Response) => {
       'Chonburi',
     ];
 
-    // aggregate to count number of estates in each popular province
-    const provinceCounts = await Estate.aggregate([
-      {
-        $match: {
-          'head.post': EstatePostStatus.Active, 
-          'maps.province': { $in: popularProvinces },
+    const currentTime = new Date();
+    const timeDifference = (currentTime.getTime() - cacheProvincesTH.timestamp.lastUpdated.getTime()) / 1000;
+
+    // check if data is still valid (less than CACHE_EXPIRATION_TIME seconds old)
+    if (timeDifference < CACHE_EXPIRATION_TIME / 1000 && cacheProvincesTH.data.length > 0) {
+      res.status(200).json({ results: cacheProvincesTH.data });
+    } else {
+      // perform MongoDB query to get updated data
+      // aggregate to count the number of estates in each popular province
+      const provinceCounts = await Estate.aggregate([
+        {
+          $match: {
+            'head.post': EstatePostStatus.Active,
+            'maps.province': { $in: popularProvinces },
+          },
         },
-      },
-      {
-        $group: {
-          _id: '$maps.province',
-          count: { $sum: 1 },
+        {
+          $group: {
+            _id: '$maps.province',
+            count: { $sum: 1 },
+          },
         },
-      },
-    ]);
+      ]);
 
-    // create map to store results
-    const provinceCountsMap = new Map<string, number>();
-    provinceCounts.forEach((result: { _id: string; count: number }) => {
-      provinceCountsMap.set(result._id, result.count);
-    });
+      // create map to store results
+      const provinceCountsMap = new Map<string, number>();
+      provinceCounts.forEach((result: { _id: string; count: number }) => {
+        provinceCountsMap.set(result._id, result.count);
+      });
 
-    // prepare final result
-    const results = popularProvinces.map((province) => ({
-      province,
-      count: provinceCountsMap.get(province) || 0,
-    }));
+      // prepare the final result
+      const results = popularProvinces.map((province) => ({
+        province,
+        count: provinceCountsMap.get(province) || 0,
+      }));
 
-    res.status(200).json({ results });
+      // update cache with new data and timestamp
+      cacheProvincesTH.timestamp.lastUpdated = currentTime;
+
+      // clear existing data and push new results
+      cacheProvincesTH.data.length = 0;
+      cacheProvincesTH.data.push(...results);
+
+      res.status(200).json({ results });
+    }
   } catch (error) {
+    console.error('Error:', error);
     res.status(500).json({ error });
   }
 };
