@@ -2,6 +2,7 @@ import Estate from "../../models/estate";
 import { Request, Response } from "express";
 import { EstateDescStatus, EstatePostStatus } from "../../utils/helpers/types";
 import { updateEstateViews } from "../../utils/commons/updateView";
+import redisClient, { CACHE_EXPIRATION_TIME } from "../../configs/redis";
 
 export const getEstateById = async (req: Request, res: Response) => {
   const estateId = req.params.estateId;
@@ -85,46 +86,59 @@ export const getPopularCategoriesTH = async (req: Request, res: Response) => {
 
 export const getPopularProvincesTH = async (req: Request, res: Response) => {
   try {
-    const popularProvinces = [
-      'Bangkok',
-      'Nonthaburi',
-      'Pathum Thani',
-      'Chiang Mai',
-      'Chiang Rai',
-      'Phuket',
-      'Chonburi',
-    ];
+    // check if data is already in redis cache
+    const cachedData = await redisClient.get('cache-popularProvincesTH');
 
-    // aggregate to count number of estates in each popular province
-    const provinceCounts = await Estate.aggregate([
-      {
-        $match: {
-          'head.post': EstatePostStatus.Active, 
-          'maps.province': { $in: popularProvinces },
+    if (cachedData) {
+      const results = JSON.parse(cachedData);
+
+      res.status(200).json({ results, source: 'cache' });
+    } else {
+      const popularProvinces = [
+        'Bangkok',
+        'Nonthaburi',
+        'Pathum Thani',
+        'Chiang Mai',
+        'Chiang Rai',
+        'Phuket',
+        'Chonburi',
+      ];
+
+      // aggregate to count the number of estates in each popular province
+      const provinceCounts = await Estate.aggregate([
+        {
+          $match: {
+            'head.post': EstatePostStatus.Active,
+            'maps.province': { $in: popularProvinces },
+          },
         },
-      },
-      {
-        $group: {
-          _id: '$maps.province',
-          count: { $sum: 1 },
+        {
+          $group: {
+            _id: '$maps.province',
+            count: { $sum: 1 },
+          },
         },
-      },
-    ]);
+      ]);
 
-    // create map to store results
-    const provinceCountsMap = new Map<string, number>();
-    provinceCounts.forEach((result: { _id: string; count: number }) => {
-      provinceCountsMap.set(result._id, result.count);
-    });
+      // create map to store results
+      const provinceCountsMap = new Map<string, number>();
+      provinceCounts.forEach((result: { _id: string; count: number }) => {
+        provinceCountsMap.set(result._id, result.count);
+      });
 
-    // prepare final result
-    const results = popularProvinces.map((province) => ({
-      province,
-      count: provinceCountsMap.get(province) || 0,
-    }));
+      // prepare final result
+      const results = popularProvinces.map((province) => ({
+        province,
+        count: provinceCountsMap.get(province) || 0,
+      }));
 
-    res.status(200).json({ results });
+      // store data in redis for future use with TTL of CACHE_EXPIRATION_TIME
+      await redisClient.setEx('cache-popularProvincesTH', CACHE_EXPIRATION_TIME, JSON.stringify(results));
+
+      res.status(200).json({ results, source: 'database' });
+    }
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error });
   }
 };

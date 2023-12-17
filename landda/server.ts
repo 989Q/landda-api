@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import http from "http";
 import cors from "cors";
 import mongoose from "mongoose";
+import { redisConnect } from "./configs/redis";
 import { serverConfig } from "./configs/server";
 import Logging from "./utils/helpers/bashlog";
 
@@ -14,19 +15,25 @@ import blog from "./routes/blog";
 
 const router = express();
 
-mongoose
-  .connect(serverConfig.mongo.url!)
-  .then(() => {
-    Logging.info("Connected to mongoDB.");
-    StartServer();
-  })
-  .catch((error) => {
-    Logging.error("nable to cennect: ");
-    Logging.error(error);
-  });
+async function startServer() {
+  try {
+    await redisConnect(); // connect to Redis
 
-// start server if mongo connect
-const StartServer = () => {
+    // continue with MongoDB connection
+    await mongoose.connect(serverConfig.mongo.url!);
+
+    Logging.info("Connected to MongoDB and Redis.");
+
+    initializeRoutes();
+    initializeServer();
+  } catch (error) {
+    Logging.error("Failed to connect to MongoDB or Redis:");
+    Logging.error(error);
+  }
+}
+
+// initialize routes
+function initializeRoutes() {
   router.use((req: Request, res: Response, next: NextFunction) => {
     // show log request
     Logging.info(
@@ -62,13 +69,16 @@ const StartServer = () => {
     Logging.error(err);
 
     res.status(500).json({
-      error: err.message || "Server error", 
+      error: err.message || "Server error",
     });
   });
+}
 
-  http
-    .createServer(router)
-    .listen(serverConfig.server.port, () =>
-      Logging.info(`Server is running on port ${serverConfig.server.port}`)
-    );
-};
+// initialize and start server
+function initializeServer() {
+  http.createServer(router).listen(serverConfig.server.port, () =>
+    Logging.info(`Server is running on port ${serverConfig.server.port}`)
+  );
+}
+
+startServer();
