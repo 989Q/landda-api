@@ -2,8 +2,8 @@ import express from 'express';
 import * as createEstate from '../controllers/estate/create';
 import * as searchEstate from '../controllers/estate/search';
 import { upload } from '../configs/wasabi';
-import { validateToken } from '../middlewares/accessToken';
-import { limitParams } from '../middlewares/checkRequest';
+import { validateToken } from '../middlewares/accesstoken';
+import { limitParams } from '../middlewares/validate_request';
 
 const router = express.Router();
 

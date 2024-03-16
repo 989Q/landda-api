@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import User from "../../models/user";
 import { UserRole, UserStatus } from "../../utils/types";
-import { AuthRequest } from "../../middlewares/accessToken";
+import { AuthRequest } from "../../middlewares/accesstoken";
 
 export const getUserById = async (req: Request, res: Response) => {
   const userId = req.params.userId;

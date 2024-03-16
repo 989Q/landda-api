@@ -1,6 +1,6 @@
 import express from 'express';
 import * as blog from '../controllers/blog';
-import { limitParams } from '../middlewares/checkRequest';
+import { limitParams } from '../middlewares/validate_request';
 
 const router = express.Router();
 

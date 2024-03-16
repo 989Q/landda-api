@@ -4,7 +4,7 @@ import * as auth from '../../controllers/user/auth';
 const router = express.Router();
 
 router
-  // signIn, signUp
+  // sign in, sign up
   .post('/google', auth.signIn)
   // generate token
   .post('/refreshToken', auth.refreshToken);

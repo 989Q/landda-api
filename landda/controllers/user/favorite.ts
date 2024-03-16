@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import User from "../../models/user";
 import Estate from "../../models/estate";
-import { AuthRequest } from "../../middlewares/accessToken";
+import { AuthRequest } from "../../middlewares/accesstoken";
 
 export const listFavorites = async (req: AuthRequest, res: Response) => {
   const userId = req.userToken?.userId;

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import User from "../../models/user";
 import Message from "../../models/message";
 import Estate from "../../models/estate";
-import { AuthRequest } from "../../middlewares/accessToken";
+import { AuthRequest } from "../../middlewares/accesstoken";
 
 export const sendMessage = async (req: Request, res: Response) => {
   const { sender, text, userId, estateId } = req.body;

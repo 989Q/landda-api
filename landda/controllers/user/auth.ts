@@ -5,7 +5,7 @@ import {
   verifyToken,
   careteAccessToken,
   createRefreshToken,
-} from "../../middlewares/accessToken";
+} from "../../middlewares/accesstoken";
 import { tokenConfig } from "../../configs/token";
 import { generateUniqueUserId } from "../../utils/gen_unique_id";
 

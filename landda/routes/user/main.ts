@@ -1,7 +1,7 @@
 import express from 'express';
 import * as user from '../../controllers/user/user';
-import { validateToken } from '../../middlewares/accessToken';
-import { limitParams } from '../../middlewares/checkRequest';
+import { validateToken } from '../../middlewares/accesstoken';
+import { limitParams } from '../../middlewares/validate_request';
 
 const router = express.Router();
 
