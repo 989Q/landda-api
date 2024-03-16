@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import Estate from '../../models/estate';
 import { Request, Response } from 'express';
-import { uploadToWasabi } from '../../middlewares/wasabi';
+import { uploadToWasabi } from '../../configs/wasabi';
 import { generateImageId } from '../../utils/commons/createId';
 import { generateUniqueEstateId } from '../../utils/commons/createUniqueId';
 

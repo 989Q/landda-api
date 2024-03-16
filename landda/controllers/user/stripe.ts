@@ -1,6 +1,6 @@
 import User from "../../models/user";
 import { Request, Response } from "express";
-import { stripe } from "../../middlewares/stripe";
+import { stripe } from "../../configs/stripe";
 import { AuthRequest } from "../../middlewares/accessToken";
 
 export const getPrices = async (req: Request, res: Response) => {
