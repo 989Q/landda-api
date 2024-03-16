@@ -1,27 +1,28 @@
-import express, { Request, Response, NextFunction } from "express";
-import http from "http";
-import cors from "cors";
-import mongoose from "mongoose";
-import { serverConfig } from "./configs/server";
-import Logging from "./utils/helpers/bashlog";
+import express, { Request, Response, NextFunction } from 'express';
+import http from 'http';
+import cors from 'cors';
+import mongoose from 'mongoose';
+import { serverConfig } from './configs/server';
+import Logging from './utils/helpers/bashlog';
 
-import admin from "./routes/admin";
-import auth from "./routes/user/auth";
-import userModel from "./routes/user/user";
-import userManage from "./routes/user/manage";
-import estate from "./routes/estate";
-import blog from "./routes/blog";
+import indexRouter from './routes/index';
+import adminRouter from './routes/admin';
+import authRouter from './routes/user/auth';
+import userRouter from './routes/user/main';
+import userManageRouter from './routes/user/manage';
+import estateRouter from './routes/estate';
+import blogRouter from './routes/blog';
 
 const router = express();
 
 mongoose
   .connect(serverConfig.mongo.url!)
   .then(() => {
-    Logging.info("Connected to mongoDB.");
+    Logging.info('Connected to mongoDB.');
     StartServer();
   })
   .catch((error) => {
-    Logging.error("nable to cennect: ");
+    Logging.error('nable to cennect: ');
     Logging.error(error);
   });
 
@@ -33,7 +34,7 @@ const StartServer = () => {
       `Incomming - METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`
     );
 
-    res.on("finish", () => {
+    res.on('finish', () => {
       // show log response
       Logging.info(
         `Result - METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}] - STATUS: [${res.statusCode}]`
@@ -46,23 +47,19 @@ const StartServer = () => {
   router.use(cors());
   router.use(express.json());
 
-  router.use("/admin", admin);
-  router.use("/auth/user", auth);
-  router.use("/api/user", userModel);
-  router.use("/api/estate", estate);
-  router.use("/api/blog", blog);
-  // custom routes
-  router.use("/api", userManage);
-
-  router.get("/test/ping", (req: Request, res: Response) =>
-    res.status(200).json({ hello: "world" })
-  );
+  router.use('/', indexRouter);
+  router.use('/admin', adminRouter);
+  router.use('/auth/user', authRouter);
+  router.use('/api/user', userRouter);
+  router.use('/api', userManageRouter);
+  router.use('/api/estate', estateRouter);
+  router.use('/api/blog', blogRouter);
 
   router.use((err: Error, req: Request, res: Response) => {
     Logging.error(err);
 
     res.status(500).json({
-      error: err.message || "Server error", 
+      error: err.message || 'Server error',
     });
   });
 
