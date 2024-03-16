@@ -3,7 +3,7 @@ import http from 'http';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import { serverConfig } from './configs/server';
-import Logging from './utils/helpers/bashlog';
+import Logging from './utils/logging';
 
 import indexRouter from './routes/index';
 import adminRouter from './routes/admin';
@@ -22,7 +22,7 @@ mongoose
     StartServer();
   })
   .catch((error) => {
-    Logging.error('nable to cennect: ');
+    Logging.error('ERROR_MONGODB: Unable to connect to MongoDB.');
     Logging.error(error);
   });
 

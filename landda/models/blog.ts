@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 import { IUser } from "./user";
-import { BlogStatus, BlogTag } from "../utils/helpers/types";
+import { BlogStatus, BlogTag } from "../utils/types";
 
 export interface IBlog {
   lead: {

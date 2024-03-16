@@ -2,8 +2,8 @@ import mongoose from 'mongoose';
 import Estate from '../../models/estate';
 import { Request, Response } from 'express';
 import { uploadToWasabi } from '../../configs/wasabi';
-import { generateImageId } from '../../utils/commons/createId';
-import { generateUniqueEstateId } from '../../utils/commons/createUniqueId';
+import { generateImageId } from '../../utils/gen_id';
+import { generateUniqueEstateId } from '../../utils/gen_unique_id';
 
 export const uploadImages = async (req: any, res: any) => {
   console.log('request files: ', req.files);

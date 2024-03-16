@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 import { IUser } from "./user";
-import { EstatePostStatus, EstateDescStatus } from "../utils/helpers/types";
+import { EstatePostStatus, EstateDescStatus } from "../utils/types";
 
 export interface IEstate {
   head: {

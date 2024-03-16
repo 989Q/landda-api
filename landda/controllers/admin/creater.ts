@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
 import Blog from "../../models/blog";
-import { generateBlogId } from "../../utils/commons/createId";
+import { generateBlogId } from "../../utils/gen_id";
 
 export const createBlog = async (req: Request, res: Response) => {
   const { body, user } = req.body;

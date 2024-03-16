@@ -1,6 +1,6 @@
-import { generateUserId, addLetterId, generateListId } from "./createId";
-import User from "../../models/user";
-import Estate from "../../models/estate";
+import { generateUserId, addLetterId, generateListId } from "./gen_id";
+import User from "../models/user";
+import Estate from "../models/estate";
 
 export const generateUniqueUserId = async () => {
   let userId: string;

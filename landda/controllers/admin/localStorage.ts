@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import User, { IUser } from "../../models/user";
 import Estate, { IEstate } from "../../models/estate";
 import Blog, { BlogDocument } from "../../models/blog";
-import { BlogStatus, EstatePostStatus, UserRole, UserStatus } from "../../utils/helpers/types";
+import { BlogStatus, EstatePostStatus, UserRole, UserStatus } from "../../utils/types";
 
 export const limitBlog = async (req: Request, res: Response) => {
   try {

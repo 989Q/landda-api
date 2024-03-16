@@ -1,7 +1,7 @@
 import Estate from "../../models/estate";
 import { Request, Response } from "express";
-import { EstateDescStatus, EstatePostStatus } from "../../utils/helpers/types";
-import { updateEstateViews } from "../../utils/commons/updateView";
+import { EstateDescStatus, EstatePostStatus } from "../../utils/types";
+import { updateEstateViews } from "../../utils/updateView";
 
 export const getEstateById = async (req: Request, res: Response) => {
   const estateId = req.params.estateId;

@@ -1,5 +1,5 @@
-import { BlogDocument } from "../../models/blog";
-import { EstateDocument } from "../../models/estate";
+import { BlogDocument } from "../models/blog";
+import { EstateDocument } from "../models/estate";
 
 export const updateBlogViews = (blog: BlogDocument) => {
   // update seen

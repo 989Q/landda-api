@@ -7,7 +7,7 @@ import {
   createRefreshToken,
 } from "../../middlewares/accessToken";
 import { tokenConfig } from "../../configs/token";
-import { generateUniqueUserId } from "../../utils/commons/createUniqueId";
+import { generateUniqueUserId } from "../../utils/gen_unique_id";
 
 // ________________________________________ lib
 

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import User from "../../models/user";
-import { UserRole, UserStatus } from "../../utils/helpers/types";
+import { UserRole, UserStatus } from "../../utils/types";
 import { AuthRequest } from "../../middlewares/accessToken";
 
 export const getUserById = async (req: Request, res: Response) => {

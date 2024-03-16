@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Blog from "../models/blog";
-import { BlogStatus, BlogTag } from "../utils/helpers/types";
-import { updateBlogViews } from "../utils/commons/updateView";
+import { BlogStatus, BlogTag } from "../utils/types";
+import { updateBlogViews } from "../utils/updateView";
 
 export const getBlogById = async (req: Request, res: Response) => {
   const blogId = req.params.blogId;
