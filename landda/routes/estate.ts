@@ -16,8 +16,9 @@ router
   // delete
   .delete('/delete/:estateId', limitParams('estateId', 20), validateToken, createEstate.deleteEstate)
   // get, search
+  .get('/search', searchEstate.searchEstate)
+  .get('/get/:estateId', searchEstate.getEstateById)
   .get('/popular-categories-th', searchEstate.getPopularCategoriesTH)
   .get('/popular-provinces-th', searchEstate.getPopularProvincesTH)
-  .get('/search', searchEstate.searchEstate);
 
 export default router;
